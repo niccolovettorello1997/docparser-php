@@ -1,0 +1,17 @@
+# PHP dependencies
+vendor/
+
+# Log files
+*.log
+
+# Temp files and cache
+*.cache
+*.tmp
+*.temp
+
+# Operating system generated files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
