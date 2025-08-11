@@ -1,0 +1,22 @@
+{
+    "name": "niccolo/docparser-php",
+    "description": "Parser for HTML and PDF documents written in PHP",
+    "type": "project",
+    "require-dev": {
+        "phpunit/phpunit": "^12.3"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Niccolo\\DocparserPhp\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Niccolo Vettorello",
+            "email": "vettorelloniccolo97@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {}
+}
