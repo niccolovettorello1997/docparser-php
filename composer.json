@@ -11,6 +11,11 @@
             "Niccolo\\DocparserPhp\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Niccolo\\DocparserPhp\\Tests\\": "tests/"
+        }
+    },
     "authors": [
         {
             "name": "Niccolo Vettorello",
