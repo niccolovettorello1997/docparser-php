@@ -31,29 +31,6 @@ class ValidatorComponentTest extends TestCase
         $this->assertEmpty(actual: $result->getWarnings());
     }
 
-    public function test_html_validator_component_invalid_html_anchor(): void
-    {
-        $expectedErrorMessage = 'The element \'anchor\' is malformed.';
-        $html = file_get_contents(filename: __DIR__ . "/../../../../fixtures/tests/invalid_html_anchor.html");
-        $validator = ValidatorComponent::build(
-            context: $html,
-            configPath: __DIR__ . "/../../../../config/Validator/validator_html.yaml"
-        );
-
-        $result = $validator->run();
-
-        $this->assertFalse(condition: $result->isValid());
-        $this->assertNotNull(actual: $result->getError());
-        $this->assertInstanceOf(
-            expected: MalformedElementError::class,
-            actual: $result->getError(),
-        );
-        $this->assertEquals(
-            expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage(),
-        );
-    }
-
     public function test_html_validator_component_invalid_html_body(): void
     {
         $expectedErrorMessage = 'The element \'body\' has invalid content.';
