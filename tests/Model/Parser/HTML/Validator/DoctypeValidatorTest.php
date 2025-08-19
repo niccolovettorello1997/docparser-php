@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Niccolo\DocparserPhp\Tests\Model\Parser\HTML\Validator;
 
 use PHPUnit\Framework\TestCase;
-use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
+use Niccolo\DocparserPhp\Model\Utils\Parser\Validator\SharedContext;
 use Niccolo\DocparserPhp\Model\Utils\Error\MissingElementError;
 use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\DoctypeValidator;
 

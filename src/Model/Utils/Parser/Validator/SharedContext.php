@@ -2,7 +2,7 @@
 
 declare(strict_types= 1);
 
-namespace Niccolo\DocparserPhp\Model\Utils\Parser;
+namespace Niccolo\DocparserPhp\Model\Utils\Parser\Validator;
 
 class SharedContext
 {
