@@ -20,7 +20,7 @@ class ElementValidationResultView implements RenderableInterface
      */
     public function render(): string
     {
-        $resultHtml = '';
+        $resultHtml = '<div><strong>Validation: </strong>';
 
         if (!empty($this->elementValidationResult->getWarnings())) {
             $resultHtml .= "<div><strong>Warnings:</strong><ul>";
@@ -35,7 +35,7 @@ class ElementValidationResultView implements RenderableInterface
         }
 
         if ($this->elementValidationResult->isValid()) {
-            $resultHtml .= "<div>Your content is valid!</div>";
+            $resultHtml .= "<div>Your content is valid!</div></div>";
 
             return $resultHtml;
         }
@@ -43,7 +43,7 @@ class ElementValidationResultView implements RenderableInterface
         if (null !== $this->elementValidationResult->getError()) {
             $errorMessage = $this->elementValidationResult->getError()->getMessage();
 
-            $resultHtml .= "<div><strong>Error: {$errorMessage}</strong></div>";
+            $resultHtml .= "<div><strong>Error: </strong>{$errorMessage}</div></div>";
         }
 
         return $resultHtml;

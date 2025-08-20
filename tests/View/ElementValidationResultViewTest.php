@@ -14,7 +14,7 @@ class ElementValidationResultViewTest extends TestCase
 {
     public function test_validation_view_valid_html_no_warnings(): void
     {
-        $expectedResult = "<div>Your content is valid!</div>";
+        $expectedResult = "<div><strong>Validation: </strong><div>Your content is valid!</div></div>";
         $elementValidationResult = new ElementValidationResult();
         $elementValidationResultView = new ElementValidationResultView(
             elementValidationResult: $elementValidationResult,
@@ -30,7 +30,7 @@ class ElementValidationResultViewTest extends TestCase
 
     public function test_validation_view_valid_html_with_warnings(): void
     {
-        $expectedResult = "<div><strong>Warnings:</strong><ul><li>The attribute 'lang' is recommended.</li></ul></div><div>Your content is valid!</div>";
+        $expectedResult = "<div><strong>Validation: </strong><div><strong>Warnings:</strong><ul><li>The attribute 'lang' is recommended.</li></ul></div><div>Your content is valid!</div></div>";
         $elementValidationResult = new ElementValidationResult();
         $elementValidationResult->setWarning(
             warning: new RecommendedAttributeWarning(
@@ -51,7 +51,7 @@ class ElementValidationResultViewTest extends TestCase
 
     public function test_validation_view_invalid_html(): void
     {
-        $expectedResult = "<div><strong>Error: The element 'title' is present multiple times.</strong></div>";
+        $expectedResult = "<div><strong>Validation: </strong><div><strong>Error: </strong>The element 'title' is present multiple times.</div></div>";
         $elementValidationResult = new ElementValidationResult();
         $elementValidationResult->setError(
             error: new NotUniqueElementError(
@@ -72,8 +72,8 @@ class ElementValidationResultViewTest extends TestCase
 
     public function test_validation_view_invalid_html_with_warnings(): void
     {
-        $expectedResultWarnings = "<div><strong>Warnings:</strong><ul><li>The attribute 'lang' is recommended.</li></ul></div>";
-        $expectedResultError = "<div><strong>Error: The element 'title' is present multiple times.</strong></div>";
+        $expectedResultWarnings = "<div><strong>Validation: </strong><div><strong>Warnings:</strong><ul><li>The attribute 'lang' is recommended.</li></ul></div>";
+        $expectedResultError = "<div><strong>Error: </strong>The element 'title' is present multiple times.</div></div>";
         $elementValidationResult = new ElementValidationResult();
         $elementValidationResult->setError(
             error: new NotUniqueElementError(
