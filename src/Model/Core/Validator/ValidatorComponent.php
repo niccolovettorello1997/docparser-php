@@ -4,13 +4,12 @@ declare(strict_types= 1);
 
 namespace Niccolo\DocparserPhp\Model\Core\Validator;
 
-use Niccolo\DocparserPhp\Model\Utils\Parser\Validator\SharedContext;
+use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
 use Symfony\Component\Yaml\Yaml;
 
 class ValidatorComponent
 {
     public function __construct(
-        private readonly SharedContext $sharedContext,
         /** @var AbstractValidator[] */
         private array $validators = []
     ) {
@@ -43,7 +42,7 @@ class ValidatorComponent
             }
         }
 
-        return new ValidatorComponent(sharedContext: $sharedContext, validators: $validators);
+        return new ValidatorComponent(validators: $validators);
     }
 
     /**
