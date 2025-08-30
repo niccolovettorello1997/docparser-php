@@ -4,13 +4,14 @@ declare(strict_types= 1);
 
 namespace Niccolo\DocparserPhp\Controller;
 
+use Niccolo\DocparserPhp\Controller\Utils\Query;
+use Niccolo\DocparserPhp\View\ParserViewFactory;
+use Niccolo\DocparserPhp\View\RenderableInterface;
+use Niccolo\DocparserPhp\View\ElementValidationResultView;
+use Niccolo\DocparserPhp\Model\Utils\Error\UnsupportedTypeError;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponentFactory;
 use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
 use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
-use Niccolo\DocparserPhp\Model\Utils\Error\UnsupportedTypeError;
-use Niccolo\DocparserPhp\View\ElementValidationResultView;
-use Niccolo\DocparserPhp\View\ParserViewFactory;
-use Niccolo\DocparserPhp\View\RenderableInterface;
 
 class ParserController
 {
@@ -26,21 +27,23 @@ class ParserController
         $result = [];
 
         // Get input
-        $context = $data['context'];
-        $type = $data['type'];
+        $query = Query::getQuery(
+            data: $data,
+            files: $_FILES,
+        );
 
         // Try to create a ValidatorComponent
         try {
             $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
-                context: $context,
-                type: $type
+                context: $query->getContext(),
+                type: $query->getType(),
             );
         } catch (\InvalidArgumentException $e) {    // Unsupported type
             $validationUnsupportedType = new ElementValidationResult();
 
             $validationUnsupportedType->setError(
                 error: new UnsupportedTypeError(
-                    subject: $type,
+                    subject: $query->getType(),
                 )
             );
 
@@ -65,15 +68,15 @@ class ParserController
 
         // Get ParserComponent and run parsing
         $parserComponent = ParserComponentFactory::getParserComponent(
-            context: $context,
-            type: $type
+            context: $query->getContext(),
+            type: $query->getType(),
         );
 
         $parserResult = $parserComponent->run();
 
         // Get the appropriate ParserView
         $parserView = ParserViewFactory::getParserView(
-            type: $type,
+            type: $query->getType(),
             parsers: $parserResult
         );
 
