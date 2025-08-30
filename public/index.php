@@ -26,9 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <h1>HTML Parser</h1>
 
-    <form method="post" action="">
+    <form method="post" action="" enctype="multipart/form-data">
         <label for="context">Insert content:</label><br>
         <textarea name="context" id="context"><?= htmlspecialchars(string: $_POST['context'] ?? '') ?></textarea><br><br>
+
+        <input type="file" name="file" /><br><br>
 
         <label for="type">Data type:</label>
         <select name="type" id="type">
