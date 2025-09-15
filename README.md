@@ -1,155 +1,160 @@
-# HTML-Parser mit Validator / HTML Parser with Validator
+# DocParser-PHP
 
-## Deutsch
-
-Dieses Projekt ist ein praktisches Beispiel für einen Parser mit Validator für HTML-Dokumente.
-Es dient dazu, die Konzepte aus dem Buch *"PHP 8 und MySQL: das umfassende Handbuch"* von Wenz und Hauser zu verstehen.
-
-*Hinweis*: Dieser Parser ist **nicht vollständig oder perfekt**. Er verarbeitet nur einige Tags wie `<html>`, `<head>`, `<title>`, `<p>`, usw., und auch diese nicht vollständig.
+A simple **HTML parser and validator** written in PHP 8, designed as a learning project to demonstrate **object-oriented PHP, unit testing, and modular architecture**. This repository showcases coding practices, structured parsing, validation, and output rendering in HTML and JSON formats.
 
 ---
 
-### Projektziele
+## **Table of Contents**
 
-- Erlernen der Nutzung folgender Technologien und Methoden:
-  - Docker
-  - PHP und objektorientierte Programmierung (OOP)
-  - Datenbanken (DB)
-  - usw.
-- Schrittweise Nachvollziehung der Entwicklung eines Praxisprojekts anhand eines Fachbuches.
-- Praktische Übung: HTML-Parser und Validator in PHP erstellen.
-
----
-
-### Projektstruktur
-
-- Das Projekt beginnt im Branch `main`, der eine **basale, leere Struktur** enthält.
-- Jeder weitere Branch entspricht einer Serie von **Buchkapiteln**.
-- Jeder Branch wird zu einem **Pull Request (PR)**, der in `main` gemerged wird, inklusive der Änderungen, die den entsprechenden Kapiteln entsprechen.
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Validation and Parsing Logic](#validation-and-parsing-logic)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
-### Unterstützte Tags
+## **Features**
 
-Der Parser verarbeitet aktuell nur einige grundlegende HTML-Tags:
-
-- `<html>`
-- `<head>`
-- `<title>`
-- `<p>`
-
-> Die Liste ist nicht vollständig – der Parser dient hauptsächlich als **Lernbeispiel**.
-
----
-
-### Nutzung des Projekts
-
-1. Repository klonen:
-   ```bash
-   git clone git@github.com:niccolovettorello1997/docparser-php.git
-   ```
-
-2. Zum gewünschten Branch wechseln, um spezifische Kapitel zu sehen:
-   ```bash
-   git checkout <branch_name>
-   ```
-
-3. Docker-Umgebung starten:
-   ```bash
-   docker compose up -d
-   ```
-
-4. Projekt im Browser ausführen, um den Parser zu testen.
-   ```bash
-   http://localhost:8080
-   ```
+- Validate HTML structure with strict rules:
+  - Unique and properly nested `<html>`, `<head>`, `<body>`, `<title>` and headings
+  - Checks for empty elements and invalid characters
+  - Warning system for optional attributes
+- Parse HTML into a structured DOM-like tree
+- Output results in:
+  - Human-readable HTML
+  - Structured JSON for further processing
+- Modular architecture to support additional document types
+- Fully tested with PHPUnit
+- Dockerized for easy setup
+- Configurable validators and parsers via YAML
 
 ---
 
-### Beiträge
+## **Technology Stack**
 
-Dieses Projekt ist hauptsächlich **zu Lernzwecken**. Externe Beiträge sind willkommen, sollten aber den pädagogischen Zweck bewahren und das Projekt nicht zu einem vollständigen Parser machen.
-
----
-
-### Referenzen
-
-- *PHP 8 und MySQL: das umfassende Handbuch* von Wenz und Hauser
+- **PHP 8.3** (OOP, strict typing)
+- **Composer** for dependency management
+- **Docker & Docker Compose** for environment setup
+- **PHPUnit** for unit testing
+- HTML5 standards compliance
 
 ---
 
-## English
+## **Installation**
 
-This project is a practical example of a parser with a validator for HTML documents.  
-It aims to help understand the concepts explained in the book *"PHP 8 und MySQL: das umfassende Handbuch"* by Wenz and Hauser.
+1. Clone this repository:
 
-*Note*: This parser is **not complete or perfect**. It only handles some tags like `<html>`, `<head>`, `<title>`, `<p>`, etc., and not fully.
+```bash
+git clone https://github.com/niccolovettorello1997/docparser-php.git
+cd docparser-php
+```
 
----
+2. Start the Docker environment:
 
-### Project Goals
+```bash
+docker compose up -d
+```
 
-- Learn how to use the following technologies and methods:
-  - Docker
-  - PHP and Object-Oriented Programming (OOP)
-  - Databases (DB)
-  - etc.
-- Follow a practical project step by step based on a reference book.
-- Hands-on exercise: create an HTML parser and validator in PHP.
+3. Enter the web container:
 
----
+```bash
+docker exec -it docparser-php-web-1 bash
+```
 
-### Project Structure
+4. Install PHP dependencies:
 
-- The project starts in the `main` branch, which contains a **basic, empty structure**.
-- Each additional branch corresponds to a series of **book chapters**.
-- Each branch is then turned into a **Pull Request (PR)** merged into `main` with the changes reflecting the corresponding chapters.
+```bash
+composer install
+```
 
----
+5. Access the app in your browser:
 
-### Supported Tags
-
-Currently, the parser only handles a few basic HTML tags:
-
-- `<html>`
-- `<head>`
-- `<title>`
-- `<p>`
-
-> The list is not exhaustive – the parser is primarily an **educational example**.
+```
+http://localhost:8080
+```
 
 ---
 
-### How to Use
+## **Usage**
 
-1. Clone the repository:
-   ```bash
-   git clone git@github.com:niccolovettorello1997/docparser-php.git
-   ```
+1. Insert HTML content directly into the textarea **or** upload an HTML file.
+2. Select the data type (currently only `HTML` is supported).
+3. Click **Parse**.
+4. Results are displayed:
 
-2. Checkout the desired branch to explore specific chapters:
-   ```bash
-   git checkout <branch_name>
-   ```
-
-3. Start the Docker environment:
-   ```bash
-   docker compose up -d
-   ```
-
-4. Open the project in your browser to test the parser:
-   ```bash
-   http://localhost:8080
-   ```
+   * Validation errors and warnings
+   * Parsed HTML view
+   * Optional JSON view
 
 ---
 
-### Contributions
+## **Project Structure**
 
-This project is primarily **educational**. External contributions are welcome, but they should maintain the educational purpose and not turn the project into a full parser.
+```
+src/          # Core PHP source code (validators, parsers, factories)
+tests/        # PHPUnit tests for validators, parsers, and views
+views/        # HTML views for displaying validation results
+public/       # Entry point for the web interface
+docker/       # Docker and Compose configuration
+config/       # Settings for parser and validator
+fixtures/     # Project fixtures
+```
 
 ---
 
-### References
+## **Validation and Parsing Logic**
 
-- *PHP 8 und MySQL: das umfassende Handbuch* by Wenz and Hauser
+1. **Validation**
+
+   * Fail-fast: stops at the first fatal error
+   * Checks include:
+
+     * Unique `doctype`, `html`, `head`, `body`, `title`
+     * Balanced headings (`<h1>`-`<h6>`)
+     * No nested `<p>` or invalid content
+     * Warnings for optional attributes (e.g., `lang` on `<html>`)
+
+2. **Parsing**
+
+   * Converts HTML into a DOM-like tree structure
+   * Each element type handled by dedicated parser classes
+   * Recursive parsing from `doctype` root
+   * Outputs can be rendered in HTML or JSON
+
+---
+
+## **Testing**
+
+* Unit tests are written with **PHPUnit**
+* Coverage includes validators, parsers, and views
+* To run tests:
+
+```bash
+docker exec -it docparser-php-web-1 bash
+vendor/bin/phpunit
+```
+
+---
+
+## **Contributing**
+
+Contributions are welcome! You can:
+
+* Add support for more HTML tags
+* Improve validation rules
+* Add support for other document types (Markdown, XML)
+* Enhance UI/JSON output
+
+Please open a pull request or issue for discussion.
+
+---
+
+## **License**
+
+MIT License
+
+---
