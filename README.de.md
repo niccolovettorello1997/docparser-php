@@ -1,3 +1,7 @@
+<p align="center">
+    <img src="./assets/img/docparser_php.png">
+</p>
+
 # DocParser-PHP
 
 Ein einfacher **HTML-Parser und Validator** in PHP 8, entwickelt als Lernprojekt, um **objektorientiertes PHP, Unit Testing und modulare Architektur** zu demonstrieren. Dieses Repository zeigt Programmierpraktiken, strukturiertes Parsen, Validierung und Ausgabe in HTML- und JSON-Formaten.
@@ -102,6 +106,7 @@ public/       # Einstiegspunkt für die Web-Oberfläche
 docker/       # Docker- und Compose-Konfiguration
 config/       # Einstellungen für Parser und Validator
 fixtures/     # Projekt-Fixtures
+assets/       # Projekt-Assets
 ```
 
 ---
