@@ -112,13 +112,22 @@ class HeadingValidator extends AbstractValidator
     /**
      * Checks if all heading elements have valid content.
      * 
-     * @param  array $matches
+     * @param  string $content
      * @param  ElementValidationResult $elementValidationResult
      * @return void
      */
-    private function checkHeadingElementsValidContent(array $matches, ElementValidationResult $elementValidationResult): void
+    private function checkHeadingElementsValidContent(string $content, ElementValidationResult $elementValidationResult): void
     {
-        foreach ($matches as $match) {
+        $patternHeadingElements = '/<(h[1-6])\b([^>]*)>(.*?)<\/\1>/is';
+
+        preg_match_all(
+            pattern: $patternHeadingElements,
+            subject: $content,
+            matches: $matchesHeadings,
+            flags: PREG_SET_ORDER
+        );
+
+        foreach ($matchesHeadings as $match) {
             $patternInternalTags = '/<(\/)?(' . implode(separator: '|', array: $this->getInvalidContentTags()) . ')\b[^>]*>/i';
 
             // The content is empty or contains invalid internal tags
@@ -161,17 +170,8 @@ class HeadingValidator extends AbstractValidator
         }
 
         // Check for invalid content, i.e. invalid internal tags or empty content
-        $patternHeadingElements = '/<(h[1-6])\b([^>]*)>(.*?)<\/\1>/is';
-
-        preg_match_all(
-            pattern: $patternHeadingElements,
-            subject: $this->sharedContext->getContext(),
-            matches: $matchesHeadings,
-            flags: PREG_SET_ORDER
-        );
-
         $this->checkHeadingElementsValidContent(
-            matches: $matchesHeadings,
+            content: $this->sharedContext->getContext(),
             elementValidationResult: $elementValidationResult
         );
 

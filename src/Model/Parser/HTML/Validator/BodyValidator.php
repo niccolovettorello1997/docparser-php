@@ -99,8 +99,42 @@ class BodyValidator extends AbstractValidator
         }
     }
 
-    // TODO: incapsulate all checks into separate more readable methods
-    // TODO: add custom exception to fail fast
+    /**
+     * Checks if the tag is unique.
+     * 
+     * @param  array $matchesBody
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
+     */
+    private function isUnique(array $matchesBody, ElementValidationResult $elementValidationResult): void
+    {
+        if (count(value: $matchesBody[0]) > 1) {
+            $elementValidationResult->setError(
+                error: new NotUniqueElementError(
+                    subject: self::ELEMENT_NAME,
+                )
+            );
+        }
+    }
+
+    /**
+     * Checks if the body element is not empty.
+     * 
+     * @param  string $elementContent
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
+     */
+    private function isNotEmpty(string $elementContent, ElementValidationResult $elementValidationResult): void
+    {
+        if (trim(string: $elementContent) === '') {
+            $elementValidationResult->setWarning(
+                warning: new EmptyElementWarning(
+                    subject: self::ELEMENT_NAME
+                )
+            );
+        }
+    }
+
     /**
      * Validates the body element in the HTML.
      *
@@ -120,13 +154,12 @@ class BodyValidator extends AbstractValidator
         );
 
         // body element must be unique
-        if (count(value: $matchesBody[0]) > 1) {
-            $elementValidationResult->setError(
-                error: new NotUniqueElementError(
-                    subject: self::ELEMENT_NAME,
-                )
-            );
-
+        $this->isUnique(
+            matchesBody: $matchesBody,
+            elementValidationResult: $elementValidationResult
+        );
+        
+        if (!$elementValidationResult->isValid()) {
             return $elementValidationResult;
         }
 
@@ -151,12 +184,13 @@ class BodyValidator extends AbstractValidator
         }
 
         // body element should not be empty
-        if (trim(string: $matchesBody[2][0]) === '') {
-            $elementValidationResult->setWarning(
-                warning: new EmptyElementWarning(
-                    subject: self::ELEMENT_NAME
-                )
-            );
+        $this->isNotEmpty(
+            elementContent: $matchesBody[2][0],
+            elementValidationResult: $elementValidationResult
+        );
+
+        if (!$elementValidationResult->isValid()) {
+            return $elementValidationResult;
         }
 
         return $elementValidationResult;
