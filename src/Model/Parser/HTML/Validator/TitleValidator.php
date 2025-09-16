@@ -15,8 +15,78 @@ class TitleValidator extends AbstractValidator
 {
     public const string ELEMENT_NAME = 'title';
 
-    // TODO: incapsulate all checks into separate more readable methods
-    // TODO: add custom exception to fail fast
+    /**
+     * Check if the title element is present in the HTML document.
+     * 
+     * @param  array $titleMatches
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
+     */
+    private function isPresent(array $titleMatches, ElementValidationResult $elementValidationResult): void
+    {
+        if (empty($titleMatches[0])) {
+            $elementValidationResult->setError(
+                error: new MissingElementError(
+                    subject: self::ELEMENT_NAME,
+                )
+            );
+        }
+    }
+
+    /**
+     * Check if the title element is unique.
+     * 
+     * @param  array $titleMatches
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
+     */
+    private function isUnique(array $titleMatches, ElementValidationResult $elementValidationResult): void
+    {
+        if (count(value: $titleMatches[0]) > 1) {
+            $elementValidationResult->setError(
+                error: new NotUniqueElementError(
+                    subject: self::ELEMENT_NAME,
+                )
+            );
+        }
+    }
+
+    /**
+     * Check if the title element is not empty (at least one character different from whitespace).
+     * 
+     * @param  array $titleMatches
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
+     */
+    private function isNotEmpty(array $titleMatches, ElementValidationResult $elementValidationResult): void
+    {
+        if (count(value: $titleMatches[1]) === 1 && trim(string: $titleMatches[1][0]) === '') {
+            $elementValidationResult->setError(
+                error: new EmptyElementError(
+                    subject: self::ELEMENT_NAME,
+                )
+            );
+        }
+    }
+
+    /**
+     * Check if the title element contains only valid characters in UTF-8.
+     * 
+     * @param  array $titleMatches
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
+     */
+    private function isValidUTF8(array $titleMatches, ElementValidationResult $elementValidationResult): void
+    {
+        if (count(value: $titleMatches[1]) === 1 && !mb_check_encoding(value: $titleMatches[1][0], encoding: 'UTF-8')) {
+            $elementValidationResult->setError(
+                error: new InvalidContentError(
+                    subject: self::ELEMENT_NAME,
+                )
+            );
+        }
+    }
+
     /**
      * Validates the title element of an HTML document.
      *
@@ -45,45 +115,43 @@ class TitleValidator extends AbstractValidator
         );
 
         // Title element must be present
-        if (empty($titleMatches[0])) {
-            $elementValidationResult->setError(
-                error: new MissingElementError(
-                    subject: self::ELEMENT_NAME,
-                )
-            );
+        $this->isPresent(
+            titleMatches: $titleMatches,
+            elementValidationResult: $elementValidationResult
+        );
 
+        if (!$elementValidationResult->isValid()) {
             return $elementValidationResult;
         }
 
         // Title element must be unique
-        if (count(value: $titleMatches[0]) > 1) {
-            $elementValidationResult->setError(
-                error: new NotUniqueElementError(
-                    subject: self::ELEMENT_NAME,
-                )
-            );
+        $this->isUnique(
+            titleMatches: $titleMatches,
+            elementValidationResult: $elementValidationResult
+        );
 
+        if (!$elementValidationResult->isValid()) {
             return $elementValidationResult;
         }
 
         // Title element must not be empty (at least one character different from whitespace)
-        if (count(value: $titleMatches[1]) === 1 && trim(string: $titleMatches[1][0]) === '') {
-            $elementValidationResult->setError(
-                error: new EmptyElementError(
-                    subject: self::ELEMENT_NAME,
-                )
-            );
+        $this->isNotEmpty(
+            titleMatches: $titleMatches,
+            elementValidationResult: $elementValidationResult
+        );
 
+        if (!$elementValidationResult->isValid()) {
             return $elementValidationResult;
         }
 
         // Title must contain only valid characters in UTF-8
-        if (count(value: $titleMatches[1]) === 1 && !mb_check_encoding(value: $titleMatches[1][0], encoding: 'UTF-8')) {
-            $elementValidationResult->setError(
-                error: new InvalidContentError(
-                    subject: self::ELEMENT_NAME,
-                )
-            );
+        $this->isValidUTF8(
+            titleMatches: $titleMatches,
+            elementValidationResult: $elementValidationResult
+        );
+
+        if (!$elementValidationResult->isValid()) {
+            return $elementValidationResult;
         }
 
         return $elementValidationResult;

@@ -95,8 +95,110 @@ class HtmlValidator extends AbstractValidator
         }
     }
 
-    // TODO: incapsulate all checks into separate more readable methods
-    // TODO: add custom exception to fail fast
+    /**
+     * Check if the html element is unique.
+     * 
+     * @param  array $matchesHtml
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
+     */
+    private function isUnique(array $matchesHtml, ElementValidationResult $elementValidationResult): void
+    {
+        if (count(value: $matchesHtml[0]) > 1) {
+            $elementValidationResult->setError(
+                error: new NotUniqueElementError(
+                    subject: self::ELEMENT_NAME,
+                ),
+            );
+        }
+    }
+
+    /**
+     * Check if the html element has both head and body elements. Body must be after head.
+     * 
+     * @param  array $matchesHtml
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
+     */
+    private function hasHeadAndBodyElements(array $matchesHtml, ElementValidationResult $elementValidationResult): void
+    {
+        if (!empty($matchesHtml[0]) && count(value: $matchesHtml[0]) === 1) {
+            $patternHead = '/<head(.*?)>(.*?)<\/head>/is';
+
+            if (!preg_match(
+                pattern: $patternHead,
+                subject: $matchesHtml[2][0],
+                matches: $matchesHead,
+            )) {
+                $elementValidationResult->setError(
+                    error: new MissingElementError(
+                        subject: 'head',
+                    ),
+                );
+
+                return;
+            }
+
+            $patternBody = '/<body(.*?)>(.*?)<\/body>/is';
+
+            if (!preg_match(
+                pattern: $patternBody,
+                subject: $matchesHtml[2][0],
+                matches: $matchesBody,
+            )) {
+                $elementValidationResult->setError(
+                    error: new MissingElementError(
+                        subject: 'body',
+                    ),
+                );
+
+                return;
+            }
+
+            if (!empty($matchesHead[0]) && !empty($matchesBody[0])) {
+                $patternBodyAfterHead = '/<head(.*?)>(.*?)<\/head>(.*?)<body(.*?)>/is';
+
+                if (!preg_match(
+                    pattern: $patternBodyAfterHead,
+                    subject: $matchesHtml[2][0],
+                )) {
+                    $elementValidationResult->setError(
+                        error: new StructuralError(
+                            subject: self::ELEMENT_NAME,
+                        ),
+                    );
+
+                    return;
+                }
+            }
+        }
+    }
+
+    /**
+     * Check if the html element has a lang attribute.
+     * 
+     * @param  array $matchesHtml
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
+     */
+    private function shouldHaveLangAttribute(array $matchesHtml, ElementValidationResult $elementValidationResult): void
+    {
+        if (!empty($matchesHtml[0]) && count(value: $matchesHtml[0]) === 1) {
+            $patternLangAttribute = '/lang="(.*?)"/i';
+
+            if (!preg_match(
+                pattern: $patternLangAttribute,
+                subject: $matchesHtml[1][0],
+            )) {
+                $elementValidationResult->setWarning(
+                    warning: new RecommendedAttributeWarning(
+                        subject: 'lang',
+                    ),
+                );
+            }
+        }
+    }
+
     /**
      * Validates the html element of a HTML document.
      *
@@ -127,13 +229,12 @@ class HtmlValidator extends AbstractValidator
         }
 
         // html element must be unique
-        if (count(value: $matchesHtml[0]) > 1) {
-            $elementValidationResult->setError(
-                error: new NotUniqueElementError(
-                    subject: self::ELEMENT_NAME,
-                ),
-            );
+        $this->isUnique(
+            matchesHtml: $matchesHtml,
+            elementValidationResult: $elementValidationResult,
+        );
 
+        if (!$elementValidationResult->isValid()) {
             return $elementValidationResult;
         }
 
@@ -148,77 +249,21 @@ class HtmlValidator extends AbstractValidator
             return $elementValidationResult;
         }
 
-        // html element must have a head element
-        if (!empty($matchesHtml[0]) && count(value: $matchesHtml[0]) === 1) {
-            $patternHead = '/<head(.*?)>(.*?)<\/head>/is';
+        // html element must have a head and a body element, and body must be after head
+        $this->hasHeadAndBodyElements(
+            matchesHtml: $matchesHtml,
+            elementValidationResult: $elementValidationResult,
+        );
 
-            if (!preg_match(
-                pattern: $patternHead,
-                subject: $matchesHtml[2][0],
-                matches: $matchesHead,
-            )) {
-                $elementValidationResult->setError(
-                    error: new MissingElementError(
-                        subject: 'head',
-                    ),
-                );
-
-                return $elementValidationResult;
-            }
-        }
-
-        // html element must have a body element
-        if (!empty($matchesHtml[0]) && count(value: $matchesHtml[0]) === 1) {
-            $patternBody = '/<body(.*?)>(.*?)<\/body>/is';
-
-            if (!preg_match(
-                pattern: $patternBody,
-                subject: $matchesHtml[2][0],
-                matches: $matchesBody,
-            )) {
-                $elementValidationResult->setError(
-                    error: new MissingElementError(
-                        subject: 'body',
-                    ),
-                );
-
-                return $elementValidationResult;
-            }
-        }
-
-        // body element must be placed after the head element
-        if (!empty($matchesHead[0]) && !empty($matchesBody[0])) {
-            $patternBodyAfterHead = '/<head(.*?)>(.*?)<\/head>(.*?)<body(.*?)>/is';
-
-            if (!preg_match(
-                pattern: $patternBodyAfterHead,
-                subject: $matchesHtml[2][0],
-            )) {
-                $elementValidationResult->setError(
-                    error: new StructuralError(
-                        subject: self::ELEMENT_NAME,
-                    ),
-                );
-
-                return $elementValidationResult;
-            }
+        if (!$elementValidationResult->isValid()) {
+            return $elementValidationResult;
         }
 
         // html element should have lang attribute
-        if (!empty($matchesHtml[0]) && count(value: $matchesHtml[0]) === 1) {
-            $patternLangAttribute = '/lang="(.*?)"/i';
-
-            if (!preg_match(
-                pattern: $patternLangAttribute,
-                subject: $matchesHtml[1][0],
-            )) {
-                $elementValidationResult->setWarning(
-                    warning: new RecommendedAttributeWarning(
-                        subject: 'lang',
-                    ),
-                );
-            }
-        }
+        $this->shouldHaveLangAttribute(
+            matchesHtml: $matchesHtml,
+            elementValidationResult: $elementValidationResult,
+        );
 
         return $elementValidationResult;
     }

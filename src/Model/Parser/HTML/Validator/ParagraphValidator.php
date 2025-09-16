@@ -115,8 +115,61 @@ class ParagraphValidator extends AbstractValidator
         }
     }
 
-    // TODO: incapsulate all checks into separate more readable methods
-    // TODO: add custom exception to fail fast
+    /**
+     * Check for empty paragraph elements.
+     * 
+     * @param  string $content
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
+     */
+    private function checkEmptyParagraphs(string $content, ElementValidationResult $elementValidationResult): void
+    {
+        $patternEmptyParagraph = '/<p\b[^>]*>\s*<\/p>/is';
+
+        if (preg_match(
+            pattern: $patternEmptyParagraph,
+            subject: $content
+        )) {
+            $elementValidationResult->setWarning(
+                warning: new EmptyElementWarning(
+                    subject: self::ELEMENT_NAME,
+                )
+            );
+        }
+    }
+
+    /**
+     * Check if paragraph tags are balanced.
+     *
+     * @param  string $content
+     * @return bool
+     */
+    private function checkBalancedParagraphTags(string $content): bool
+    {
+        $pattern = '/<\/?p\b[^>]*>/i';
+
+        preg_match_all(
+            pattern: $pattern,
+            subject: $content,
+            matches: $matches,
+        );
+
+        $stack = [];
+
+        foreach ($matches[0] as $tag) {
+            if (stripos(haystack: $tag, needle: '</p') === 0) {
+                if (empty($stack)) {
+                    return false;
+                }
+                array_pop($stack);
+            } else {
+                $stack[] = $tag;
+            }
+        }
+
+        return empty($stack);
+    }
+
     /**
      * Validates the paragraph element in the HTML.
      * 
@@ -126,25 +179,8 @@ class ParagraphValidator extends AbstractValidator
     {
         $elementValidationResult = new ElementValidationResult();
 
-        // Extract all paragraph opening and closing tags
-        $patternParagraphOpeningTag = '/<p\b[^>]*>/i';
-        $patternParagraphClosingTag = '/<\/p>/i';
-
-        preg_match_all(
-            pattern: $patternParagraphOpeningTag,
-            subject: $this->sharedContext->getContext(),
-            matches: $openingTags
-        );
-
-        preg_match_all(
-            pattern: $patternParagraphClosingTag,
-            subject: $this->sharedContext->getContext(),
-            matches: $closingTags
-        );
-
-        // TODO: use linear parsing + stack for a more robust validation
-        // Check if the number of opening and closing tags match
-        if (count(value: $openingTags[0]) !== count(value: $closingTags[0])) {
+        // Check if paragraph tags are balanced
+        if (!$this->checkBalancedParagraphTags(content: $this->sharedContext->getContext())) {
             $elementValidationResult->setError(
                 error: new MalformedElementError(
                     subject: self::ELEMENT_NAME,
@@ -169,18 +205,10 @@ class ParagraphValidator extends AbstractValidator
         }
 
         // Check for empty paragraph elements
-        $patternEmptyParagraph = '/<p\b[^>]*>\s*<\/p>/is';
-
-        if (preg_match(
-            pattern: $patternEmptyParagraph,
-            subject: $this->sharedContext->getContext()
-        )) {
-            $elementValidationResult->setWarning(
-                warning: new EmptyElementWarning(
-                    subject: self::ELEMENT_NAME,
-                )
-            );
-        }
+        $this->checkEmptyParagraphs(
+            content: $this->sharedContext->getContext(),
+            elementValidationResult: $elementValidationResult
+        );
 
         return $elementValidationResult;
     }

@@ -14,8 +14,113 @@ class HeadValidator extends AbstractValidator
 {
     public const string ELEMENT_NAME = 'head';
 
-    // TODO: incapsulate all checks into separate more readable methods
-    // TODO: add custom exception to fail fast
+    /**
+     * Checks if the tag is unique.
+     * 
+     * @param  array $matchesHead
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
+     */
+    private function isUnique(array $matchesHead, ElementValidationResult $elementValidationResult): void
+    {
+        if (count(value: $matchesHead[0]) > 1) {
+            $elementValidationResult->setError(
+                error: new NotUniqueElementError(
+                    subject: self::ELEMENT_NAME,
+                )
+            );
+        }
+    }
+
+    /**
+     * Checks if the content before the head element and after the html element contains only whitespaces.
+     * 
+     * @param  string $content
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
+     */
+    private function hasValidPrefix(string $content, ElementValidationResult $elementValidationResult): void
+    {
+        $patternBetweenHeadAndHtml = '/<html\b[^>]*>(.*?)<head\b[^>]*>/is';
+
+        if (preg_match(
+            pattern: $patternBetweenHeadAndHtml,
+            subject: $content,
+            matches: $matchesBetweenHeadAndHtml
+        ) && trim(string: $matchesBetweenHeadAndHtml[1]) !== '') {
+            $elementValidationResult->setError(
+                error: new StructuralError(
+                    subject: self::ELEMENT_NAME
+                )
+            );
+        }
+    }
+
+    /**
+     * Checks if the head element has a closing tag.
+     * 
+     * @param  string $content
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
+     */
+    private function hasClosingTag(string $content, ElementValidationResult $elementValidationResult): void
+    {
+        $patternHeadClosing = '/<\/head>/i';
+
+        if (!preg_match(
+            pattern: $patternHeadClosing,
+            subject: $content
+        )) {
+            $elementValidationResult->setError(
+                error: new MalformedElementError(
+                    subject: self::ELEMENT_NAME
+                )
+            );
+        }
+    }
+
+    /**
+     * Checks if the head element contains nested elements.
+     * 
+     * @param  array $matchesHead
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
+     */
+    private function checkNestedElements(array $matchesHead, ElementValidationResult $elementValidationResult): void
+    {
+        // head element cannot contain nested html element
+        $patternHtmlElement = '/<html\s*(.*?)>(.*?)<\/html>/is';
+
+        if (preg_match(
+            pattern: $patternHtmlElement,
+            subject: $matchesHead[1][0],
+        )) {
+            $elementValidationResult->setError(
+                error: new StructuralError(
+                    subject: self::ELEMENT_NAME,
+                )
+            );
+
+            return;
+        }
+
+        // head element cannot contain nested body element
+        $patternBodyElement = '/<body\s*(.*?)>(.*?)<\/body>/is';
+
+        if (preg_match(
+            pattern: $patternBodyElement,
+            subject: $matchesHead[1][0],
+        )) {
+            $elementValidationResult->setError(
+                error: new StructuralError(
+                    subject: self::ELEMENT_NAME,
+                )
+            );
+
+            return;
+        }
+    }
+
     /**
      * Validates the head element in the HTML.
      *
@@ -35,77 +140,40 @@ class HeadValidator extends AbstractValidator
         );
 
         // head element must be unique
-        if (count(value: $matchesHead[0]) > 1) {
-            $elementValidationResult->setError(
-                error: new NotUniqueElementError(
-                    subject: self::ELEMENT_NAME
-                )
-            );
+        $this->isUnique(matchesHead: $matchesHead, elementValidationResult: $elementValidationResult);
 
+        if (!$elementValidationResult->isValid()) {
             return $elementValidationResult;
         }
 
         // Before head element and after html element only whitespaces are allowed
-        $patternBetweenHeadAndHtml = '/<html\b[^>]*>(.*?)<head\b[^>]*>/is';
+        $this->hasValidPrefix(
+            content: $this->sharedContext->getContext(),
+            elementValidationResult: $elementValidationResult
+        );
 
-        if (preg_match(
-            pattern: $patternBetweenHeadAndHtml,
-            subject: $this->sharedContext->getContext(),
-            matches: $matchesBetweenHeadAndHtml
-        ) && trim(string: $matchesBetweenHeadAndHtml[1]) !== '') {
-            $elementValidationResult->setError(
-                error: new StructuralError(
-                    subject: self::ELEMENT_NAME
-                )
-            );
-
+        if (!$elementValidationResult->isValid()) {
             return $elementValidationResult;
         }
 
         // head element must have a closing tag
-        $patternHeadClosing = '/<\/head>/i';
+        $this->hasClosingTag(
+            content: $this->sharedContext->getContext(),
+            elementValidationResult: $elementValidationResult
+        );
 
-        if (!preg_match(
-            pattern: $patternHeadClosing,
-            subject: $this->sharedContext->getContext()
-        )) {
-            $elementValidationResult->setError(
-                error: new MalformedElementError(
-                    subject: self::ELEMENT_NAME
-                )
-            );
-
+        if (!$elementValidationResult->isValid()) {
             return $elementValidationResult;
         }
 
         // head element cannot contain nested html element
-        $patternHtmlElement = '/<html\s*(.*?)>(.*?)<\/html>/is';
+        $this->checkNestedElements(
+            matchesHead: $matchesHead,
+            elementValidationResult: $elementValidationResult
+        );
 
-        if (preg_match(
-            pattern: $patternHtmlElement,
-            subject: $matchesHead[1][0],
-        )) {
-            $elementValidationResult->setError(
-                error: new StructuralError(
-                    subject: self::ELEMENT_NAME,
-                )
-            );
-
+        if (!$elementValidationResult->isValid()) {
             return $elementValidationResult;
-        }
-
-        // head element cannot contain nested body element
-        $patternBodyElement = '/<body\s*(.*?)>(.*?)<\/body>/is';
-
-        if (preg_match(
-            pattern: $patternBodyElement,
-            subject: $matchesHead[1][0],
-        )) {
-            $elementValidationResult->setError(
-                error: new StructuralError(
-                    subject: self::ELEMENT_NAME,
-                )
-            );
         }
 
         return $elementValidationResult;
