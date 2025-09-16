@@ -21,67 +21,70 @@ class HeadingValidatorTest extends TestCase
         $result = $validator->validate();
 
         $this->assertTrue(condition: $result->isValid());
-        $this->assertNull(actual: $result->getError());
+        $this->assertEmpty(actual: $result->getErrors());
         $this->assertEmpty(actual: $result->getWarnings());
     }
 
     public function test_heading_element_opening_and_closing_tags_not_balanced(): void
     {
-        $expectedErrorMessage = 'The element \'heading\' has an invalid structure.';
+        $expectedErrorMessage = 'Closing tag for heading element <h2> does not match the last opening tag.';
         $html = '<DOCTYPE html><html><head></head><body><h1>Unbalanced Heading</h2></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new HeadingValidator(sharedContext: $sharedContext);
 
         $result = $validator->validate();
 
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertFalse(condition: $result->isValid());
+        $this->assertNotEmpty(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: StructuralError::class,
-            actual: $result->getError()
+            actual: $result->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage()
+            actual: $result->getErrors()[0]->getMessage()
         );
     }
 
     public function test_heading_element_invalid_internal_tag(): void
     {
-        $expectedErrorMessage = 'The element \'heading\' has invalid content.';
+        $expectedErrorMessage = 'Invalid content inside heading element <h1> : contains <div> tag.';
         $html = '<DOCTYPE html><html><head></head><body><h1>Invalid <div></div></h1></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new HeadingValidator(sharedContext: $sharedContext);
 
         $result = $validator->validate();
 
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertFalse(condition: $result->isValid());
+        $this->assertNotEmpty(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: InvalidContentError::class,
-            actual: $result->getError()
+            actual: $result->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage()
+            actual: $result->getErrors()[0]->getMessage()
         );
     }
 
     public function test_heading_element_empty_content(): void
     {
-        $expectedErrorMessage = 'The element \'heading\' has invalid content.';
+        $expectedErrorMessage = 'Empty content inside heading element <h1>.';
         $html = '<DOCTYPE html><html><head></head><body><h1></h1></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new HeadingValidator(sharedContext: $sharedContext);
 
         $result = $validator->validate();
 
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertFalse(condition: $result->isValid());
+        $this->assertNotNull(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: InvalidContentError::class,
-            actual: $result->getError()
+            actual: $result->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage()
+            actual: $result->getErrors()[0]->getMessage()
         );
     }
 }

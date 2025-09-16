@@ -23,79 +23,83 @@ class ParagraphValidatorTest extends TestCase
         $result = $validator->validate();
 
         $this->assertTrue(condition: $result->isValid());
-        $this->assertNull(actual: $result->getError());
+        $this->assertEmpty(actual: $result->getErrors());
         $this->assertEmpty(actual: $result->getWarnings());
     }
 
     public function test_paragraph_element_missing_closing_or_opening_tag(): void
     {
-        $expectedErrorMessage = 'The element \'paragraph\' is malformed.';
+        $expectedErrorMessage = 'Unclosed paragraph element(s) detected.';
         $html = '<DOCTYPE html><html><head></head><body><p></p><p>Missing closing tag</body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new ParagraphValidator(sharedContext: $sharedContext);
 
         $result = $validator->validate();
 
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertFalse(condition: $result->isValid());
+        $this->assertNotEmpty(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: MalformedElementError::class,
-            actual: $result->getError()
+            actual: $result->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage()
+            actual: $result->getErrors()[0]->getMessage()
         );
     }
 
     public function test_paragraph_element_nested(): void
     {
-        $expectedErrorMessage = 'The element \'paragraph\' has an invalid structure.';
+        $expectedErrorMessage = 'Nested paragraph elements are not allowed in paragraph element.';
         $html = '<DOCTYPE html><html><head></head><body><p>Outer paragraph <p>Inner paragraph<p>Inner paragraph 2</p></p></p></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new ParagraphValidator(sharedContext: $sharedContext);
 
         $result = $validator->validate();
 
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertFalse(condition: $result->isValid());
+        $this->assertNotEmpty(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: StructuralError::class,
-            actual: $result->getError()
+            actual: $result->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage()
+            actual: $result->getErrors()[0]->getMessage()
         );
     }
 
     public function test_paragraph_element_invalid_tags(): void
     {
-        $expectedErrorMessage = 'The element \'paragraph\' has invalid content.';
+        $expectedErrorMessage = 'Invalid tag <div> found within paragraph element.';
         $html = '<DOCTYPE html><html><head></head><body><p>Valid paragraph <div>Invalid tag inside paragraph</div></p><p>Valid paragraph 2</p></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new ParagraphValidator(sharedContext: $sharedContext);
 
         $result = $validator->validate();
 
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertFalse(condition: $result->isValid());
+        $this->assertNotEmpty(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: InvalidContentError::class,
-            actual: $result->getError()
+            actual: $result->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage()
+            actual: $result->getErrors()[0]->getMessage()
         );
     }
 
     public function test_empty_paragraph_element(): void
     {
-        $expectedWarningMessage = 'The element \'paragraph\' should not be empty.';
+        $expectedWarningMessage = 'Empty paragraph element detected.';
         $html = '<DOCTYPE html><html><head></head><body><p></p></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new ParagraphValidator(sharedContext: $sharedContext);
 
         $result = $validator->validate();
 
+        $this->assertTrue(condition: $result->isValid());
         $this->assertNotEmpty(actual: $result->getWarnings());
         $this->assertCount(
             expectedCount: 1,

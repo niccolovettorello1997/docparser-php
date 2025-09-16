@@ -13,7 +13,7 @@ use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
 
 class ParagraphValidator extends AbstractValidator
 {
-    public const string ELEMENT_NAME = 'paragraph';
+    public const ELEMENT_NAME = 'paragraph';
 
     /**
      * Return an array of tags that are considered invalid for paragraph element.
@@ -69,17 +69,13 @@ class ParagraphValidator extends AbstractValidator
                 pattern: '/<p\b/i',
                 subject: $paragraph)
             ) {
-                $elementValidationResult->setError(
+                $elementValidationResult->addError(
                     error: new StructuralError(
-                        subject: self::ELEMENT_NAME
+                        message: 'Nested paragraph elements are not allowed in ' . self::ELEMENT_NAME . ' element.',
                     )
                 );
-
-                return;
             }
         }
-
-        return;
     }
 
     /**
@@ -103,13 +99,11 @@ class ParagraphValidator extends AbstractValidator
                 $patternInvalidTag = '/<' . $invalidTag . '\b[^>]*>/i';
 
                 if (preg_match(pattern: $patternInvalidTag, subject: $paragraphContent)) {
-                    $elementValidationResult->setError(
+                    $elementValidationResult->addError(
                         error: new InvalidContentError(
-                            subject: self::ELEMENT_NAME,
+                            message: 'Invalid tag <' . $invalidTag . '> found within ' . self::ELEMENT_NAME . ' element.',
                         )
                     );
-
-                    return;
                 }
             }
         }
@@ -130,9 +124,9 @@ class ParagraphValidator extends AbstractValidator
             pattern: $patternEmptyParagraph,
             subject: $content
         )) {
-            $elementValidationResult->setWarning(
+            $elementValidationResult->addWarning(
                 warning: new EmptyElementWarning(
-                    subject: self::ELEMENT_NAME,
+                    message: 'Empty '. self::ELEMENT_NAME .' element detected.',
                 )
             );
         }
@@ -142,9 +136,10 @@ class ParagraphValidator extends AbstractValidator
      * Check if paragraph tags are balanced.
      *
      * @param  string $content
-     * @return bool
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
      */
-    private function checkBalancedParagraphTags(string $content): bool
+    private function checkBalancedParagraphTags(string $content, ElementValidationResult $elementValidationResult): void
     {
         $pattern = '/<\/?p\b[^>]*>/i';
 
@@ -159,7 +154,11 @@ class ParagraphValidator extends AbstractValidator
         foreach ($matches[0] as $tag) {
             if (stripos(haystack: $tag, needle: '</p') === 0) {
                 if (empty($stack)) {
-                    return false;
+                    $elementValidationResult->addError(
+                        error: new MalformedElementError(
+                            message: 'Closing tag for ' . self::ELEMENT_NAME . ' element without opening.'
+                        )
+                    );
                 }
                 array_pop($stack);
             } else {
@@ -167,7 +166,13 @@ class ParagraphValidator extends AbstractValidator
             }
         }
 
-        return empty($stack);
+        if (!empty($stack)) {
+            $elementValidationResult->addError(
+                error: new MalformedElementError(
+                    message: 'Unclosed ' . self::ELEMENT_NAME . ' element(s) detected.',
+                )
+            );
+        }
     }
 
     /**
@@ -180,29 +185,16 @@ class ParagraphValidator extends AbstractValidator
         $elementValidationResult = new ElementValidationResult();
 
         // Check if paragraph tags are balanced
-        if (!$this->checkBalancedParagraphTags(content: $this->sharedContext->getContext())) {
-            $elementValidationResult->setError(
-                error: new MalformedElementError(
-                    subject: self::ELEMENT_NAME,
-                )
-            );
-
-            return $elementValidationResult;
-        }
+        $this->checkBalancedParagraphTags(
+            content: $this->sharedContext->getContext(),
+            elementValidationResult: $elementValidationResult
+        );
 
         // Check for nested paragraph elements
         $this->hasNestedParagraphs(elementValidationResult: $elementValidationResult);
 
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
-
         // Check for invalid tags within paragraph elements
         $this->checkInvalidTags(elementValidationResult: $elementValidationResult);
-
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
 
         // Check for empty paragraph elements
         $this->checkEmptyParagraphs(

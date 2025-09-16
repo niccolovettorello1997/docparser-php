@@ -13,7 +13,7 @@ use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
 
 class TitleValidator extends AbstractValidator
 {
-    public const string ELEMENT_NAME = 'title';
+    public const ELEMENT_NAME = 'title';
 
     /**
      * Check if the title element is present in the HTML document.
@@ -25,9 +25,9 @@ class TitleValidator extends AbstractValidator
     private function isPresent(array $titleMatches, ElementValidationResult $elementValidationResult): void
     {
         if (empty($titleMatches[0])) {
-            $elementValidationResult->setError(
+            $elementValidationResult->addError(
                 error: new MissingElementError(
-                    subject: self::ELEMENT_NAME,
+                    message: 'The ' . self::ELEMENT_NAME . ' element is missing or not written properly.',
                 )
             );
         }
@@ -43,9 +43,9 @@ class TitleValidator extends AbstractValidator
     private function isUnique(array $titleMatches, ElementValidationResult $elementValidationResult): void
     {
         if (count(value: $titleMatches[0]) > 1) {
-            $elementValidationResult->setError(
+            $elementValidationResult->addError(
                 error: new NotUniqueElementError(
-                    subject: self::ELEMENT_NAME,
+                    message: 'The ' . self::ELEMENT_NAME . ' element must be unique in the HTML document.',
                 )
             );
         }
@@ -61,9 +61,9 @@ class TitleValidator extends AbstractValidator
     private function isNotEmpty(array $titleMatches, ElementValidationResult $elementValidationResult): void
     {
         if (count(value: $titleMatches[1]) === 1 && trim(string: $titleMatches[1][0]) === '') {
-            $elementValidationResult->setError(
+            $elementValidationResult->addError(
                 error: new EmptyElementError(
-                    subject: self::ELEMENT_NAME,
+                    message: 'The ' . self::ELEMENT_NAME . ' element must not be empty.',
                 )
             );
         }
@@ -79,9 +79,9 @@ class TitleValidator extends AbstractValidator
     private function isValidUTF8(array $titleMatches, ElementValidationResult $elementValidationResult): void
     {
         if (count(value: $titleMatches[1]) === 1 && !mb_check_encoding(value: $titleMatches[1][0], encoding: 'UTF-8')) {
-            $elementValidationResult->setError(
+            $elementValidationResult->addError(
                 error: new InvalidContentError(
-                    subject: self::ELEMENT_NAME,
+                    message: 'Invalid UTF-8 characters detected in ' . self::ELEMENT_NAME . ' element.',
                 )
             );
         }
@@ -96,21 +96,12 @@ class TitleValidator extends AbstractValidator
     {
         $elementValidationResult = new ElementValidationResult();
 
-        // Extract the head element from the HTML
-        $patternHead = '/<head>(.*?)<\/head>/is';
-
-        preg_match(
-            pattern: $patternHead,
-            subject: $this->sharedContext->getContext(),
-            matches: $headMatches
-        );
-
         // Try to find all the occurences of the title element inside the head element
         $patternTitle = '/<title>(.*?)<\/title>/is';
 
         preg_match_all(
             pattern: $patternTitle,
-            subject: $headMatches[1] ?? '',
+            subject: $this->sharedContext->getContext(),
             matches: $titleMatches
         );
 
@@ -120,19 +111,11 @@ class TitleValidator extends AbstractValidator
             elementValidationResult: $elementValidationResult
         );
 
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
-
         // Title element must be unique
         $this->isUnique(
             titleMatches: $titleMatches,
             elementValidationResult: $elementValidationResult
         );
-
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
 
         // Title element must not be empty (at least one character different from whitespace)
         $this->isNotEmpty(
@@ -140,19 +123,11 @@ class TitleValidator extends AbstractValidator
             elementValidationResult: $elementValidationResult
         );
 
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
-
         // Title must contain only valid characters in UTF-8
         $this->isValidUTF8(
             titleMatches: $titleMatches,
             elementValidationResult: $elementValidationResult
         );
-
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
 
         return $elementValidationResult;
     }

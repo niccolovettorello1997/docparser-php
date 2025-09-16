@@ -14,7 +14,7 @@ use Niccolo\DocparserPhp\Model\Utils\Warning\RecommendedAttributeWarning;
 
 class HtmlValidator extends AbstractValidator
 {
-    public const string ELEMENT_NAME = 'html';
+    public const ELEMENT_NAME = 'html';
 
     /**
      * Validates the structure of the html tag.
@@ -54,9 +54,9 @@ class HtmlValidator extends AbstractValidator
 
             // If there is any prefix or suffix, that means the html element is not correctly placed
             if (!empty($prefix) || !empty($suffix)) {
-                $elementValidationResult->setError(
+                $elementValidationResult->addError(
                     error: new StructuralError(
-                        subject: self::ELEMENT_NAME,
+                        message: 'Not allowed content before or after the ' . self::ELEMENT_NAME . ' element.',
                     ),
                 );
             }
@@ -80,15 +80,15 @@ class HtmlValidator extends AbstractValidator
                 subject: $this->sharedContext->getContext(),
                 matches: $matchesHtmlOpeningTag,
             )) {
-                $elementValidationResult->setError(
+                $elementValidationResult->addError(
                     error: new MalformedElementError(
-                        subject: self::ELEMENT_NAME,
+                        message: 'The ' . self::ELEMENT_NAME . ' element is missing a closing tag.',
                     ),
                 );
             } else {
-                $elementValidationResult->setError(
+                $elementValidationResult->addError(
                     error: new MissingElementError(
-                        subject: self::ELEMENT_NAME,
+                        message: 'The required element ' . self::ELEMENT_NAME . ' is missing or incorrectly written.',
                     ),
                 );
             }
@@ -105,9 +105,9 @@ class HtmlValidator extends AbstractValidator
     private function isUnique(array $matchesHtml, ElementValidationResult $elementValidationResult): void
     {
         if (count(value: $matchesHtml[0]) > 1) {
-            $elementValidationResult->setError(
+            $elementValidationResult->addError(
                 error: new NotUniqueElementError(
-                    subject: self::ELEMENT_NAME,
+                    message: 'The ' . self::ELEMENT_NAME . ' element must be unique in the HTML document.',
                 ),
             );
         }
@@ -130,13 +130,11 @@ class HtmlValidator extends AbstractValidator
                 subject: $matchesHtml[2][0],
                 matches: $matchesHead,
             )) {
-                $elementValidationResult->setError(
+                $elementValidationResult->addError(
                     error: new MissingElementError(
-                        subject: 'head',
+                        message: 'head element in the ' . self::ELEMENT_NAME . ' element is missing or incorrectly written.',
                     ),
                 );
-
-                return;
             }
 
             $patternBody = '/<body(.*?)>(.*?)<\/body>/is';
@@ -146,13 +144,11 @@ class HtmlValidator extends AbstractValidator
                 subject: $matchesHtml[2][0],
                 matches: $matchesBody,
             )) {
-                $elementValidationResult->setError(
+                $elementValidationResult->addError(
                     error: new MissingElementError(
-                        subject: 'body',
+                        message: 'body element in the ' . self::ELEMENT_NAME . ' element is missing or incorrectly written.',
                     ),
                 );
-
-                return;
             }
 
             if (!empty($matchesHead[0]) && !empty($matchesBody[0])) {
@@ -162,13 +158,11 @@ class HtmlValidator extends AbstractValidator
                     pattern: $patternBodyAfterHead,
                     subject: $matchesHtml[2][0],
                 )) {
-                    $elementValidationResult->setError(
+                    $elementValidationResult->addError(
                         error: new StructuralError(
-                            subject: self::ELEMENT_NAME,
+                            message: 'The body element must be after the head element in the ' . self::ELEMENT_NAME . ' element.',
                         ),
                     );
-
-                    return;
                 }
             }
         }
@@ -190,9 +184,9 @@ class HtmlValidator extends AbstractValidator
                 pattern: $patternLangAttribute,
                 subject: $matchesHtml[1][0],
             )) {
-                $elementValidationResult->setWarning(
+                $elementValidationResult->addWarning(
                     warning: new RecommendedAttributeWarning(
-                        subject: 'lang',
+                        message: self::ELEMENT_NAME . ' element should have a lang attribute.',
                     ),
                 );
             }
@@ -217,26 +211,17 @@ class HtmlValidator extends AbstractValidator
             matches: $matchesHtml,
         );
 
-        // html element must have a closing tag
-        // html element must be present
+        // html element must have a closing tag and must be present
         $this->htmlElementPresenceAndClosingTag(
             matchesHtml: $matchesHtml,
             elementValidationResult: $elementValidationResult,
         );
-
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
 
         // html element must be unique
         $this->isUnique(
             matchesHtml: $matchesHtml,
             elementValidationResult: $elementValidationResult,
         );
-
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
 
         // Only DOCTYPE and comments are allowed before the html element
         // html element must not have any other elements after it, except for whitespaces
@@ -245,19 +230,11 @@ class HtmlValidator extends AbstractValidator
             elementValidationResult: $elementValidationResult,
         );
 
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
-
         // html element must have a head and a body element, and body must be after head
         $this->hasHeadAndBodyElements(
             matchesHtml: $matchesHtml,
             elementValidationResult: $elementValidationResult,
         );
-
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
 
         // html element should have lang attribute
         $this->shouldHaveLangAttribute(

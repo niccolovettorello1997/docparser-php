@@ -22,107 +22,112 @@ class HeadValidatorTest extends TestCase
         $elementValidationResult = $validator->validate();
 
         $this->assertTrue(condition: $elementValidationResult->isValid());
-        $this->assertNull(actual: $elementValidationResult->getError());
+        $this->assertEmpty(actual: $elementValidationResult->getErrors());
         $this->assertEmpty(actual: $elementValidationResult->getWarnings());
     }
 
     public function test_multiple_head_elements(): void
     {
-        $expectedErrorMessage = 'The element \'head\' is present multiple times.';
+        $expectedErrorMessage = 'The head element must be unique in the HTML document.';
         $html = '<!DOCTYPE html><html lang="de"><head><title>Test</title></head><head><title>Another Test</title></head><body><p>Hello, World!</p></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new HeadValidator(sharedContext: $sharedContext);
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertNotNull(actual: $elementValidationResult->getError());
+        $this->assertFalse(condition: $elementValidationResult->isValid());
+        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
         $this->assertInstanceOf(
             expected: NotUniqueElementError::class,
-            actual: $elementValidationResult->getError()
+            actual: $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getError()->getMessage()
+            actual: $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 
     public function test_invalid_characters_between_head_and_html(): void
     {
-        $expectedErrorMessage = 'The element \'head\' has an invalid structure.';
+        $expectedErrorMessage = 'Only whitespaces are allowed before the head element and after the html element.';
         $html = '<!DOCTYPE html><html lang="de">Some text before head element<head><title>Test</title></head><body><p>Hello, World!</p></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new HeadValidator(sharedContext: $sharedContext);
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertNotNull(actual: $elementValidationResult->getError());
+        $this->assertFalse(condition: $elementValidationResult->isValid());
+        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
         $this->assertInstanceOf(
             expected: StructuralError::class,
-            actual: $elementValidationResult->getError()
+            actual: $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getError()->getMessage()
+            actual: $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 
     public function test_head_element_without_closing_tag(): void
     {
-        $expectedErrorMessage = 'The element \'head\' is malformed.';
+        $expectedErrorMessage = 'head element is missing a closing tag.';
         $html = '<!DOCTYPE html><html lang="de"><head><title>Test</title><body><p>Hello, World!</p></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new HeadValidator(sharedContext: $sharedContext);
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertNotNull(actual: $elementValidationResult->getError());
+        $this->assertFalse(condition: $elementValidationResult->isValid());
+        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
         $this->assertInstanceOf(
             expected: MalformedElementError::class,
-            actual: $elementValidationResult->getError()
+            actual: $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getError()->getMessage()
+            actual: $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 
     public function test_head_element_with_nested_html_element(): void
     {
-        $expectedErrorMessage = 'The element \'head\' has an invalid structure.';
+        $expectedErrorMessage = 'Nested html element detected in head element.';
         $html = '<!DOCTYPE html><html lang="de"><head><html><title>Test</title></html></head><body><p>Hello, World!</p></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new HeadValidator(sharedContext: $sharedContext);
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertNotNull(actual: $elementValidationResult->getError());
+        $this->assertFalse(condition: $elementValidationResult->isValid());
+        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
         $this->assertInstanceOf(
             expected: StructuralError::class,
-            actual: $elementValidationResult->getError()
+            actual: $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getError()->getMessage()
+            actual: $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 
     public function test_head_element_with_nested_body_element(): void
     {
-        $expectedErrorMessage = 'The element \'head\' has an invalid structure.';
+        $expectedErrorMessage = 'Nested body element detected in head element.';
         $html = '<!DOCTYPE html><html lang="de"><head><body><p>Hello, World!</p></body></head><body><p>Hello, World!</p></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new HeadValidator(sharedContext: $sharedContext);
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertNotNull(actual: $elementValidationResult->getError());
+        $this->assertFalse(condition: $elementValidationResult->isValid());
+        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
         $this->assertInstanceOf(
             expected: StructuralError::class,
-            actual: $elementValidationResult->getError()
+            actual: $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getError()->getMessage()
+            actual: $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 }

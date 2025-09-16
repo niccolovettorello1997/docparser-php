@@ -12,7 +12,7 @@ use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
 
 class HeadValidator extends AbstractValidator
 {
-    public const string ELEMENT_NAME = 'head';
+    public const ELEMENT_NAME = 'head';
 
     /**
      * Checks if the tag is unique.
@@ -24,9 +24,9 @@ class HeadValidator extends AbstractValidator
     private function isUnique(array $matchesHead, ElementValidationResult $elementValidationResult): void
     {
         if (count(value: $matchesHead[0]) > 1) {
-            $elementValidationResult->setError(
+            $elementValidationResult->addError(
                 error: new NotUniqueElementError(
-                    subject: self::ELEMENT_NAME,
+                    message: 'The ' . self::ELEMENT_NAME . ' element must be unique in the HTML document.',
                 )
             );
         }
@@ -48,9 +48,9 @@ class HeadValidator extends AbstractValidator
             subject: $content,
             matches: $matchesBetweenHeadAndHtml
         ) && trim(string: $matchesBetweenHeadAndHtml[1]) !== '') {
-            $elementValidationResult->setError(
+            $elementValidationResult->addError(
                 error: new StructuralError(
-                    subject: self::ELEMENT_NAME
+                    message: 'Only whitespaces are allowed before the ' . self::ELEMENT_NAME . ' element and after the html element.'
                 )
             );
         }
@@ -71,9 +71,9 @@ class HeadValidator extends AbstractValidator
             pattern: $patternHeadClosing,
             subject: $content
         )) {
-            $elementValidationResult->setError(
+            $elementValidationResult->addError(
                 error: new MalformedElementError(
-                    subject: self::ELEMENT_NAME
+                    message: self::ELEMENT_NAME . ' element is missing a closing tag.'
                 )
             );
         }
@@ -93,15 +93,13 @@ class HeadValidator extends AbstractValidator
 
         if (preg_match(
             pattern: $patternHtmlElement,
-            subject: $matchesHead[1][0],
+            subject: $matchesHead[1][0] ?? '',
         )) {
-            $elementValidationResult->setError(
+            $elementValidationResult->addError(
                 error: new StructuralError(
-                    subject: self::ELEMENT_NAME,
+                    message: 'Nested html element detected in ' . self::ELEMENT_NAME . ' element.'
                 )
             );
-
-            return;
         }
 
         // head element cannot contain nested body element
@@ -109,15 +107,13 @@ class HeadValidator extends AbstractValidator
 
         if (preg_match(
             pattern: $patternBodyElement,
-            subject: $matchesHead[1][0],
+            subject: $matchesHead[1][0] ?? '',
         )) {
-            $elementValidationResult->setError(
+            $elementValidationResult->addError(
                 error: new StructuralError(
-                    subject: self::ELEMENT_NAME,
+                    message: 'Nested body element detected in ' . self::ELEMENT_NAME . ' element.'
                 )
             );
-
-            return;
         }
     }
 
@@ -142,19 +138,11 @@ class HeadValidator extends AbstractValidator
         // head element must be unique
         $this->isUnique(matchesHead: $matchesHead, elementValidationResult: $elementValidationResult);
 
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
-
         // Before head element and after html element only whitespaces are allowed
         $this->hasValidPrefix(
             content: $this->sharedContext->getContext(),
             elementValidationResult: $elementValidationResult
         );
-
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
 
         // head element must have a closing tag
         $this->hasClosingTag(
@@ -162,19 +150,11 @@ class HeadValidator extends AbstractValidator
             elementValidationResult: $elementValidationResult
         );
 
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
-
         // head element cannot contain nested html element
         $this->checkNestedElements(
             matchesHead: $matchesHead,
             elementValidationResult: $elementValidationResult
         );
-
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
 
         return $elementValidationResult;
     }

@@ -57,15 +57,14 @@ class ValidatorComponent
         foreach ($this->validators as $validator) {
             $partialResult = $validator->validate();
 
-            // Merge eventual warnings
+            // Merge warnings
             if (!empty($partialResult->getWarnings())) {
                 $result->addWarnings(warnings: $partialResult->getWarnings());
             }
 
-            if (!$partialResult->isValid()) {
-                $result->setError(error: $partialResult->getError());
-
-                return $result;
+            // Merge errors
+            if (!empty($partialResult->getErrors())) {
+                $result->addErrors(errors: $partialResult->getErrors());
             }
         }
 
