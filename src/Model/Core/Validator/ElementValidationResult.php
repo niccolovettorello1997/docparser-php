@@ -11,7 +11,8 @@ class ElementValidationResult
 {
     public function __construct(
         private bool $valid = true,
-        private ?AbstractError $error = null,
+        /** @var AbstractError[] */
+        private array $errors = [],
         /** @var AbstractWarning[] */
         private array $warnings = [],
     ) {
@@ -19,12 +20,15 @@ class ElementValidationResult
 
     public function isValid(): bool
     {
-        return $this->valid;
+        return count(value: $this->errors) === 0;
     }
 
-    public function getError(): ?AbstractError
+    /**
+     * @return AbstractError[]
+     */
+    public function getErrors(): array
     {
-        return $this->error;
+        return $this->errors;
     }
 
     /**
@@ -35,16 +39,17 @@ class ElementValidationResult
         return $this->warnings;
     }
 
-    public function setError(AbstractError $error): void
+    public function addError(AbstractError $error): void
     {
-        $this->error = $error;
-
-        if ($this->isValid()) {
-            $this->valid = false;
-        }
+        $this->errors[] = $error;
     }
 
-    public function setWarning(AbstractWarning $warning): void
+    public function addErrors(array $errors): void
+    {
+        $this->errors = array_merge($this->errors, $errors);
+    }
+
+    public function addWarning(AbstractWarning $warning): void
     {
         $this->warnings[] = $warning;
     }

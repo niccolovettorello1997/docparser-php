@@ -26,7 +26,7 @@ class ElementValidationResultView implements RenderableInterface
             $resultHtml .= "<div><strong>Warnings:</strong><ul>";
 
             foreach ($this->elementValidationResult->getWarnings() as $warning) {
-                $warningMessage = $warning->getMessage();
+                $warningMessage = htmlspecialchars(string: $warning->getMessage());
 
                 $resultHtml .= "<li>{$warningMessage}</li>";
             }
@@ -40,10 +40,16 @@ class ElementValidationResultView implements RenderableInterface
             return $resultHtml;
         }
 
-        if (null !== $this->elementValidationResult->getError()) {
-            $errorMessage = $this->elementValidationResult->getError()->getMessage();
+        if (null !== $this->elementValidationResult->getErrors()) {
+            $resultHtml .= "<div><strong>Errors: </strong><ul>";
 
-            $resultHtml .= "<div><strong>Error: </strong>{$errorMessage}</div></div>";
+            foreach ($this->elementValidationResult->getErrors() as $error) {
+                $errorMessage = htmlspecialchars(string: $error->getMessage());
+
+                $resultHtml .= "<li>{$errorMessage}</li>";
+            }
+
+            $resultHtml .= "</ul></div></div>";
         }
 
         return $resultHtml;

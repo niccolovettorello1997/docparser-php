@@ -30,11 +30,11 @@ class ElementValidationResultViewTest extends TestCase
 
     public function test_validation_view_valid_html_with_warnings(): void
     {
-        $expectedResult = "<div><strong>Validation: </strong><div><strong>Warnings:</strong><ul><li>The attribute 'lang' is recommended.</li></ul></div><div>Your content is valid!</div></div>";
+        $expectedResult = "<div><strong>Validation: </strong><div><strong>Warnings:</strong><ul><li>head element should have a lang attribute.</li></ul></div><div>Your content is valid!</div></div>";
         $elementValidationResult = new ElementValidationResult();
-        $elementValidationResult->setWarning(
+        $elementValidationResult->addWarning(
             warning: new RecommendedAttributeWarning(
-                subject: 'lang'
+                message: 'head element should have a lang attribute.'
             )
         );
         $elementValidationResultView = new ElementValidationResultView(
@@ -51,11 +51,11 @@ class ElementValidationResultViewTest extends TestCase
 
     public function test_validation_view_invalid_html(): void
     {
-        $expectedResult = "<div><strong>Validation: </strong><div><strong>Error: </strong>The element 'title' is present multiple times.</div></div>";
+        $expectedResult = "<div><strong>Validation: </strong><div><strong>Errors: </strong><ul><li>The title element must be unique in the HTML document.</li></ul></div></div>";
         $elementValidationResult = new ElementValidationResult();
-        $elementValidationResult->setError(
+        $elementValidationResult->addError(
             error: new NotUniqueElementError(
-                subject: 'title'
+                message: 'The title element must be unique in the HTML document.'
             )
         );
         $elementValidationResultView = new ElementValidationResultView(
@@ -72,17 +72,17 @@ class ElementValidationResultViewTest extends TestCase
 
     public function test_validation_view_invalid_html_with_warnings(): void
     {
-        $expectedResultWarnings = "<div><strong>Validation: </strong><div><strong>Warnings:</strong><ul><li>The attribute 'lang' is recommended.</li></ul></div>";
-        $expectedResultError = "<div><strong>Error: </strong>The element 'title' is present multiple times.</div></div>";
+        $expectedResultWarnings = "<div><strong>Validation: </strong><div><strong>Warnings:</strong><ul><li>head element should have a lang attribute.</li></ul></div>";
+        $expectedResultError = "<div><strong>Errors: </strong><ul><li>The title element must be unique in the HTML document.</li></ul></div></div>";
         $elementValidationResult = new ElementValidationResult();
-        $elementValidationResult->setError(
+        $elementValidationResult->addError(
             error: new NotUniqueElementError(
-                subject: 'title'
+                message: 'The title element must be unique in the HTML document.'
             )
         );
-        $elementValidationResult->setWarning(
+        $elementValidationResult->addWarning(
             warning: new RecommendedAttributeWarning(
-                subject: 'lang'
+                message: 'head element should have a lang attribute.'
             )
         );
         $elementValidationResultView = new ElementValidationResultView(

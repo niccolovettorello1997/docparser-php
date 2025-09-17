@@ -13,7 +13,7 @@ use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
 
 class BodyValidator extends AbstractValidator
 {
-    public const string ELEMENT_NAME = 'body';
+    public const ELEMENT_NAME = 'body';
 
     /**
      * Returns the array of invalid tags that are not allowed within the body element.
@@ -62,13 +62,11 @@ class BodyValidator extends AbstractValidator
     {
         foreach ($this->getInvalidAttributes() as $attribute) {
             if (stripos(haystack: $bodyAttributes, needle: $attribute) !== false) {
-                $elementValidationResult->setError(
+                $elementValidationResult->addError(
                     error: new MalformedElementError(
-                        subject: self::ELEMENT_NAME,
+                        message: 'Invalid attribute ' . $attribute . ' detected in ' . self::ELEMENT_NAME . ' element.',
                     )
                 );
-
-                return;
             }
         }
     }
@@ -89,12 +87,11 @@ class BodyValidator extends AbstractValidator
                 pattern: $patternInternalTag,
                 subject: $bodyContent,
             )) {
-                $elementValidationResult->setError(
+                $elementValidationResult->addError(
                     error: new InvalidContentError(
-                        subject: self::ELEMENT_NAME,
+                        message: 'Invalid tag <' . $tag . '> detected in ' . self::ELEMENT_NAME . ' element.',
                     )
                 );
-                return;
             }
         }
     }
@@ -109,9 +106,9 @@ class BodyValidator extends AbstractValidator
     private function isUnique(array $matchesBody, ElementValidationResult $elementValidationResult): void
     {
         if (count(value: $matchesBody[0]) > 1) {
-            $elementValidationResult->setError(
+            $elementValidationResult->addError(
                 error: new NotUniqueElementError(
-                    subject: self::ELEMENT_NAME,
+                    message: 'The ' . self::ELEMENT_NAME . ' element must be unique in the HTML document.',
                 )
             );
         }
@@ -127,9 +124,9 @@ class BodyValidator extends AbstractValidator
     private function isNotEmpty(string $elementContent, ElementValidationResult $elementValidationResult): void
     {
         if (trim(string: $elementContent) === '') {
-            $elementValidationResult->setWarning(
+            $elementValidationResult->addWarning(
                 warning: new EmptyElementWarning(
-                    subject: self::ELEMENT_NAME
+                    message: self::ELEMENT_NAME . ' element should not be empty.'
                 )
             );
         }
@@ -158,10 +155,6 @@ class BodyValidator extends AbstractValidator
             matchesBody: $matchesBody,
             elementValidationResult: $elementValidationResult
         );
-        
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
 
         // body element must have valid content
         $this->checkInvalidTags(
@@ -169,29 +162,17 @@ class BodyValidator extends AbstractValidator
             elementValidationResult: $elementValidationResult
         );
 
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
-
         // body element must have valid attributes
         $this->checkInvalidAttributes(
             bodyAttributes: $matchesBody[1][0],
             elementValidationResult: $elementValidationResult
         );
 
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
-
         // body element should not be empty
         $this->isNotEmpty(
             elementContent: $matchesBody[2][0],
             elementValidationResult: $elementValidationResult
         );
-
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
 
         return $elementValidationResult;
     }

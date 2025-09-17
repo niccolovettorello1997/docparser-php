@@ -10,29 +10,35 @@ use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
 
 class DoctypeValidator extends AbstractValidator
 {
-    public const string ELEMENT_NAME = 'doctype';
+    public const ELEMENT_NAME = 'doctype';
+
+    /**
+     * Validates the presence and correctness of the DOCTYPE declaration in an HTML document.
+     * 
+     * @param  string $content
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
+     */
+    private function isPresent(string $content, ElementValidationResult $elementValidationResult): void
+    {
+        if (stripos(haystack: $content, needle: '<!DOCTYPE') !== 0) {
+            $elementValidationResult->addError(
+                error: new MissingElementError(
+                    message: 'The ' . self::ELEMENT_NAME . ' element is missing or not written properly.',
+                )
+            );
+        }
+    }
 
     public function validate(): ElementValidationResult
     {
         $elementValidationResult = new ElementValidationResult();
 
         // Check if the doctype is present at the beginning of the HTML document
-        $patternDoctype = '/<!DOCTYPE\s+html>/i';
-
-        if (!preg_match(
-            pattern: $patternDoctype,
-            subject: substr(
-                string: $this->sharedContext->getContext(),
-                offset: 0,
-                length: 15 // Length of "<!DOCTYPE html>"
-            ),
-        )) {
-            $elementValidationResult->setError(
-                error: new MissingElementError(
-                    subject: self::ELEMENT_NAME
-                )
-            );
-        }
+        $this->isPresent(
+            content: $this->sharedContext->getContext(),
+            elementValidationResult: $elementValidationResult
+        );
 
         return $elementValidationResult;
     }

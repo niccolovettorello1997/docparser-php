@@ -11,7 +11,7 @@ use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
 
 class HeadingValidator extends AbstractValidator
 {
-    public const string ELEMENT_NAME = 'heading';
+    public const ELEMENT_NAME = 'heading';
 
     /**
      * Return the list of invalid content tags for heading elements.
@@ -66,14 +66,15 @@ class HeadingValidator extends AbstractValidator
     /**
      * Returns true if opening and closing tags are balanced, false otherwise.
      * 
-     * @param  string $html
-     * @return bool
+     * @param  string $content
+     * @param  ElementValidationResult $elementValidationResult
+     * @return void
      */
-    private function areHeadingTagsBalanced(string $html): bool {
+    private function areHeadingTagsBalanced(string $content, ElementValidationResult $elementValidationResult): void {
         // Find all tags <hN> or </hN>
         preg_match_all(
             pattern: '/<\/?h[1-6]\b[^>]*>/i',
-            subject: $html,
+            subject: $content,
             matches: $matches,
         );
 
@@ -93,20 +94,34 @@ class HeadingValidator extends AbstractValidator
             ) {
                 // Closing without opening
                 if (empty($stack)) {
-                    return false;
+                    $elementValidationResult->addError(
+                        error: new StructuralError(
+                            message: 'Closing tag for ' . self::ELEMENT_NAME . ' element <h' . (int)$m[1] . '> without opening.'
+                        )
+                    );
                 }
 
                 $last = array_pop(array: $stack);
 
                 // Closing tag does not match the last opening tag
                 if ($last !== (int)$m[1]) {
-                    return false;
+                    $elementValidationResult->addError(
+                        error: new StructuralError(
+                            message: 'Closing tag for ' . self::ELEMENT_NAME . ' element <h' . (int)$m[1] . '> does not match the last opening tag.'
+                        )
+                    );
                 }
             }
         }
 
         // If stack is not empty, there are unclosed tags
-        return empty($stack);
+        if (!empty($stack)) {
+            $elementValidationResult->addError(
+                error: new StructuralError(
+                    message: 'Unclosed ' . self::ELEMENT_NAME . ' element(s) detected.'
+                )
+            );
+        }
     }
 
     /**
@@ -128,23 +143,30 @@ class HeadingValidator extends AbstractValidator
         );
 
         foreach ($matchesHeadings as $match) {
-            $patternInternalTags = '/<(\/)?(' . implode(separator: '|', array: $this->getInvalidContentTags()) . ')\b[^>]*>/i';
+            foreach ($this->getInvalidContentTags() as $tag) {
+                $patternTag = '/<(\/)?' . $tag . '\b[^>]*>/i';
 
-            // The content is empty or contains invalid internal tags
-            $invalidContentCondition = (trim(string: $match[3]) === '') ||
-                (preg_match_all(
-                    pattern: $patternInternalTags,
+                // Check if the heading content is empty
+                if (trim(string: $match[3]) === '') {
+                    $elementValidationResult->addError(
+                        error: new InvalidContentError(
+                            message: 'Empty content inside ' . self::ELEMENT_NAME . ' element <' . $match[1] . '>.'
+                        )
+                    );
+                }
+
+                // Check if the heading content contains any invalid tags
+                if (preg_match_all(
+                    pattern: $patternTag,
                     subject: $match[3],
-                    matches: $matchesInternalTags
-                ) > 0);
-
-            if ($invalidContentCondition) {
-                $elementValidationResult->setError(
-                    error: new InvalidContentError(
-                        subject: self::ELEMENT_NAME
-                    )
-                );
-                return;
+                    matches: $matchesTag
+                ) > 0) {
+                    $elementValidationResult->addError(
+                        error: new InvalidContentError(
+                            message: 'Invalid content inside ' . self::ELEMENT_NAME . ' element <' . $match[1] . '> : contains <' . $tag . '> tag.'
+                        )
+                    );
+                }
             }
         }
     }
@@ -159,25 +181,16 @@ class HeadingValidator extends AbstractValidator
         $elementValidationResult = new ElementValidationResult();
 
         // Opening and closing tags must be balanced
-        if (!$this->areHeadingTagsBalanced(html: $this->sharedContext->getContext())) {
-            $elementValidationResult->setError(
-                error: new StructuralError(
-                    subject: self::ELEMENT_NAME
-                )
-            );
-
-            return $elementValidationResult;
-        }
+        $this->areHeadingTagsBalanced(
+            content: $this->sharedContext->getContext(),
+            elementValidationResult: $elementValidationResult
+        );
 
         // Check for invalid content, i.e. invalid internal tags or empty content
         $this->checkHeadingElementsValidContent(
             content: $this->sharedContext->getContext(),
             elementValidationResult: $elementValidationResult
         );
-
-        if (!$elementValidationResult->isValid()) {
-            return $elementValidationResult;
-        }
 
         return $elementValidationResult;
     }

@@ -41,9 +41,9 @@ class ParserController
         } catch (\InvalidArgumentException $e) {    // Unsupported type
             $validationUnsupportedType = new ElementValidationResult();
 
-            $validationUnsupportedType->setError(
+            $validationUnsupportedType->addError(
                 error: new UnsupportedTypeError(
-                    subject: $query->getType(),
+                    message: 'Unsupported type: ' . $query->getType(),
                 )
             );
 

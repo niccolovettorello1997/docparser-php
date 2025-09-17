@@ -7,7 +7,6 @@ namespace Niccolo\DocparserPhp\Tests\Model\Core\Validator;
 use PHPUnit\Framework\TestCase;
 use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponent;
 use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
-use Niccolo\DocparserPhp\Model\Utils\Error\MalformedElementError;
 use Niccolo\DocparserPhp\Model\Utils\Error\MissingElementError;
 use Niccolo\DocparserPhp\Model\Utils\Error\NotUniqueElementError;
 use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
@@ -27,13 +26,13 @@ class ValidatorComponentTest extends TestCase
         $result = $validator->run();
 
         $this->assertTrue(condition: $result->isValid());
-        $this->assertNull(actual: $result->getError());
+        $this->assertEmpty(actual: $result->getErrors());
         $this->assertEmpty(actual: $result->getWarnings());
     }
 
     public function test_html_validator_component_invalid_html_body(): void
     {
-        $expectedErrorMessage = 'The element \'body\' has invalid content.';
+        $expectedErrorMessage = 'Invalid tag <meta> detected in body element.';
         $html = file_get_contents(filename: __DIR__ . "/../../../../fixtures/tests/invalid_html_body.html");
         $validator = ValidatorComponent::build(
             context: $html,
@@ -43,20 +42,20 @@ class ValidatorComponentTest extends TestCase
         $result = $validator->run();
 
         $this->assertFalse(condition: $result->isValid());
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertNotEmpty(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: InvalidContentError::class,
-            actual: $result->getError(),
+            actual: $result->getErrors()[0],
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage(),
+            actual: $result->getErrors()[0]->getMessage(),
         );
     }
 
     public function test_html_validator_component_invalid_html_doctype(): void
     {
-        $expectedErrorMessage = 'The required element \'doctype\' is missing.';
+        $expectedErrorMessage = 'The doctype element is missing or not written properly.';
         $html = file_get_contents(filename: __DIR__ . "/../../../../fixtures/tests/invalid_html_doctype.html");
         $validator = ValidatorComponent::build(
             context: $html,
@@ -66,20 +65,20 @@ class ValidatorComponentTest extends TestCase
         $result = $validator->run();
 
         $this->assertFalse(condition: $result->isValid());
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertNotEmpty(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: MissingElementError::class,
-            actual: $result->getError(),
+            actual: $result->getErrors()[0],
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage(),
+            actual: $result->getErrors()[0]->getMessage(),
         );
     }
 
     public function test_html_validator_component_invalid_html_heading(): void
     {
-        $expectedErrorMessage = 'The element \'heading\' has invalid content.';
+        $expectedErrorMessage = 'Empty content inside heading element <h1>.';
         $html = file_get_contents(filename: __DIR__ . "/../../../../fixtures/tests/invalid_html_heading.html");
         $validator = ValidatorComponent::build(
             context: $html,
@@ -89,20 +88,20 @@ class ValidatorComponentTest extends TestCase
         $result = $validator->run();
 
         $this->assertFalse(condition: $result->isValid());
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertNotEmpty(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: InvalidContentError::class,
-            actual: $result->getError(),
+            actual: $result->getErrors()[0],
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage(),
+            actual: $result->getErrors()[0]->getMessage(),
         );
     }
 
     public function test_html_validator_component_invalid_html_head(): void
     {
-        $expectedErrorMessage = 'The element \'head\' has an invalid structure.';
+        $expectedErrorMessage = 'Nested body element detected in head element.';
         $html = file_get_contents(filename: __DIR__ . "/../../../../fixtures/tests/invalid_html_head.html");
         $validator = ValidatorComponent::build(
             context: $html,
@@ -112,20 +111,20 @@ class ValidatorComponentTest extends TestCase
         $result = $validator->run();
 
         $this->assertFalse(condition: $result->isValid());
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertNotEmpty(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: StructuralError::class,
-            actual: $result->getError(),
+            actual: $result->getErrors()[0],
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage(),
+            actual: $result->getErrors()[0]->getMessage(),
         );
     }
 
     public function test_html_validator_component_invalid_html_html(): void
     {
-        $expectedErrorMessage = 'The required element \'html\' is missing.';
+        $expectedErrorMessage = 'The required element html is missing or incorrectly written.';
         $html = file_get_contents(filename: __DIR__ . "/../../../../fixtures/tests/invalid_html_html.html");
         $validator = ValidatorComponent::build(
             context: $html,
@@ -135,20 +134,20 @@ class ValidatorComponentTest extends TestCase
         $result = $validator->run();
 
         $this->assertFalse(condition: $result->isValid());
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertNotEmpty(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: MissingElementError::class,
-            actual: $result->getError(),
+            actual: $result->getErrors()[0],
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage(),
+            actual: $result->getErrors()[0]->getMessage(),
         );
     }
 
     public function test_html_validator_component_invalid_html_paragraph(): void
     {
-        $expectedErrorMessage = 'The element \'paragraph\' has an invalid structure.';
+        $expectedErrorMessage = 'Nested paragraph elements are not allowed in paragraph element.';
         $html = file_get_contents(filename: __DIR__ . "/../../../../fixtures/tests/invalid_html_paragraph.html");
         $validator = ValidatorComponent::build(
             context: $html,
@@ -158,20 +157,20 @@ class ValidatorComponentTest extends TestCase
         $result = $validator->run();
 
         $this->assertFalse(condition: $result->isValid());
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertNotEmpty(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: StructuralError::class,
-            actual: $result->getError(),
+            actual: $result->getErrors()[0],
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage(),
+            actual: $result->getErrors()[0]->getMessage(),
         );
     }
 
     public function test_html_validator_component_invalid_html_title(): void
     {
-        $expectedErrorMessage = 'The element \'title\' is present multiple times.';
+        $expectedErrorMessage = 'The title element must be unique in the HTML document.';
         $html = file_get_contents(filename: __DIR__ . "/../../../../fixtures/tests/invalid_html_title.html");
         $validator = ValidatorComponent::build(
             context: $html,
@@ -181,20 +180,20 @@ class ValidatorComponentTest extends TestCase
         $result = $validator->run();
 
         $this->assertFalse(condition: $result->isValid());
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertNotEmpty(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: NotUniqueElementError::class,
-            actual: $result->getError(),
+            actual: $result->getErrors()[0],
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage(),
+            actual: $result->getErrors()[0]->getMessage(),
         );
     }
 
     public function test_html_validator_component_valid_html_empty_element(): void
     {
-        $expectedErrorMessage = 'The element \'paragraph\' should not be empty.';
+        $expectedWarningMessage = 'Empty paragraph element detected.';
         $html = file_get_contents(filename: __DIR__ . "/../../../../fixtures/tests/valid_html_empty_element.html");
         $validator = ValidatorComponent::build(
             context: $html,
@@ -204,7 +203,7 @@ class ValidatorComponentTest extends TestCase
         $result = $validator->run();
 
         $this->assertTrue(condition: $result->isValid());
-        $this->assertNull(actual: $result->getError());
+        $this->assertEmpty(actual: $result->getErrors());
         $this->assertNotEmpty(actual: $result->getWarnings());
         $this->assertCount(expectedCount: 1, haystack: $result->getWarnings());
         $this->assertInstanceOf(
@@ -212,14 +211,14 @@ class ValidatorComponentTest extends TestCase
             actual: $result->getWarnings()[0],
         );
         $this->assertEquals(
-            expected: $expectedErrorMessage,
+            expected: $expectedWarningMessage,
             actual: $result->getWarnings()[0]->getMessage(),
         );
     }
 
     public function test_html_validator_component_valid_html_recommended_attribute(): void
     {
-        $expectedErrorMessage = 'The attribute \'lang\' is recommended.';
+        $expectedWarningMessage = 'html element should have a lang attribute.';
         $html = file_get_contents(filename: __DIR__ . "/../../../../fixtures/tests/valid_html_recommended_attribute.html");
         $validator = ValidatorComponent::build(
             context: $html,
@@ -229,7 +228,7 @@ class ValidatorComponentTest extends TestCase
         $result = $validator->run();
 
         $this->assertTrue(condition: $result->isValid());
-        $this->assertNull(actual: $result->getError());
+        $this->assertEmpty(actual: $result->getErrors());
         $this->assertNotEmpty(actual: $result->getWarnings());
         $this->assertCount(expectedCount: 1, haystack: $result->getWarnings());
         $this->assertInstanceOf(
@@ -237,7 +236,7 @@ class ValidatorComponentTest extends TestCase
             actual: $result->getWarnings()[0],
         );
         $this->assertEquals(
-            expected: $expectedErrorMessage,
+            expected: $expectedWarningMessage,
             actual: $result->getWarnings()[0]->getMessage(),
         );
     }

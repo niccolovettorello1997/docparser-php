@@ -23,87 +23,91 @@ class TitleValidatorTest extends TestCase
         $elementValidationResult = $validator->validate();
 
         $this->assertTrue(condition: $elementValidationResult->isValid());
-        $this->assertNull(actual: $elementValidationResult->getError());
+        $this->assertEmpty(actual: $elementValidationResult->getErrors());
         $this->assertEmpty(actual: $elementValidationResult->getWarnings());
     }
 
     public function test_missing_title(): void
     {
-        $expectedErrorMessage = 'The required element \'title\' is missing.';
+        $expectedErrorMessage = 'The title element is missing or not written properly.';
         $html = '<html><head></head><body></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new TitleValidator(sharedContext: $sharedContext);
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertNotNull(actual: $elementValidationResult->getError());
+        $this->assertFalse(condition: $elementValidationResult->isValid());
+        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
         $this->assertInstanceOf(
             expected: MissingElementError::class,
-            actual: $elementValidationResult->getError()
+            actual: $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getError()->getMessage()
+            actual: $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 
     public function test_multiple_title_elements(): void
     {
-        $expectedErrorMessage = 'The element \'title\' is present multiple times.';
+        $expectedErrorMessage = 'The title element must be unique in the HTML document.';
         $html = '<html><head><title>First Title</title><title>Second Title</title></head><body></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new TitleValidator(sharedContext: $sharedContext);
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertNotNull(actual: $elementValidationResult->getError());
+        $this->assertFalse(condition: $elementValidationResult->isValid());
+        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
         $this->assertInstanceOf(
             expected: NotUniqueElementError::class,
-            actual: $elementValidationResult->getError()
+            actual: $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getError()->getMessage()
+            actual: $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 
     public function test_empty_title(): void
     {
-        $expectedErrorMessage = 'The element \'title\' must not be empty.';
+        $expectedErrorMessage = 'The title element must not be empty.';
         $html = '<html><head><title> </title></head><body></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new TitleValidator(sharedContext: $sharedContext);
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertNotNull(actual: $elementValidationResult->getError());
+        $this->assertFalse(condition: $elementValidationResult->isValid());
+        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
         $this->assertInstanceOf(
             expected: EmptyElementError::class,
-            actual: $elementValidationResult->getError()
+            actual: $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getError()->getMessage()
+            actual: $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 
     public function test_invalid_utf8_characters_within_title(): void
     {
-        $expectedErrorMessage = 'The element \'title\' has invalid content.';
+        $expectedErrorMessage = 'Invalid UTF-8 characters detected in title element.';
         $html = "<html><head><title>\xC3\x28</title></head><body></body></html>";
         $sharedContext = new SharedContext(context: $html);
         $validator = new TitleValidator(sharedContext: $sharedContext);
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertNotNull(actual: $elementValidationResult->getError());
+        $this->assertFalse(condition: $elementValidationResult->isValid());
+        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
         $this->assertInstanceOf(
             expected: InvalidContentError::class,
-            actual: $elementValidationResult->getError()
+            actual: $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getError()->getMessage()
+            actual: $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 }

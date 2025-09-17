@@ -23,73 +23,73 @@ class BodyValidatorTest extends TestCase
         $result = $validator->validate();
 
         $this->assertTrue(condition: $result->isValid());
-        $this->assertNull(actual: $result->getError());
+        $this->assertEmpty(actual: $result->getErrors());
         $this->assertEmpty(actual: $result->getWarnings());
     }
 
     public function test_multiple_body_elements(): void
     {
-        $expectedErrorMessage = 'The element \'body\' is present multiple times.';
+        $expectedErrorMessage = 'The body element must be unique in the HTML document.';
         $html = '<DOCTYPE html><html><head></head><body><p>First body</p></body><body><p>Second body</p></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new BodyValidator(sharedContext: $sharedContext);
 
         $result = $validator->validate();
 
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertNotEmpty(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: NotUniqueElementError::class,
-            actual: $result->getError()
+            actual: $result->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage()
+            actual: $result->getErrors()[0]->getMessage()
         );
     }
 
     public function test_body_element_with_invalid_content(): void
     {
-        $expectedErrorMessage = 'The element \'body\' has invalid content.';
+        $expectedErrorMessage = 'Invalid tag <head> detected in body element.';
         $html = '<DOCTYPE html><html><head></head><body><p></head>Invalid content</p></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new BodyValidator(sharedContext: $sharedContext);
 
         $result = $validator->validate();
 
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertNotEmpty(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: InvalidContentError::class,
-            actual: $result->getError()
+            actual: $result->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage()
+            actual: $result->getErrors()[0]->getMessage()
         );
     }
 
     public function test_body_element_with_invalid_attribute(): void
     {
-        $expectedErrorMessage = 'The element \'body\' is malformed.';
+        $expectedErrorMessage = 'Invalid attribute bgcolor detected in body element.';
         $html = '<DOCTYPE html><html><head></head><body bgcolor="red"><p>Invalid attribute</p></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new BodyValidator(sharedContext: $sharedContext);
 
         $result = $validator->validate();
 
-        $this->assertNotNull(actual: $result->getError());
+        $this->assertNotEmpty(actual: $result->getErrors());
         $this->assertInstanceOf(
             expected: MalformedElementError::class,
-            actual: $result->getError()
+            actual: $result->getErrors()[0]
         );
         $this->assertEquals(
             expected: $expectedErrorMessage,
-            actual: $result->getError()->getMessage()
+            actual: $result->getErrors()[0]->getMessage()
         );
     }
 
     public function test_empty_body_element(): void
     {
-        $expectedWarningMessage = 'The element \'body\' should not be empty.';
+        $expectedWarningMessage = 'body element should not be empty.';
         $html = '<DOCTYPE html><html><head></head><body></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new BodyValidator(sharedContext: $sharedContext);
