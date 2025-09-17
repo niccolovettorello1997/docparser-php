@@ -1,0 +1,3 @@
+rootElements:
+  - Niccolo\DocparserPhp\Model\Parser\HTML\Element\DoctypeParser
+  - Niccolo\DocparserPhp\Model\Parser\HTML\Element\DoctypeParser

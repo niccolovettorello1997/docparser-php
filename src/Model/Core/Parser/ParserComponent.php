@@ -7,6 +7,7 @@ namespace Niccolo\DocparserPhp\Model\Core\Parser;
 use Symfony\Component\Yaml\Yaml;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserAdapter;
 use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
+use Symfony\Component\Yaml\Exception\ParseException;
 
 class ParserComponent
 {
@@ -28,6 +29,7 @@ class ParserComponent
      * @param  string $context
      * @param  string $configPath
      * @throws \RuntimeException
+     * @throws ParseException
      * @return ParserComponent
      */
     public static function build(string $context, string $configPath): ParserComponent
@@ -37,6 +39,16 @@ class ParserComponent
 
         // Parse configuration file
         $config = Yaml::parseFile(filename: $configPath);
+
+        // If config file is empty, raise exception
+        if (!isset($config['rootElements']) || empty($config['rootElements'])) {
+            throw new \RuntimeException(message: 'Parser configuration is empty.');
+        }
+
+        // If validator config contains duplicates, raise an exception
+        if (count(value: $config['rootElements']) !== count(value: array_unique(array: $config['rootElements']))) {
+            throw new \RuntimeException(message: 'Parser configuration contains duplicates.');
+        }
 
         // Get the list of root elements
         $rootElements = [];

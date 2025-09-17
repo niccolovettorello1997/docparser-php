@@ -5,6 +5,7 @@ declare(strict_types= 1);
 namespace Niccolo\DocparserPhp\Model\Core\Validator;
 
 use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
+use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
 class ValidatorComponent
@@ -21,6 +22,7 @@ class ValidatorComponent
      * @param  string $context
      * @param  string $configPath
      * @throws \RuntimeException
+     * @throws ParseException
      * @return ValidatorComponent
      */
     public static function build(string $context, string $configPath): ValidatorComponent
@@ -31,11 +33,22 @@ class ValidatorComponent
         // Parse configuration file
         $config = Yaml::parseFile(filename: $configPath);
 
+        // If validator config is found to be empty, raise an exception
+        if (!isset($config['validators']) || empty($config['validators'])) {
+            throw new \RuntimeException(message: 'Validator configuration is empty.');
+        }
+
+        // If validator config contains duplicates, raise an exception
+        if (count(value: $config['validators']) !== count(value: array_unique(array: $config['validators']))) {
+            throw new \RuntimeException(message: 'Validator configuration contains duplicates.');
+        }
+
         /** @var AbstractValidator[] */
         $validators = [];
 
+        // Instantiate validator classes
         foreach ($config['validators'] as $validatorClass) {
-            if (class_exists(class: $validatorClass)) {
+            if (class_exists(class: $validatorClass) && is_subclass_of(object_or_class: $validatorClass, class: AbstractValidator::class)) {
                 $validators[] = new $validatorClass($sharedContext);
             } else {
                 throw new \RuntimeException(message: "Class not found: $validatorClass");

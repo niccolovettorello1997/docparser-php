@@ -7,6 +7,7 @@ namespace Niccolo\DocparserPhp\Model\Parser\HTML\Validator;
 use Niccolo\DocparserPhp\Model\Utils\Error\MissingElementError;
 use Niccolo\DocparserPhp\Model\Core\Validator\AbstractValidator;
 use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
 
 class DoctypeValidator extends AbstractValidator
 {
@@ -19,12 +20,22 @@ class DoctypeValidator extends AbstractValidator
      * @param  ElementValidationResult $elementValidationResult
      * @return void
      */
-    private function isPresent(string $content, ElementValidationResult $elementValidationResult): void
+    private function isPresentAtBeginning(string $content, ElementValidationResult $elementValidationResult): void
     {
-        if (stripos(haystack: $content, needle: '<!DOCTYPE') !== 0) {
+        $start = stripos(haystack: $content, needle: '<!DOCTYPE');
+
+        if ($start === false) {
             $elementValidationResult->addError(
                 error: new MissingElementError(
-                    message: 'The ' . self::ELEMENT_NAME . ' element is missing or not written properly.',
+                    message: 'The ' . self::ELEMENT_NAME . ' element is missing.',
+                )
+            );
+        }
+
+        if ($start !== 0) {
+            $elementValidationResult->addError(
+                error: new StructuralError(
+                    message: 'The ' . self::ELEMENT_NAME . ' element is preceded by invalid content.',
                 )
             );
         }
@@ -35,7 +46,7 @@ class DoctypeValidator extends AbstractValidator
         $elementValidationResult = new ElementValidationResult();
 
         // Check if the doctype is present at the beginning of the HTML document
-        $this->isPresent(
+        $this->isPresentAtBeginning(
             content: $this->sharedContext->getContext(),
             elementValidationResult: $elementValidationResult
         );

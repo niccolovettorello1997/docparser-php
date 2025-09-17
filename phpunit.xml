@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true"
+         cacheResult="true"
+         cacheDirectory=".phpunit.cache">
+
+    <!-- Test suites -->
+    <testsuites>
+        <testsuite name="Docparser Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <!-- Logging JUnit -->
+    <logging>
+        <junit outputFile="build/logs/junit.xml"/>
+    </logging>
+
+    <!-- Coverage source -->
+    <source>
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </source>
+
+    <!-- Coverage report -->
+    <coverage>
+        <report>
+            <clover outputFile="build/logs/clover.xml"/>
+            <html outputDirectory="build/coverage-html"/>
+        </report>
+    </coverage>
+
+</phpunit>

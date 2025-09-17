@@ -1,0 +1,2 @@
+rootElements:
+  - Niccolo\DocparserPhp\Model\Parser\HTML\Element\InexistentParser

@@ -132,11 +132,23 @@ assets/       # Project assets
 
 ---
 
-## **Testing**
+## **Tests & Quality Assurance**
 
-* Unit tests are written with **PHPUnit**
-* Coverage includes validators, parsers, and views
-* To run tests:
+This project includes extensive PHPUnit test coverage, ensuring reliability and maintainability:
+
+* Unit tests for validators (missing tags, duplicates, invalid or empty content).
+
+* Integration tests (validator + parser + views).
+
+* YAML configuration tests (dynamic validator and parser configuration).
+
+* Edge case HTML tests (non-standard structures, whitespace, comments).
+
+* Performance tests with large inputs (10k+ tags).
+
+Errors and warnings are clearly separated: errors block parsing, while warnings allow it to continue.
+
+To run tests:
 
 ```bash
 docker exec -it docparser-php-web-1 bash

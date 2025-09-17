@@ -10,7 +10,6 @@ use Niccolo\DocparserPhp\Model\Utils\Warning\AbstractWarning;
 class ElementValidationResult
 {
     public function __construct(
-        private bool $valid = true,
         /** @var AbstractError[] */
         private array $errors = [],
         /** @var AbstractWarning[] */
