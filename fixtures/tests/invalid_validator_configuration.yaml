@@ -1,0 +1,2 @@
+validators:
+  - Niccolo\DocparserPhp\Model\Parser\HTML\Validator\InexistentValidator

@@ -3,6 +3,7 @@ vendor/
 
 # Log files
 *.log
+build/
 
 # Temp files and cache
 *.cache

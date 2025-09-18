@@ -23,7 +23,7 @@ class ElementValidationResultView implements RenderableInterface
         $resultHtml = '<div><strong>Validation: </strong>';
 
         if (!empty($this->elementValidationResult->getWarnings())) {
-            $resultHtml .= "<div><strong>Warnings:</strong><ul>";
+            $resultHtml .= "<div><strong>Warnings: </strong><ul>";
 
             foreach ($this->elementValidationResult->getWarnings() as $warning) {
                 $warningMessage = htmlspecialchars(string: $warning->getMessage());

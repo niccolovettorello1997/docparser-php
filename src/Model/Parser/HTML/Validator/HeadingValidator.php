@@ -60,6 +60,7 @@ class HeadingValidator extends AbstractValidator
             'form',
             'fieldset',
             'legend',
+            'meta',
         ];
     }
 

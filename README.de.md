@@ -132,11 +132,23 @@ assets/       # Projekt-Assets
 
 ---
 
-## **Testing**
+## **Tests & Qualitätssicherung**
 
-* Unit-Tests mit **PHPUnit** geschrieben
-* Abdeckung umfasst Validatoren, Parser und Views
-* Tests ausführen:
+Dieses Projekt verfügt über eine umfangreiche PHPUnit-Testabdeckung, um Zuverlässigkeit und Wartbarkeit sicherzustellen:
+
+* Unit-Tests für Validatoren (fehlende Tags, Duplikate, ungültiger oder leerer Inhalt).
+
+* Integrationstests (Validator + Parser + Views).
+
+* YAML-Konfigurationstests (dynamische Validator- und Parserkonfiguration).
+
+* Edge-Case-HTML-Tests (nicht standardisierte Strukturen, Leerzeichen, Kommentare).
+
+* Performance-Tests mit großen Eingaben (10.000+ Tags).
+
+Fehler und Warnungen werden klar getrennt: Fehler blockieren das Parsing, während Warnungen es fortsetzen lassen.
+
+Tests ausführen:
 
 ```bash
 docker exec -it docparser-php-web-1 bash
