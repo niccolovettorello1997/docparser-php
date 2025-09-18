@@ -2,6 +2,11 @@
     <img src="./assets/img/docparser_php.png">
 </p>
 
+<a href="https://codecov.io/gh/niccolovettorello1997/docparser-php" > 
+ <img src="https://codecov.io/gh/niccolovettorello1997/docparser-php/graph/badge.svg?token=LNQFFW4GD3" style="height:auto; margin-right:10px; vertical-align:top;"/>
+ <img src="https://github.com/niccolovettorello1997/docparser-php/actions/workflows/tests.yml/badge.svg" style="height:auto; vertical-align:top;">
+</a>
+
 # DocParser-PHP
 
 Ein einfacher **HTML-Parser und Validator** in PHP 8, entwickelt als Lernprojekt, um **objektorientiertes PHP, Unit Testing und modulare Architektur** zu demonstrieren. Dieses Repository zeigt Programmierpraktiken, strukturiertes Parsen, Validierung und Ausgabe in HTML- und JSON-Formaten.
