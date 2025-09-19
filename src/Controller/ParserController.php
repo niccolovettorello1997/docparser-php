@@ -5,16 +5,37 @@ declare(strict_types= 1);
 namespace Niccolo\DocparserPhp\Controller;
 
 use Niccolo\DocparserPhp\Controller\Utils\Query;
+use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
 use Niccolo\DocparserPhp\View\ParserViewFactory;
 use Niccolo\DocparserPhp\View\RenderableInterface;
 use Niccolo\DocparserPhp\View\ElementValidationResultView;
-use Niccolo\DocparserPhp\Model\Utils\Error\UnsupportedTypeError;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponentFactory;
 use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
 use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
 
 class ParserController
 {
+    /**
+     * Handle pre-validation errors.
+     *
+     * @param  string $message
+     * @return ElementValidationResultView[]
+     */
+    private function handlePreValidationError(string $message): array
+    {
+        $preValidationError = new ElementValidationResult();
+
+        $preValidationError->addError(
+            error: new InvalidContentError(
+                message: $message
+            )
+        );
+
+        return [new ElementValidationResultView(
+            elementValidationResult: $preValidationError,
+        )];
+    }
+
     /**
      * Handle the form data and return the validation view.
      * 
@@ -26,11 +47,14 @@ class ParserController
         /** @var RenderableInterface[] */
         $result = [];
 
-        // Get input
-        $query = Query::getQuery(
-            data: $data,
-            files: $_FILES,
-        );
+        try {
+            $query = Query::getQuery(
+                data: $data,
+                files: $_FILES,
+            );
+        } catch (\InvalidArgumentException $e) {
+            return $this->handlePreValidationError(message: 'No context provided.');
+        }
 
         // Try to create a ValidatorComponent
         try {
@@ -39,19 +63,7 @@ class ParserController
                 type: $query->getType(),
             );
         } catch (\InvalidArgumentException $e) {    // Unsupported type
-            $validationUnsupportedType = new ElementValidationResult();
-
-            $validationUnsupportedType->addError(
-                error: new UnsupportedTypeError(
-                    message: 'Unsupported type: ' . $query->getType(),
-                )
-            );
-
-            $result[] = new ElementValidationResultView(
-                elementValidationResult: $validationUnsupportedType,
-            );
-
-            return $result;
+            return $this->handlePreValidationError(message: 'Unsupported type: ' . $query->getType());
         }
 
         // Run validation

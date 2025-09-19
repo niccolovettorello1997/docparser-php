@@ -27,6 +27,7 @@ class Query
      * 
      * @param  array $data
      * @param  array $files
+     * @throws \InvalidArgumentException
      * @return ?Query
      */
     public static function getQuery(array $data, array $files): ?Query
@@ -51,6 +52,11 @@ class Query
                 );
             }
         } else {    // Otherwise get it from form data
+            // If context is empty or not set throw an exception
+            if (!isset($data['context']) || empty($data['context'])) {
+                throw new \InvalidArgumentException(message: 'Empty context');
+            }
+
             $result = new Query(
                 context: $data['context'],
                 type: $type
