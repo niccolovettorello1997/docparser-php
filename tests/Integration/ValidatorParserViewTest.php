@@ -43,7 +43,7 @@ class ValidatorParserViewTest extends TestCase
 
         $parsingResultView = ParserViewFactory::getParserView(
             type: $type,
-            parsers: $parserComponent->run(),
+            tree: $parserComponent->run(),
         );
 
         $validationRender = $validationResultView->render();
@@ -54,12 +54,20 @@ class ValidatorParserViewTest extends TestCase
             haystack: $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<div><strong>Title => </strong>Example</div>',
+            needle: '<li><strong>Element name -> </strong>title</li>',
             haystack: $parsingRender,
         );
         $this->assertStringContainsString(
-            needle: '<div><strong>Paragraphs: </strong><ul><li>Hello World</li></ul></div>',
+            needle: '<li><strong>Element content -> </strong>Example</li>',
+            haystack: $parsingRender
+        );
+        $this->assertStringContainsString(
+            needle: '<li><strong>Element name -> </strong>p</li>',
             haystack: $parsingRender,
+        );
+        $this->assertStringContainsString(
+            needle: '<li><strong>Element content -> </strong>Hello World</li>',
+            haystack: $parsingRender
         );
         $this->assertStringNotContainsString(
             needle: '<div><strong>Errors: </strong>',
@@ -231,7 +239,7 @@ class ValidatorParserViewTest extends TestCase
 
         $parsingResultView = ParserViewFactory::getParserView(
             type: $type,
-            parsers: $parserComponent->run(),
+            tree: $parserComponent->run(),
         );
 
         $validationRender = $validationResultView->render();
@@ -258,15 +266,15 @@ class ValidatorParserViewTest extends TestCase
             haystack: $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<div><strong>Title => </strong>Example</div>',
+            needle: '<li><strong>Element name -> </strong>title</li>',
             haystack: $parsingRender,
         );
         $this->assertStringContainsString(
-            needle: '<div><strong>Paragraphs: </strong><ul><li></li></ul></div>',
-            haystack: $parsingRender,
+            needle: '<li><strong>Element content -> </strong>Example</li>',
+            haystack: $parsingRender
         );
         $this->assertStringContainsString(
-            needle: '<div><strong>Headings: </strong><ul></ul></div>',
+            needle: '<li><strong>Element name -> </strong>p</li>',
             haystack: $parsingRender,
         );
     }

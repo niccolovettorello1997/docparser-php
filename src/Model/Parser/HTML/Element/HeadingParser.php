@@ -5,37 +5,69 @@ declare(strict_types=1);
 namespace Niccolo\DocparserPhp\Model\Parser\HTML\Element;
 
 use Niccolo\DocparserPhp\Model\Core\Parser\AbstractParser;
-use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
+use Niccolo\DocparserPhp\Model\Core\Parser\Node;
+use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\HtmlElementType;
 
-class HeadingParser extends AbstractParser
+class HeadingParser implements AbstractParser
 {
+    /**
+     * Parse headings content and attributes.
+     * 
+     * @param  string $content
+     * @return array
+     */
+    private function parseHeadings(string $content): array
+    {
+        $result = [];
+
+        $patternHeadings = '/<(h[1-6])\b([^>]*)>(.*?)<\/\1>/is';
+
+        if (preg_match_all(
+            pattern: $patternHeadings,
+            subject: $content,
+            matches: $matches,
+            flags: PREG_SET_ORDER
+        )) {
+            foreach ($matches as $heading) {
+                $level = $heading[1];
+                $rawAttributes = $heading[2];
+                $headingContent = $heading[3];
+
+                $headingAttributes = [];
+
+                if (preg_match_all(
+                    pattern: "/(\w+)\s*=\s*\"([^\"]*)\"/",
+                    subject: $rawAttributes,
+                    matches: $attr_matches,
+                    flags: PREG_SET_ORDER
+                )) {
+                    foreach ($attr_matches as $attr) {
+                        $headingAttributes[$attr[1]] = $attr[2];
+                    }
+                }
+
+                $result[] = new Node(
+                    tagName: $level,
+                    content: $headingContent,
+                    attributes: $headingAttributes,
+                    children: []
+                );
+            }
+        }
+
+        return $result;
+    }
+
     /**
      * @inheritDoc
      */
-    public static function parse(SharedContext $context): array
+    public function parse(string $content): ?Node
     {
-        /** @var AbstractParser[] */
-        $headings = [];
-
-        // Get all headings and their content
-        $patternHeadingElement = '/<(h[1-6])\b([^>]*)>(.*?)<\/\1>/is';
-
-        preg_match_all(
-            pattern: $patternHeadingElement,
-            subject: $context->getContext(),
-            matches: $headingElements
+        return new Node(
+            tagName: HtmlElementType::HEADINGS->value,
+            content: null,
+            attributes: [],
+            children: $this->parseHeadings(content: $content)
         );
-
-        // Create corresponding objects
-        foreach($headingElements[3] as $headingContent) {
-            $heading = new HeadingParser(
-                elementName: 'heading',
-                content: $headingContent
-            );
-
-            $headings[] = $heading;
-        }
-
-        return $headings;
     }
 }

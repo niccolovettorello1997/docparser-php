@@ -89,7 +89,7 @@ class ParserController
         // Get the appropriate ParserView
         $parserView = ParserViewFactory::getParserView(
             type: $query->getType(),
-            parsers: $parserResult
+            tree: $parserResult
         );
 
         $result[] = $parserView;

@@ -5,33 +5,44 @@ declare(strict_types=1);
 namespace Niccolo\DocparserPhp\Model\Parser\HTML\Element;
 
 use Niccolo\DocparserPhp\Model\Core\Parser\AbstractParser;
-use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
+use Niccolo\DocparserPhp\Model\Core\Parser\Node;
+use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\HtmlElementType;
 
-class TitleParser extends AbstractParser
+class TitleParser implements AbstractParser
 {
     /**
-     * @inheritDoc
+     * Parse title content.
+     * 
+     * @param  string $content
+     * @return string
      */
-    public static function parse(SharedContext $context): array
+    private function parseTitle(string $content): string
     {
-        /** @var AbstractParser[] */
-        $title = [];
-
-        // Get the title element
+        // Parse the title element
         $patternTitleElement = '/<title>(.*?)<\/title>/is';
 
         preg_match(
             pattern: $patternTitleElement,
-            subject: $context->getContext(),
+            subject: $content,
             matches: $titleElement
         );
 
-        // Create title object
-        $title[] = new TitleParser(
-            elementName: 'title',
-            content: $titleElement[1],
-        );
+        return $titleElement[1];
+    }
 
-        return $title;
+    /**
+     * @inheritDoc
+     */
+    public function parse(string $content): ?Node
+    {
+        // Parse the title element
+        $titleContent = $this->parseTitle(content: $content);
+
+        return new Node(
+            tagName: HtmlElementType::TITLE->value,
+            content: $titleContent,
+            attributes: [],
+            children: []
+        );
     }
 }

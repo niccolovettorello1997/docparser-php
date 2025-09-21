@@ -65,7 +65,7 @@ class PerformanceTest extends TestCase
         $this->assertNotNull(actual: $parsingResult);
 
         $this->assertTrue(condition: $validationResult->isValid());
-        $this->assertGreaterThan(minimum: 0, actual: count(value: $parsingResult[0]->getChildren()));
+        $this->assertGreaterThan(minimum: 0, actual: count(value: $parsingResult->getChildren()));
 
         // Check execution time
         $this->assertLessThan(

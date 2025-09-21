@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Niccolo\DocparserPhp\Tests\Unit\Model\Parser\HTML\Parser;
 
 use PHPUnit\Framework\TestCase;
-use Niccolo\DocparserPhp\Model\Core\Parser\AbstractParser;
-use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
-use Niccolo\DocparserPhp\Model\Parser\HTML\Element\BodyParser;
-use Niccolo\DocparserPhp\Model\Parser\HTML\Element\HeadParser;
+use Niccolo\DocparserPhp\Model\Core\Parser\Node;
 use Niccolo\DocparserPhp\Model\Parser\HTML\Element\HtmlParser;
+use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\HtmlElementType;
 
 class HtmlParserTest extends TestCase
 {
@@ -53,36 +51,41 @@ class HtmlParserTest extends TestCase
 
         HTML;
 
-        $htmlContext = file_get_contents(filename: __DIR__ . "/../../../../../../fixtures/tests/valid_html.html");
-        $sharedContext = new SharedContext(context: $htmlContext);
+        $html = file_get_contents(filename: __DIR__ . "/../../../../../../fixtures/tests/valid_html.html");
 
-        $html = HtmlParser::parse(context: $sharedContext);
+        $htmlParser = new HtmlParser();
+        $htmlNode = $htmlParser->parse(content: $html);
 
-        $this->assertCount(
-            expectedCount: 1,
-            haystack: $html
-        );
+        $this->assertNotNull(actual: $htmlNode);
         $this->assertEquals(
             expected: $htmlContent,
-            actual: $html[0]->getContent()
+            actual: $htmlNode->getContent()
         );
         $this->assertCount(
             expectedCount:2,
-            haystack: $html[0]->getChildren()
+            haystack: $htmlNode->getChildren()
         );
         $this->assertCount(
             expectedCount:1,
             haystack: array_filter(
-                array: $html[0]->getChildren(),
-                callback: fn (AbstractParser $parser): bool => $parser instanceof HeadParser
+                array: $htmlNode->getChildren(),
+                callback: fn (Node $node): bool => $node->getTagName() === HtmlElementType::HEAD->value
             )
         );
         $this->assertCount(
             expectedCount:1,
             haystack: array_filter(
-                array: $html[0]->getChildren(),
-                callback: fn (AbstractParser $parser): bool => $parser instanceof BodyParser
+                array: $htmlNode->getChildren(),
+                callback: fn (Node $node): bool => $node->getTagName() === HtmlElementType::BODY->value
             )
+        );
+        $this->assertArrayHasKey(
+            key: 'lang',
+            array: $htmlNode->getAttributes()
+        );
+        $this->assertEquals(
+            expected: 'en',
+            actual: $htmlNode->getAttributes()['lang']
         );
     }
 }

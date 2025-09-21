@@ -18,22 +18,32 @@ class ParserAdapter
      * Invoke parse method on root element classes.
      * 
      * @param  SharedContext $sharedContext
-     * @return AbstractParser[]
+     * @return Node|null
      */
-    public function parse(SharedContext $sharedContext): array
+    public function parse(SharedContext $sharedContext): ?Node
     {
+        if (empty($this->rootElements)) {
+            return null;
+        }
+
         /** @var AbstractParser[] */
         $result = [];
 
         foreach ($this->rootElements as $rootElement) {
-            $currentParsingTree = $rootElement::parse(context: $sharedContext);
+            /** @var AbstractParser $rootElementObject */
+            $rootElementObject = new $rootElement();
+            $currentParsingTree = $rootElementObject->parse(content: $sharedContext->getContext());
 
-            $result = array_merge(
-                $result,
-                $currentParsingTree
-            );
+            if (null !== $currentParsingTree) {
+                $result[] = $currentParsingTree;
+            }
         }
 
-        return $result;
+        return new Node(
+            tagName: 'root',
+            content: null,
+            attributes: [],
+            children: $result
+        );
     }
 }
