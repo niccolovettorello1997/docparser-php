@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Niccolo\DocparserPhp\Tests\Unit\Model\Parser\HTML\Parser;
 
 use PHPUnit\Framework\TestCase;
-use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
+use Niccolo\DocparserPhp\Model\Core\Parser\Node;
+use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\HtmlElementType;
 use Niccolo\DocparserPhp\Model\Parser\HTML\Element\ParagraphParser;
 
 class ParagraphParserTest extends TestCase
@@ -15,35 +16,69 @@ class ParagraphParserTest extends TestCase
         $firstParagraphContent = 'This is the first section of the page.';
         $secondParagraphContent = 'This is the second section. Notice that headings, paragraphs, and links are all valid here.';
         $thirdParagraphContent = '&copy; 2025 Example Company';
-        $html = file_get_contents(filename: __DIR__ . "/../../../../../../fixtures/tests/valid_html.html");
-        $sharedContext = new SharedContext(context: $html);
 
-        $paragraphs = ParagraphParser::parse(context: $sharedContext);
+        $body = <<<BODY
 
+        <header>
+          <h1>Welcome to My Page</h1>
+          <nav>
+            <ul>
+              <li><a href="http://www.example1.com">example 1</a></li>
+              <li><a href="http://www.example2.com">example 2</a></li>
+            </ul>
+          </nav>
+        </header>
+
+        <main>
+        <section id="section1">
+            <h2>Section 1</h2>
+            <p>This is the first section of the page.</p>
+        </section>
+
+        <section id="section2">
+            <h2>Section 2</h2>
+            <p>This is the second section. Notice that headings, paragraphs, and links are all valid here.</p>
+        </section>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Example Company</p>
+        </footer>
+
+        BODY;
+
+        $paragraphsParser = new ParagraphParser();
+        $paragraphNode = $paragraphsParser->parse(content: $body);
+
+        $this->assertNotNull(actual: $paragraphNode);
+        $this->assertEquals(
+            expected: HtmlElementType::PARAGRAPHS->value,
+            actual: $paragraphNode->getTagName()
+        );
         $this->assertCount(
             expectedCount: 3,
-            haystack: $paragraphs
+            haystack: $paragraphNode->getChildren()
         );
-        $this->assertEquals(
-            expected: $firstParagraphContent,
-            actual: $paragraphs[0]->getContent()
+        $this->assertCount(
+            expectedCount: 1,
+            haystack: array_filter(
+                array: $paragraphNode->getChildren(),
+                callback: fn (Node $node): bool => $node->getContent() === $firstParagraphContent
+            )
         );
-        $this->assertEmpty(
-            actual: $paragraphs[0]->getChildren()
+        $this->assertCount(
+            expectedCount: 1,
+            haystack: array_filter(
+                array: $paragraphNode->getChildren(),
+                callback: fn (Node $node): bool => $node->getContent() === $secondParagraphContent
+            )
         );
-        $this->assertEquals(
-            expected: $secondParagraphContent,
-            actual: $paragraphs[1]->getContent()
-        );
-        $this->assertEmpty(
-            actual: $paragraphs[1]->getChildren()
-        );
-        $this->assertEquals(
-            expected: $thirdParagraphContent,
-            actual: $paragraphs[2]->getContent()
-        );
-        $this->assertEmpty(
-            actual: $paragraphs[2]->getChildren()
+        $this->assertCount(
+            expectedCount: 1,
+            haystack: array_filter(
+                array: $paragraphNode->getChildren(),
+                callback: fn (Node $node): bool => $node->getContent() === $thirdParagraphContent
+            )
         );
     }
 }

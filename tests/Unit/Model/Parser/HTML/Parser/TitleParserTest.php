@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Niccolo\DocparserPhp\Tests\Unit\Model\Parser\HTML\Parser;
 
 use PHPUnit\Framework\TestCase;
-use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
 use Niccolo\DocparserPhp\Model\Parser\HTML\Element\TitleParser;
 
 class TitleParserTest extends TestCase
@@ -13,21 +12,26 @@ class TitleParserTest extends TestCase
     public function test_parse_title(): void
     {
         $titleContent = 'Example Document';
-        $html = file_get_contents(filename: __DIR__ . "/../../../../../../fixtures/tests/valid_html.html");
-        $sharedContext = new SharedContext(context: $html);
 
-        $title = TitleParser::parse(context: $sharedContext);
+        $html = <<<HTML
 
-        $this->assertCount(
-            expectedCount: 1,
-            haystack: $title
-        );
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Example Document</title>
+        <meta name="description" content="A simple example of a well-structured HTML5 document.">
+
+        HTML;
+
+        $titleParser = new TitleParser();
+        $titleNode = $titleParser->parse(content: $html);
+
+        $this->assertNotNull(actual: $titleNode);
         $this->assertEquals(
             expected: $titleContent,
-            actual: $title[0]->getContent()
+            actual: $titleNode->getContent()
         );
         $this->assertEmpty(
-            actual: $title[0]->getChildren()
+            actual: $titleNode->getChildren()
         );
     }
 }

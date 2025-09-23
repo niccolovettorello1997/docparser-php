@@ -71,9 +71,9 @@ class ParserComponent
     /**
      * Run the parsing process.
      * 
-     * @return AbstractParser[]
+     * @return Node|null
      */
-    public function run(): array
+    public function run(): ?Node
     {
         $parserAdapter = new ParserAdapter(
             rootElements: $this->getRootElements(),

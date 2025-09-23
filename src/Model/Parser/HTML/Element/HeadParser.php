@@ -4,41 +4,68 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Model\Parser\HTML\Element;
 
+use Niccolo\DocparserPhp\Model\Core\Parser\Node;
 use Niccolo\DocparserPhp\Model\Core\Parser\AbstractParser;
-use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
+use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\HtmlElementType;
 
-class HeadParser extends AbstractParser
+class HeadParser implements AbstractParser
 {
     /**
-     * @inheritDoc
+     * Parse head content and attributes.
+     * 
+     * @param  string $content
+     * @return array
      */
-    public static function parse(SharedContext $context): array
+    private function parseHead(string $content): array
     {
-        /** @var AbstractParser[] */
-        $head = [];
-
-        // Get the head element
-        $patternHeadElement = '/<head\b[^>]*>(.*?)<\/head>/is';
+        // Parse the head element
+        $patternHeadElement = '/<head\b([^>]*)>(.*?)<\/head>/is';
 
         preg_match(
             pattern: $patternHeadElement,
-            subject: $context->getContext(),
+            subject: $content,
             matches: $headElement
         );
 
-        // Get head content
-        $headContent = $headElement[1];
+        $headContent = $headElement[2];
+
+        $resultingAttributes = [];
+
+        // Parse attributes
+        if (preg_match_all(
+            pattern: "/(\w+)\s*=\s*\"([^\"]*)\"/",
+            subject: $headElement[1],
+            matches: $attributes,
+            flags: PREG_SET_ORDER
+        )) {
+            foreach ($attributes as $attribute) {
+                $resultingAttributes[$attribute[1]] = $attribute[2];
+            }
+        }
+
+        return [
+            $headContent,
+            $resultingAttributes,
+        ];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function parse(string $content): ?Node
+    {
+        // Parse head element
+        list($headContent, $attributes) = $this->parseHead($content);
 
         // Get title child
-        $title = TitleParser::parse(context: $context);
+        $titleParser = new TitleParser();
+        $titleNode = $titleParser->parse(content: $headContent);
 
-        // Create body object
-        $head[] = new HeadParser(
-            elementName: 'head',
+        return new Node(
+            tagName: HtmlElementType::HEAD->value,
             content: $headContent,
-            children: $title,
+            attributes: $attributes,
+            children: [$titleNode]
         );
-
-        return $head;
     }
 }
