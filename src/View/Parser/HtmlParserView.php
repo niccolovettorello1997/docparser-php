@@ -15,7 +15,7 @@ class HtmlParserView implements RenderableInterface
     }
 
     /**
-     * Dynamically creates the HTML code to render an HTML Parser and returns it.
+     * Render the node structure in html.
      * 
      * @param  Node|null $node
      * @return string
@@ -27,10 +27,8 @@ class HtmlParserView implements RenderableInterface
             return '';
         }
 
-        $result = '<ul>';
-
         // Render name
-        $result .= "<li><strong>Element name -> </strong>{$node->getTagName()}</li>";
+        $result = "<li><strong>Element name -> </strong>{$node->getTagName()}</li>";
 
         // Render content if present
         if (null !== $node->getContent()) {
@@ -51,17 +49,21 @@ class HtmlParserView implements RenderableInterface
         }
 
         // Render children
-        foreach ($node->getChildren() as $childNode) {
-            $result .= $this->renderHtmlParser(node: $childNode);
-        }
+        if (!empty($node->getChildren())) {
+            $result .= '<ul>';
 
-        $result .= '</ul>';
+            foreach ($node->getChildren() as $childNode) {
+                $result .= $this->renderHtmlParser(node: $childNode);
+            }
+
+            $result .= '</ul>';
+        }
 
         return $result;
     }
 
     /**
-     * Render the HTML Parser.
+     * Render the node tree in html.
      * 
      * @return string
      */
