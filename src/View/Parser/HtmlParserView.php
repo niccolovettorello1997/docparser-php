@@ -15,51 +15,30 @@ class HtmlParserView implements RenderableInterface
     }
 
     /**
-     * Render the node structure in html.
+     * Render an array into html.
      * 
-     * @param  Node|null $node
+     * @param  array $input
      * @return string
      */
-    private function renderHtmlParser(?Node $node): string
+    private function arrayToHtml(array $input): string
     {
-        // For html, there is only one root
-        if (null === $node) {
-            return '';
-        }
+        $html = '<ul>';
 
-        // Render name
-        $result = "<li><strong>Element name -> </strong>{$node->getTagName()}</li>";
+        foreach ($input as $key => $value) {
+            $html .= '<li>';
 
-        // Render content if present
-        if (null !== $node->getContent()) {
-            $content = htmlspecialchars(string: $node->getContent());
-
-            $result .= "<li><strong>Element content -> </strong>{$content}</li>";
-        }
-
-        // Render attributes if present
-        if (!empty($node->getAttributes())) {
-            $result .= '<li><strong>Attributes: </strong>';
-
-            foreach ($node->getAttributes() as $key => $value) {
-                $result .= "{$key} => {$value} ";
+            if (is_array(value: $value)) {
+                $html .= htmlspecialchars(string: (string)$key) . ': ' . $this->arrayToHtml(input: $value);
+            } else {
+                $html .= htmlspecialchars(string: (string)$key) . ': ' . htmlspecialchars(string: (string)$value);
             }
 
-            $result .= '</li>';
+            $html .= '</li>';
         }
 
-        // Render children
-        if (!empty($node->getChildren())) {
-            $result .= '<ul>';
+        $html .= '</ul>';
 
-            foreach ($node->getChildren() as $childNode) {
-                $result .= $this->renderHtmlParser(node: $childNode);
-            }
-
-            $result .= '</ul>';
-        }
-
-        return $result;
+        return $html;
     }
 
     /**
@@ -69,9 +48,9 @@ class HtmlParserView implements RenderableInterface
      */
     public function render(): string
     {
-        $result = '<div><ul>';
-        $result .= $this->renderHtmlParser(node: $this->tree);
-        $result .= '</ul></div>';
+        $result = '<div>';
+        $result .= $this->arrayToHtml(input: $this->tree->toArray());
+        $result .= '</div>';
 
         return $result;
     }

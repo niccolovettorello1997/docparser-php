@@ -54,20 +54,12 @@ class ValidatorParserViewTest extends TestCase
             haystack: $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li><strong>Element name -> </strong>title</li>',
+            needle: '<li>0: <ul><li>Name: title</li><li>Content: Example</li></ul></li>',
             haystack: $parsingRender,
         );
         $this->assertStringContainsString(
-            needle: '<li><strong>Element content -> </strong>Example</li>',
-            haystack: $parsingRender
-        );
-        $this->assertStringContainsString(
-            needle: '<li><strong>Element name -> </strong>p</li>',
+            needle: '<li>0: <ul><li>Name: p</li><li>Content: Hello World</li></ul></li>',
             haystack: $parsingRender,
-        );
-        $this->assertStringContainsString(
-            needle: '<li><strong>Element content -> </strong>Hello World</li>',
-            haystack: $parsingRender
         );
         $this->assertStringNotContainsString(
             needle: '<div><strong>Errors: </strong>',
@@ -266,15 +258,11 @@ class ValidatorParserViewTest extends TestCase
             haystack: $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li><strong>Element name -> </strong>title</li>',
+            needle: '<li>0: <ul><li>Name: title</li><li>Content: Example</li></ul></li>',
             haystack: $parsingRender,
         );
         $this->assertStringContainsString(
-            needle: '<li><strong>Element content -> </strong>Example</li>',
-            haystack: $parsingRender
-        );
-        $this->assertStringContainsString(
-            needle: '<li><strong>Element name -> </strong>p</li>',
+            needle: '<li>0: <ul><li>Name: p</li><li>Content: </li></ul></li>',
             haystack: $parsingRender,
         );
     }
