@@ -144,17 +144,17 @@ class HeadingValidator extends AbstractValidator
         );
 
         foreach ($matchesHeadings as $match) {
+            // Check if the heading content is empty
+            if (trim(string: $match[3]) === '') {
+                $elementValidationResult->addError(
+                    error: new InvalidContentError(
+                        message: 'Empty content inside ' . self::ELEMENT_NAME . ' element <' . $match[1] . '>.'
+                    )
+                );
+            }
+
             foreach ($this->getInvalidContentTags() as $tag) {
                 $patternTag = '/<(\/)?' . $tag . '\b[^>]*>/i';
-
-                // Check if the heading content is empty
-                if (trim(string: $match[3]) === '') {
-                    $elementValidationResult->addError(
-                        error: new InvalidContentError(
-                            message: 'Empty content inside ' . self::ELEMENT_NAME . ' element <' . $match[1] . '>.'
-                        )
-                    );
-                }
 
                 // Check if the heading content contains any invalid tags
                 if (preg_match_all(

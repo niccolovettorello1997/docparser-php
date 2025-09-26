@@ -11,6 +11,20 @@ $views = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $views = $controller->handleRequest(data: $_POST);
+
+    if ($_POST['renderingType'] === 'json') {
+        $jsonResult = $controller->getJsonResult(views: $views);
+
+        header(header: 'Content-Type: application/json; charset=utf-8');
+
+        if ($jsonResult->getStatusCode() === 200) {
+            header(header: 'Content-Disposition: attachment; filename="parsed.json"');
+        }
+
+        http_response_code(response_code: $jsonResult->getStatusCode());
+        echo $jsonResult->getContent();
+        exit;
+    }
 }
 ?>
 
@@ -37,7 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <option value="html" <?= (($_POST['type'] ?? '') === 'html') ? 'selected' : '' ?>>HTML</option>
         </select><br><br>
 
-        <button type="submit">Parse</button>
+        <button type="submit" name="renderingType" value="html">Parse and see result in browser</button>
+        <button type="submit" name="renderingType" value="json">Parse and download JSON</button>
     </form>
 
     <?php if (!empty($views)): ?>
