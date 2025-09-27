@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Tests\Integration;
 
+use Niccolo\DocparserPhp\View\Parser\HtmlParserView;
 use PHPUnit\Framework\TestCase;
-use Niccolo\DocparserPhp\View\ParserViewFactory;
 use Niccolo\DocparserPhp\View\ElementValidationResultView;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponentFactory;
 use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
@@ -41,10 +41,7 @@ class ValidatorParserViewTest extends TestCase
             elementValidationResult: $validatorComponent->run(),
         );
 
-        $parsingResultView = ParserViewFactory::getParserView(
-            type: $type,
-            tree: $parserComponent->run(),
-        );
+        $parsingResultView = new HtmlParserView(tree: $parserComponent->run());
 
         $validationRender = $validationResultView->render();
         $parsingRender = $parsingResultView->render();
@@ -229,10 +226,7 @@ class ValidatorParserViewTest extends TestCase
             elementValidationResult: $validatorComponent->run(),
         );
 
-        $parsingResultView = ParserViewFactory::getParserView(
-            type: $type,
-            tree: $parserComponent->run(),
-        );
+        $parsingResultView = new HtmlParserView(tree: $parserComponent->run());
 
         $validationRender = $validationResultView->render();
         $parsingRender = $parsingResultView->render();

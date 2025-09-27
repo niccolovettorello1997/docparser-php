@@ -6,6 +6,7 @@ namespace Niccolo\DocparserPhp\Controller;
 
 use Niccolo\DocparserPhp\Controller\Utils\Query;
 use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
+use Niccolo\DocparserPhp\View\Parser\HtmlParserView;
 use Niccolo\DocparserPhp\View\ParserViewFactory;
 use Niccolo\DocparserPhp\View\RenderableInterface;
 use Niccolo\DocparserPhp\View\ElementValidationResultView;
@@ -86,13 +87,8 @@ class ParserController
 
         $parserResult = $parserComponent->run();
 
-        // Get the appropriate ParserView
-        $parserView = ParserViewFactory::getParserView(
-            type: $query->getType(),
-            tree: $parserResult
-        );
-
-        $result[] = $parserView;
+        // Get HTML view
+        $result[] = new HtmlParserView(tree: $parserResult);
 
         return $result;
     }
