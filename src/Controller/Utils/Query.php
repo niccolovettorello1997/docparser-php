@@ -9,6 +9,7 @@ class Query
     public function __construct(
         private readonly string $context,
         private readonly string $type,
+        private readonly string $renderingType,
     ) {
     }
 
@@ -20,6 +21,11 @@ class Query
     public function getType(): string
     {
         return $this->type;
+    }
+
+    public function getRenderingType(): string
+    {
+        return $this->renderingType;
     }
 
     /**
@@ -37,6 +43,9 @@ class Query
         // Get type
         $type = $data['type'];
 
+        // Get render type
+        $renderType = $data['renderType']; 
+
         // Get the file content if the files array is not empty
         if (!empty($files['file']['name']) && !empty($files['file']['tmp_name'])) {
             // Check if the format is valid
@@ -49,6 +58,7 @@ class Query
                 $result = new Query(
                     context: file_get_contents(filename: $files['file']['tmp_name']),
                     type: $type,
+                    renderingType: 'html',
                 );
             }
         } else {    // Otherwise get it from form data
@@ -59,7 +69,8 @@ class Query
 
             $result = new Query(
                 context: $data['context'],
-                type: $type
+                type: $type,
+                renderingType: 'html',
             );
         }
 

@@ -37,7 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <option value="html" <?= (($_POST['type'] ?? '') === 'html') ? 'selected' : '' ?>>HTML</option>
         </select><br><br>
 
-        <button type="submit">Parse</button>
+        <button type="submit" name="renderType" value="html">Parse and see result in browser</button>
+        <button type="submit" name="renderType" value="json">Parse and download JSON</button>
     </form>
 
     <?php if (!empty($views)): ?>

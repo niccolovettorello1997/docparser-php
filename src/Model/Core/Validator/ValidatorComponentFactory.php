@@ -23,7 +23,9 @@ class ValidatorComponentFactory
 
         // If not, throw an exception
         if($inputType === null) {
-            throw new \InvalidArgumentException(message: 'Input type not supported.');
+            throw new \InvalidArgumentException(
+                message: sprintf('Input type %s not supported.', $type)
+            );
         }
 
         // Build config path

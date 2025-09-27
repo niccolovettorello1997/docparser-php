@@ -7,7 +7,6 @@ namespace Niccolo\DocparserPhp\Controller;
 use Niccolo\DocparserPhp\Controller\Utils\Query;
 use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
 use Niccolo\DocparserPhp\View\Parser\HtmlParserView;
-use Niccolo\DocparserPhp\View\ParserViewFactory;
 use Niccolo\DocparserPhp\View\RenderableInterface;
 use Niccolo\DocparserPhp\View\ElementValidationResultView;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponentFactory;
@@ -38,6 +37,23 @@ class ParserController
     }
 
     /**
+     * Perform validation.
+     * 
+     * @param  Query $query
+     * @throws \InvalidArgumentException
+     * @return ElementValidationResult
+     */
+    private function runValidation(Query $query): ElementValidationResult
+    {
+        $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
+            context: $query->getContext(),
+            type: $query->getType(),
+        );
+
+        return $validatorComponent->run();
+    }
+
+    /**
      * Handle the form data and return the validation view.
      * 
      * @param  array $data
@@ -53,22 +69,11 @@ class ParserController
                 data: $data,
                 files: $_FILES,
             );
+
+            $validationResult = $this->runValidation(query: $query);
         } catch (\InvalidArgumentException $e) {
-            return $this->handlePreValidationError(message: 'No context provided.');
+            return $this->handlePreValidationError(message: $e->getMessage());
         }
-
-        // Try to create a ValidatorComponent
-        try {
-            $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
-                context: $query->getContext(),
-                type: $query->getType(),
-            );
-        } catch (\InvalidArgumentException $e) {    // Unsupported type
-            return $this->handlePreValidationError(message: 'Unsupported type: ' . $query->getType());
-        }
-
-        // Run validation
-        $validationResult = $validatorComponent->run();
 
         $result[] = new ElementValidationResultView(
             elementValidationResult: $validationResult,
