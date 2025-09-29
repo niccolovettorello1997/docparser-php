@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Niccolo\DocparserPhp\Tests\Unit\Controller;
 
 use PHPUnit\Framework\TestCase;
+use Niccolo\DocparserPhp\Model\Core\Parser\Node;
+use Niccolo\DocparserPhp\View\Parser\HtmlParserView;
+use Niccolo\DocparserPhp\View\Parser\JsonParserView;
 use Niccolo\DocparserPhp\Controller\ParserController;
 use Niccolo\DocparserPhp\View\ElementValidationResultView;
-use Niccolo\DocparserPhp\View\Parser\HtmlParserView;
 
 class ParserControllerTest extends TestCase
 {
-    public function test_handle_request_with_unsupported_type(): void
+    public function test_handle_request_with_unsupported_input_type(): void
     {
         $controller = new ParserController();
 
@@ -20,6 +22,7 @@ class ParserControllerTest extends TestCase
             data: [
                 'context' => '<html></html>',
                 'type' => 'xml',
+                'renderingType' => 'html',
             ]
         );
 
@@ -34,7 +37,36 @@ class ParserControllerTest extends TestCase
             actual: $result[0]
         );
         $this->assertStringContainsString(
-            needle: 'Unsupported type: xml',
+            needle: 'Unsupported input type: xml',
+            haystack: $rendered
+        );
+    }
+
+    public function test_handle_request_with_unsupported_rendering_type(): void
+    {
+        $controller = new ParserController();
+
+        // Unsupported type
+        $result = $controller->handleRequest(
+            data: [
+                'context' => '<html></html>',
+                'type' => 'html',
+                'renderingType' => 'xml',
+            ]
+        );
+
+        $rendered = $result[0]->render();
+
+        $this->assertCount(
+            expectedCount: 1,
+            haystack: $result
+        );
+        $this->assertInstanceOf(
+            expected: ElementValidationResultView::class,
+            actual: $result[0]
+        );
+        $this->assertStringContainsString(
+            needle: 'Unsupported rendering type: xml',
             haystack: $rendered
         );
     }
@@ -48,6 +80,7 @@ class ParserControllerTest extends TestCase
             data: [
                 'context' => '',
                 'type' => 'html',
+                'renderingType' => 'html',
             ]
         );
 
@@ -62,7 +95,7 @@ class ParserControllerTest extends TestCase
             actual: $result[0]
         );
         $this->assertStringContainsString(
-            needle: 'No context provided.',
+            needle: 'No context provided',
             haystack: $rendered
         );
     }
@@ -77,6 +110,7 @@ class ParserControllerTest extends TestCase
             data: [
                 'context' => $html,
                 'type' => 'html',
+                'renderingType' => 'html'
             ]
         );
 
@@ -106,6 +140,7 @@ class ParserControllerTest extends TestCase
         $result = $controller->handleRequest([
             'context' => $html,
             'type' => 'html',
+            'renderingType' => 'html',
         ]);
 
         // Validation and parsing views present
@@ -128,6 +163,48 @@ class ParserControllerTest extends TestCase
         $this->assertStringContainsString(
             needle: 'Hello',
             haystack: $result[1]->render()
+        );
+    }
+
+    public function test_get_json_result_success(): void
+    {
+        $controller = new ParserController();
+
+        $node = new Node(
+            tagName: 'p',
+            content: 'Hello',
+            attributes: [],
+            children: []
+        );
+
+        $view = new JsonParserView(tree: $node);
+
+        $response = $controller->getJsonResult(views: [$view]);
+
+        $this->assertSame(
+            expected: 200,
+            actual: $response->getStatusCode()
+        );
+        $this->assertJson(actual: $response->getContent());
+        $this->assertStringContainsString(
+            needle: 'Hello',
+            haystack: $response->getContent()
+        );
+    }
+
+    public function test_get_json_result_error(): void
+    {
+        $controller = new ParserController();
+
+        $response = $controller->getJsonResult(views: []);
+
+        $this->assertSame(
+            expected: 500,
+            actual: $response->getStatusCode()
+        );
+        $this->assertArrayHasKey(
+            key: 'error',
+            array: json_decode(json: $response->getContent(), associative: true)
         );
     }
 }

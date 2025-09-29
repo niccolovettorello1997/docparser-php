@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Tests\Integration;
 
+use Niccolo\DocparserPhp\View\Parser\HtmlParserView;
 use PHPUnit\Framework\TestCase;
-use Niccolo\DocparserPhp\View\ParserViewFactory;
 use Niccolo\DocparserPhp\View\ElementValidationResultView;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponentFactory;
 use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
@@ -41,10 +41,7 @@ class ValidatorParserViewTest extends TestCase
             elementValidationResult: $validatorComponent->run(),
         );
 
-        $parsingResultView = ParserViewFactory::getParserView(
-            type: $type,
-            tree: $parserComponent->run(),
-        );
+        $parsingResultView = new HtmlParserView(tree: $parserComponent->run());
 
         $validationRender = $validationResultView->render();
         $parsingRender = $parsingResultView->render();
@@ -54,20 +51,12 @@ class ValidatorParserViewTest extends TestCase
             haystack: $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li><strong>Element name -> </strong>title</li>',
+            needle: '<li>0: <ul><li>Name: title</li><li>Content: Example</li></ul></li>',
             haystack: $parsingRender,
         );
         $this->assertStringContainsString(
-            needle: '<li><strong>Element content -> </strong>Example</li>',
-            haystack: $parsingRender
-        );
-        $this->assertStringContainsString(
-            needle: '<li><strong>Element name -> </strong>p</li>',
+            needle: '<li>0: <ul><li>Name: p</li><li>Content: Hello World</li></ul></li>',
             haystack: $parsingRender,
-        );
-        $this->assertStringContainsString(
-            needle: '<li><strong>Element content -> </strong>Hello World</li>',
-            haystack: $parsingRender
         );
         $this->assertStringNotContainsString(
             needle: '<div><strong>Errors: </strong>',
@@ -237,10 +226,7 @@ class ValidatorParserViewTest extends TestCase
             elementValidationResult: $validatorComponent->run(),
         );
 
-        $parsingResultView = ParserViewFactory::getParserView(
-            type: $type,
-            tree: $parserComponent->run(),
-        );
+        $parsingResultView = new HtmlParserView(tree: $parserComponent->run());
 
         $validationRender = $validationResultView->render();
         $parsingRender = $parsingResultView->render();
@@ -266,15 +252,11 @@ class ValidatorParserViewTest extends TestCase
             haystack: $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li><strong>Element name -> </strong>title</li>',
+            needle: '<li>0: <ul><li>Name: title</li><li>Content: Example</li></ul></li>',
             haystack: $parsingRender,
         );
         $this->assertStringContainsString(
-            needle: '<li><strong>Element content -> </strong>Example</li>',
-            haystack: $parsingRender
-        );
-        $this->assertStringContainsString(
-            needle: '<li><strong>Element name -> </strong>p</li>',
+            needle: '<li>0: <ul><li>Name: p</li><li>Content: </li></ul></li>',
             haystack: $parsingRender,
         );
     }

@@ -28,28 +28,16 @@ class HtmlParserViewTest extends TestCase
         $result = $htmlParserView->render();
 
         $this->assertStringContainsString(
-            needle: '<li><strong>Element name -> </strong>title</li>',
+            needle: '<li>0: <ul><li>Name: title</li><li>Content: Example Document</li></ul></li>',
             haystack: $result,
         );
         $this->assertStringContainsString(
-            needle: '<li><strong>Element content -> </strong>Example Document</li>',
-            haystack: $result
-        );
-        $this->assertStringContainsString(
-            needle: '<li><strong>Element name -> </strong>p</li>',
+            needle: '<li>0: <ul><li>Name: p</li><li>Content: This is the first section of the page.</li></ul></li>',
             haystack: $result,
         );
         $this->assertStringContainsString(
-            needle: '<li><strong>Element content -> </strong>This is the first section of the page.</li>',
-            haystack: $result
-        );
-        $this->assertStringContainsString(
-            needle: '<li><strong>Element name -> </strong>h1</li>',
+            needle: '<li>0: <ul><li>Name: h1</li><li>Content: Welcome to My Page</li></ul></li>',
             haystack: $result,
-        );
-        $this->assertStringContainsString(
-            needle: '<li><strong>Element content -> </strong>Welcome to My Page</li>',
-            haystack: $result
         );
     }
 }

@@ -7,6 +7,7 @@ namespace Niccolo\DocparserPhp\Tests\Unit\Controller\Utils;
 use PHPUnit\Framework\TestCase;
 use Niccolo\DocparserPhp\Controller\Utils\Query;
 use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\InputType;
+use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\RenderingType;
 
 class QueryTest extends TestCase
 {
@@ -16,6 +17,7 @@ class QueryTest extends TestCase
 
         $data = [];
         $data['type'] = InputType::HTML->value;
+        $data['renderingType'] = RenderingType::HTML->value;
         $data['context'] = <<<HTML
 
         <!DOCTYPE html>
@@ -68,7 +70,11 @@ class QueryTest extends TestCase
         );
         $this->assertEquals(
             expected: InputType::HTML->value,
-            actual: $query->getType(),
+            actual: $query->getInputType()->value,
+        );
+        $this->assertEquals(
+            expected: RenderingType::HTML->value,
+            actual: $query->getRenderingType()->value,
         );
     }
 
@@ -84,6 +90,7 @@ class QueryTest extends TestCase
         $data = [];
         $data['context'] = '';
         $data['type'] = InputType::HTML->value;
+        $data['renderingType'] = RenderingType::HTML->value;
 
         $query = Query::getQuery(
             data: $data,
@@ -96,7 +103,11 @@ class QueryTest extends TestCase
         );
         $this->assertEquals(
             expected: InputType::HTML->value,
-            actual: $query->getType(),
+            actual: $query->getInputType()->value,
+        );
+        $this->assertEquals(
+            expected: RenderingType::HTML->value,
+            actual: $query->getRenderingType()->value,
         );
     }
 
@@ -109,6 +120,7 @@ class QueryTest extends TestCase
         $data = [];
         $data['context'] = '';
         $data['type'] = InputType::HTML->value;
+        $data['renderingType'] = RenderingType::HTML->value;
 
         $query = Query::getQuery(
             data: $data,

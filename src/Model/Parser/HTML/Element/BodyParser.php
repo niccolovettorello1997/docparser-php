@@ -67,7 +67,7 @@ class BodyParser implements AbstractParser
 
         return new Node(
             tagName: HtmlElementType::BODY->value,
-            content: $bodyContent,
+            content: null,
             attributes: $attributes,
             children: [$paragraphNode, $headingNode]
         );

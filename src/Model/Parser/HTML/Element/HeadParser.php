@@ -63,7 +63,7 @@ class HeadParser implements AbstractParser
 
         return new Node(
             tagName: HtmlElementType::HEAD->value,
-            content: $headContent,
+            content: null,
             attributes: $attributes,
             children: [$titleNode]
         );

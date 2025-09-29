@@ -39,4 +39,48 @@ class Node
     {
         $this->children[] = $child;
     }
+
+    /**
+     * Convert the node structure into an array.
+     * 
+     * @return array
+     */
+    public function toArray(): array
+    {
+        $result = [];
+
+        // Name
+        $result['Name'] = $this->getTagName();
+
+        // Content if present
+        if (null !== $this->getContent()) {
+            $content = htmlspecialchars(string: $this->getContent());
+
+            $result['Content'] = $content;
+        }
+
+        // Attributes if present
+        if (!empty($this->getAttributes())) {
+            $attributes = [];
+
+            foreach ($this->getAttributes() as $key => $value) {
+                $attributes[$key] = $value;
+            }
+
+            $result['Attributes'] = $attributes;
+        }
+
+        // Children
+        if (!empty($this->getChildren())) {
+            $children = [];
+
+            foreach ($this->getChildren() as $childNode) {
+                $children[] = $childNode->toArray();
+            }
+
+            $result['Children'] = $children;
+        }
+
+        return $result;
+    }
 }

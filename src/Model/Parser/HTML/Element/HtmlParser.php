@@ -69,7 +69,7 @@ class HtmlParser implements AbstractParser
 
         return new Node(
             tagName: HtmlElementType::HTML->value,
-            content: $htmlContent,
+            content: null,
             attributes: $attributes,
             children: [$headNode, $bodyNode]
         );
