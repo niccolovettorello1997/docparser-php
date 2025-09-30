@@ -68,7 +68,7 @@ class Query
             // Check if the format is valid
             $hasCorrectFormat = str_ends_with(
                 haystack: basename(path: $files['file']['name']),
-                needle: '.html'
+                needle: InputType::getExtension(type: $inputType),
             );
 
             if ($hasCorrectFormat) {

@@ -49,6 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <label for="type">Data type:</label>
         <select name="type" id="type">
             <option value="html" <?= (($_POST['type'] ?? '') === 'html') ? 'selected' : '' ?>>HTML</option>
+            <option value="markdown" <?= (($_POST['type'] ?? '') === 'markdown') ? 'selected' : '' ?>>Markdown</option>
         </select><br><br>
 
         <button type="submit" name="renderingType" value="html">Parse and see result in browser</button>
