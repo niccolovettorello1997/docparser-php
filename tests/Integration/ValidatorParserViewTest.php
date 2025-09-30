@@ -29,12 +29,12 @@ class ValidatorParserViewTest extends TestCase
 
         $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
             context: $html,
-            type: $type,
+            inputType: $type,
         );
 
         $parserComponent = ParserComponentFactory::getParserComponent(
             context: $html,
-            type: $type,
+            inputType: $type,
         );
 
         $validationResultView = new ElementValidationResultView(
@@ -82,7 +82,7 @@ class ValidatorParserViewTest extends TestCase
 
         $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
             context: $html,
-            type: $type,
+            inputType: $type,
         );
 
         $validationResultView = new ElementValidationResultView(
@@ -128,7 +128,7 @@ class ValidatorParserViewTest extends TestCase
 
         $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
             context: $html,
-            type: $type,
+            inputType: $type,
         );
 
         $validationResultView = new ElementValidationResultView(
@@ -174,7 +174,7 @@ class ValidatorParserViewTest extends TestCase
 
         $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
             context: $html,
-            type: $type,
+            inputType: $type,
         );
 
         $validationResultView = new ElementValidationResultView(
@@ -214,12 +214,12 @@ class ValidatorParserViewTest extends TestCase
 
         $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
             context: $html,
-            type: $type,
+            inputType: $type,
         );
 
         $parserComponent = ParserComponentFactory::getParserComponent(
             context: $html,
-            type: $type,
+            inputType: $type,
         );
 
         $validationResultView = new ElementValidationResultView(
@@ -280,7 +280,7 @@ class ValidatorParserViewTest extends TestCase
 
         $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
             context: $html,
-            type: $type,
+            inputType: $type,
         );
 
         $validationResultView = new ElementValidationResultView(
@@ -316,6 +316,48 @@ class ValidatorParserViewTest extends TestCase
         $this->assertStringContainsString(
             needle: '<li>Unclosed heading element(s) detected.</li>',
             haystack: $validationRender,
+        );
+    }
+
+    public function test_stub_markdown(): void
+    {
+        $type = 'markdown';
+        $markdown = '# Example Title';
+
+        $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
+            context: $markdown,
+            inputType: $type,
+        );
+
+        $parserComponent = ParserComponentFactory::getParserComponent(
+            context: $markdown,
+            inputType: $type,
+        );
+
+        $validationResultView = new ElementValidationResultView(
+            elementValidationResult: $validatorComponent->run(),
+        );
+
+        $parsingResultView = new HtmlParserView(tree: $parserComponent->run());
+
+        $validationRender = $validationResultView->render();
+        $parsingRender = $parsingResultView->render();
+
+        $this->assertStringContainsString(
+            needle: '<div>Your content is valid!</div>',
+            haystack: $validationRender,
+        );
+        $this->assertStringNotContainsString(
+            needle: '<div><strong>Errors: </strong>',
+            haystack: $validationRender,
+        );
+        $this->assertStringNotContainsString(
+            needle: '<div><strong>Warnings: </strong>',
+            haystack: $validationRender,
+        );
+        $this->assertStringContainsString(
+            needle: '<li>0: <ul><li>Name: markdown</li><li>Content: # Example Title</li></ul></li>',
+            haystack: $parsingRender,
         );
     }
 }

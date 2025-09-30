@@ -50,7 +50,7 @@ class ParserController
     {
         $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
             context: $query->getContext(),
-            type: $query->getInputType()->value,
+            inputType: $query->getInputType()->value,
         );
 
         return $validatorComponent->run();
@@ -90,7 +90,7 @@ class ParserController
         // Get ParserComponent and run parsing
         $parserComponent = ParserComponentFactory::getParserComponent(
             context: $query->getContext(),
-            type: $query->getInputType()->value,
+            inputType: $query->getInputType()->value,
         );
 
         $parserResult = $parserComponent->run();

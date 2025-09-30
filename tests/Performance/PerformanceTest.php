@@ -42,7 +42,7 @@ class PerformanceTest extends TestCase
         // Validation
         $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
             context: $html,
-            type: 'html'
+            inputType: 'html'
         );
 
         $validationResult = $validatorComponent->run();
@@ -50,7 +50,7 @@ class PerformanceTest extends TestCase
         // Parsing
         $parserComponent = ParserComponentFactory::getParserComponent(
             context: $html,
-            type: 'html'
+            inputType: 'html'
         );
 
         $parsingResult = $parserComponent->run();
