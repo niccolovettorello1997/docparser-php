@@ -15,13 +15,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_POST['renderingType'] === 'json') {
         $jsonResult = $controller->getJsonResult(views: $views);
 
-        header(header: 'Content-Type: application/json; charset=utf-8');
+        header('Content-Type: application/json; charset=utf-8');
 
         if ($jsonResult->getStatusCode() === 200) {
-            header(header: 'Content-Disposition: attachment; filename="parsed.json"');
+            header('Content-Disposition: attachment; filename="parsed.json"');
         }
 
-        http_response_code(response_code: $jsonResult->getStatusCode());
+        http_response_code($jsonResult->getStatusCode());
         echo $jsonResult->getContent();
         exit;
     }
@@ -30,46 +30,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>HTML Parser</title>
+    <title>Docparser-PHP</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-    <h1>HTML Parser</h1>
+    <div class="container">
+        <h1>Docparser-PHP</h1>
+        <p class="subtitle">Upload a file or paste code and choose how to get the result.</p>
 
-    <form method="post" action="" enctype="multipart/form-data">
-        <label for="context">Insert content:</label><br>
-        <textarea name="context" id="context"><?= htmlspecialchars(string: $_POST['context'] ?? '') ?></textarea><br><br>
+        <form method="post" action="" enctype="multipart/form-data" class="parser-form">
+            <label for="context">Content</label>
+            <textarea name="context" id="context" placeholder="Paste here your code..."><?= htmlspecialchars(string: $_POST['context'] ?? '') ?></textarea>
 
-        <input type="file" name="file" /><br><br>
+            <label for="file">Upload a file</label>
+            <input type="file" name="file" id="file" />
 
-        <label for="type">Data type:</label>
-        <select name="type" id="type">
-            <option value="html" <?= (($_POST['type'] ?? '') === 'html') ? 'selected' : '' ?>>HTML</option>
-            <option value="markdown" <?= (($_POST['type'] ?? '') === 'markdown') ? 'selected' : '' ?>>Markdown</option>
-        </select><br><br>
+            <label for="type">Language type</label>
+            <select name="type" id="type">
+                <option value="html" <?= (($_POST['type'] ?? '') === 'html') ? 'selected' : '' ?>>HTML</option>
+                <option value="markdown" <?= (($_POST['type'] ?? '') === 'markdown') ? 'selected' : '' ?>>Markdown</option>
+            </select>
 
-        <button type="submit" name="renderingType" value="html">Parse and see result in browser</button>
-        <button type="submit" name="renderingType" value="json">Parse and download JSON</button>
-    </form>
+            <div class="form-actions">
+                <button type="submit" name="renderingType" value="html" class="btn">Show result as HTML</button>
+                <button type="submit" name="renderingType" value="json" class="btn secondary">Download JSON</button>
+            </div>
+        </form>
 
-    <?php if (!empty($views)): ?>
-        <?php foreach ($views as $view): ?>
-        <div>
-            ++++++++++++++++++++++++++++++
-        </div>
-        <div>
-            <?= $view->render(); ?>
-        </div>
-        <div>
-            ++++++++++++++++++++++++++++++
-        </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
+        <div class="results">
+        <?php if (!empty($views)): ?>
+            <?php foreach ($views as $view): ?>
+                <?php
+                $rendered = $view->render();
+                $class = 'box-generic';
+
+                if (stripos(haystack: $rendered, needle: 'error') !== false) {
+                    $class = 'box-error';
+                } elseif (stripos(haystack: $rendered, needle: 'warning') !== false) {
+                    $class = 'box-warning';
+                } elseif (stripos(haystack: $rendered, needle: 'valid') !== false) {
+                    $class = 'box-success';
+                }
+                ?>
+                <div class="box <?= $class ?>">
+                    <?= $rendered ?>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
+    </div>
 
 </body>
-
 </html>

@@ -48,7 +48,7 @@ class HtmlParserView implements RenderableInterface
      */
     public function render(): string
     {
-        $result = '<div>';
+        $result = '<div><strong>Parsing result: </strong>';
         $result .= $this->arrayToHtml(input: $this->tree->toArray());
         $result .= '</div>';
 

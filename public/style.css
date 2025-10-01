@@ -1,0 +1,131 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f9fafb;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+h1 {
+    margin-top: 0;
+    color: #2c3e50;
+    text-align: center;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+label {
+    display: block;
+    margin: 15px 0 5px;
+    font-weight: bold;
+}
+
+textarea {
+    width: 100%;
+    min-height: 150px;
+    padding: 10px;
+    font-family: monospace;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+input[type="file"],
+select {
+    display: block;
+    margin-top: 5px;
+    padding: 8px;
+}
+
+.form-actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    background: #3498db;
+    color: #fff;
+    cursor: pointer;
+}
+
+.btn.secondary {
+    background: #2ecc71;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+.results {
+    margin-top: 30px;
+}
+
+.results h2 {
+    margin-bottom: 15px;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 5px;
+}
+
+.result-block {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fdfdfd;
+    margin-bottom: 15px;
+}
+
+form {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
+.box {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    border: 1px solid transparent;
+}
+
+.box-error {
+    background: #ffe6e6;
+    border-color: #ff4d4d;
+    color: #b30000;
+}
+
+.box-warning {
+    background: #fff5e6;
+    border-color: #ffcc00;
+    color: #805500;
+}
+
+.box-success {
+    background: #e6ffed;
+    border-color: #2ecc71;
+    color: #1e8449;
+}
+
+.box-generic {
+    background: #f0f0f0;
+    border-color: #ccc;
+    color: #333;
+}
