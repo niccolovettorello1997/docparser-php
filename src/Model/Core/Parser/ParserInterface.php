@@ -6,7 +6,7 @@ namespace Niccolo\DocparserPhp\Model\Core\Parser;
 
 use Niccolo\DocparserPhp\Model\Core\Parser\Node;
 
-interface AbstractParser
+interface ParserInterface
 {
     /**
      * Parse the corresponding element.

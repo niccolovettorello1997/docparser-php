@@ -26,11 +26,11 @@ class ParserAdapter
             return null;
         }
 
-        /** @var AbstractParser[] */
+        /** @var ParserInterface[] */
         $result = [];
 
         foreach ($this->rootElements as $rootElement) {
-            /** @var AbstractParser $rootElementObject */
+            /** @var ParserInterface $rootElementObject */
             $rootElementObject = new $rootElement();
             $currentParsingTree = $rootElementObject->parse(content: $sharedContext->getContext());
 

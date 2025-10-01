@@ -8,7 +8,7 @@ use RuntimeException;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
 use Symfony\Component\Yaml\Exception\ParseException;
-use Niccolo\DocparserPhp\Model\Core\Parser\AbstractParser;
+use Niccolo\DocparserPhp\Model\Core\Parser\ParserInterface;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponent;
 
 class ParserConfigTest extends TestCase
@@ -21,7 +21,7 @@ class ParserConfigTest extends TestCase
 
         foreach ($config['rootElements'] as $parserClass) {
             $this->assertTrue(condition: class_exists(class: $parserClass));
-            $this->assertTrue(condition: is_subclass_of(object_or_class: $parserClass, class: AbstractParser::class));
+            $this->assertTrue(condition: is_subclass_of(object_or_class: $parserClass, class: ParserInterface::class));
         }
     }
 
