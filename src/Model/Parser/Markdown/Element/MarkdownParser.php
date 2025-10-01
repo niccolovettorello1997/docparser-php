@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Niccolo\DocparserPhp\Model\Parser\Markdown\Element;
 
 use Niccolo\DocparserPhp\Model\Core\Parser\Node;
-use Niccolo\DocparserPhp\Model\Core\Parser\AbstractParser;
+use Niccolo\DocparserPhp\Model\Core\Parser\ParserInterface;
 
-class MarkdownParser implements AbstractParser
+class MarkdownParser implements ParserInterface
 {
     public function parse(string $content): ?Node
     {

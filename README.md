@@ -4,21 +4,28 @@
 
 <a href="https://codecov.io/gh/niccolovettorello1997/docparser-php" > 
  <img src="https://codecov.io/gh/niccolovettorello1997/docparser-php/graph/badge.svg?token=LNQFFW4GD3" style="height:auto; margin-right:10px; vertical-align:top;"/>
- <img src="https://github.com/niccolovettorello1997/docparser-php/actions/workflows/tests.yml/badge.svg" style="height:auto; vertical-align:top;">
+ <img src="https://github.com/niccolovettorello1997/docparser-php/actions/workflows/tests.yml/badge.svg" style="height:auto; vertical-align:top; margin-right:10px;">
+ <img src="https://img.shields.io/badge/PHP-8.3-777BB4?logo=php" style="height:auto; vertical-align:top; margin-right:10px;">
+ <img src="https://img.shields.io/github/license/niccolovettorello1997/docparser-php" style="height:auto; vertical-align:top; margin-right:10px;">
 </a>
+
+---
 
 # DocParser-PHP
 
-A simple **HTML parser and validator** written in PHP 8, designed as a learning project to demonstrate **object-oriented PHP, unit testing, and modular architecture**. This repository showcases coding practices, structured parsing, validation, and output rendering in HTML and JSON formats.
+A simple **HTML parser and validator** written in PHP 8, designed as a learning project to demonstrate **object-oriented PHP, unit testing, and modular architecture**. This project represents a practical exercise written after studying the book *PHP 8 und MySQL: das umfassende Handbuch* by Wenz and Hauser. It showcases coding practices, structured parsing, validation, and output rendering in HTML and JSON formats.
 
 ---
 
 ## **Table of Contents**
 
 - [Features](#features)
+- [Architecture Overview](#architecture-overview)
 - [Technology Stack](#technology-stack)
+- [Skills Demonstrated](#skills-demonstrated)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Example Input/Output](#example-inputoutput)
 - [Project Structure](#project-structure)
 - [Validation and Parsing Logic](#validation-and-parsing-logic)
 - [Contributing](#contributing)
@@ -33,13 +40,46 @@ A simple **HTML parser and validator** written in PHP 8, designed as a learning 
   - Checks for empty elements and invalid characters
   - Warning system for optional attributes
 - Parse HTML into a structured DOM-like tree
+- HTML support is not complete since it was not the main focus of this project
 - Output results in:
   - Human-readable HTML
   - Structured JSON for further processing
-- Modular architecture to support additional document types
+- Modular architecture to support additional document types (stub code for Markdown as example)
 - Fully tested with PHPUnit
 - Dockerized for easy setup
 - Configurable validators and parsers via YAML
+
+---
+
+## **Architecture Overview**
+
+```mermaid
+flowchart TD
+    %% Entry point / UI
+    A["index.php UI"] --> B["ParserController"]
+
+    %% Controller orchestration
+    B --> C["ParserFactory"]
+
+    %% Parsers and Validators
+    C --> D["HTMLValidator & HTMLParser"]
+    C --> E["MarkdownValidator & MarkdownParser"]
+
+    %% Model: validation results
+    D --> F["ElementValidationResult (Model)"]
+    E --> F
+
+    %% Views: render output
+    F --> G["HtmlParserView (HTML Output)"]
+    F --> H["JsonParserView (JSON Output)"]
+
+    %% Back to UI
+    G --> A
+    H --> A
+
+    %% Optional: File download
+    H --> I["Download Endpoint"]
+```
 
 ---
 
@@ -50,6 +90,17 @@ A simple **HTML parser and validator** written in PHP 8, designed as a learning 
 - **Docker & Docker Compose** for environment setup
 - **PHPUnit** for unit testing
 - HTML5 standards compliance
+
+---
+
+## **Skills Demonstrated**
+- Modular MVC-like architecture in PHP 8.3
+- OOP and design patterns (Factory, Validator)
+- Unit testing and regression testing with PHPUnit
+- Composer for dependency management
+- CI/CD with GitHub Actions
+- Dockerized environment for portability
+- Extensible design for new parsers/validators
 
 ---
 
@@ -91,13 +142,103 @@ http://localhost:8080
 ## **Usage**
 
 1. Insert HTML content directly into the textarea **or** upload an HTML file.
-2. Select the data type (currently only `HTML` is supported).
+2. Select the data type (currently only `HTML` and a stub for `Markdown` are supported).
 3. Click **Parse**.
 4. Results are displayed:
 
    * Validation errors and warnings
    * Parsed HTML view
-   * Optional JSON view
+   * Optional JSON downloadable file
+
+---
+
+## **Example Input/Output**
+
+**Input HTML**
+
+```html
+<!DOCTYPE html>
+<html lang="de">
+  <head><title>Test</title></head>
+  <body>
+    <h1>Hello</h1>
+    <p>World</p>
+  </body>
+</html>
+```
+
+**Output JSON for HTML**
+
+```json
+{
+    "Name": "root",
+    "Children": [
+        {
+            "Name": "doctype",
+            "Children": [
+                {
+                    "Name": "html",
+                    "Attributes": {
+                        "lang": "de"
+                    },
+                    "Children": [
+                        {
+                            "Name": "head",
+                            "Children": [
+                                {
+                                    "Name": "title",
+                                    "Content": "Test"
+                                }
+                            ]
+                        },
+                        {
+                            "Name": "body",
+                            "Children": [
+                                {
+                                    "Name": "paragraphs",
+                                    "Children": [
+                                        {
+                                            "Name": "p",
+                                            "Content": "World"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "Name": "headings",
+                                    "Children": [
+                                        {
+                                            "Name": "h1",
+                                            "Content": "Hello"
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+```
+
+**Input Markdown (stub)**
+```md
+# Example title
+```
+
+**Output JSON for Markdown**
+```json
+{
+    "Name": "root",
+    "Children": [
+        {
+            "Name": "markdown",
+            "Content": "# Example title"
+        }
+    ]
+}
+```
 
 ---
 
@@ -108,7 +249,7 @@ src/          # Core PHP source code (validators, parsers, factories)
 tests/        # PHPUnit tests for validators, parsers, and views
 views/        # HTML views for displaying validation results
 public/       # Entry point for the web interface
-docker/       # Docker and Compose configuration
+docker/       # Docker configuration
 config/       # Settings for parser and validator
 fixtures/     # Project fixtures
 assets/       # Project assets
@@ -120,7 +261,6 @@ assets/       # Project assets
 
 1. **Validation**
 
-   * Fail-fast: stops at the first fatal error
    * Checks include:
 
      * Unique `doctype`, `html`, `head`, `body`, `title`

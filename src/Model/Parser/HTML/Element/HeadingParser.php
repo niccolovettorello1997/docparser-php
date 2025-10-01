@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Model\Parser\HTML\Element;
 
-use Niccolo\DocparserPhp\Model\Core\Parser\AbstractParser;
+use Niccolo\DocparserPhp\Model\Core\Parser\ParserInterface;
 use Niccolo\DocparserPhp\Model\Core\Parser\Node;
 use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\HtmlElementType;
 
-class HeadingParser implements AbstractParser
+class HeadingParser implements ParserInterface
 {
     /**
      * Parse headings content and attributes.
