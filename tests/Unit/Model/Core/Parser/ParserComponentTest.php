@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Niccolo\DocparserPhp\Tests\Unit\Model\Core\Parser;
 
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponent;
-use PHPUnit\Framework\TestCase;
 use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\HtmlElementType;
+use PHPUnit\Framework\TestCase;
 
 class ParserComponentTest extends TestCase
 {

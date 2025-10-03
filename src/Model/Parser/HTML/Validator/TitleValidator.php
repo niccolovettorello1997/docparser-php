@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Model\Parser\HTML\Validator;
 
+use Niccolo\DocparserPhp\Model\Core\Validator\AbstractValidator;
+use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
 use Niccolo\DocparserPhp\Model\Utils\Error\EmptyElementError;
 use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
 use Niccolo\DocparserPhp\Model\Utils\Error\MissingElementError;
-use Niccolo\DocparserPhp\Model\Core\Validator\AbstractValidator;
 use Niccolo\DocparserPhp\Model\Utils\Error\NotUniqueElementError;
-use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
 
 class TitleValidator extends AbstractValidator
 {
@@ -18,8 +18,9 @@ class TitleValidator extends AbstractValidator
     /**
      * Check if the title element is present in the HTML document.
      * 
-     * @param  array $titleMatches
-     * @param  ElementValidationResult $elementValidationResult
+     * @param array                   $titleMatches
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function isPresent(array $titleMatches, ElementValidationResult $elementValidationResult): void
@@ -36,8 +37,9 @@ class TitleValidator extends AbstractValidator
     /**
      * Check if the title element is unique.
      * 
-     * @param  array $titleMatches
-     * @param  ElementValidationResult $elementValidationResult
+     * @param array                   $titleMatches
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function isUnique(array $titleMatches, ElementValidationResult $elementValidationResult): void
@@ -54,8 +56,9 @@ class TitleValidator extends AbstractValidator
     /**
      * Check if the title element is not empty (at least one character different from whitespace).
      * 
-     * @param  array $titleMatches
-     * @param  ElementValidationResult $elementValidationResult
+     * @param array                   $titleMatches
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function isNotEmpty(array $titleMatches, ElementValidationResult $elementValidationResult): void
@@ -72,8 +75,9 @@ class TitleValidator extends AbstractValidator
     /**
      * Check if the title element contains only valid characters in UTF-8.
      * 
-     * @param  array $titleMatches
-     * @param  ElementValidationResult $elementValidationResult
+     * @param array                   $titleMatches
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function isValidUTF8(array $titleMatches, ElementValidationResult $elementValidationResult): void

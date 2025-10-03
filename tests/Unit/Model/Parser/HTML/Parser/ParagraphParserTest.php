@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Tests\Unit\Model\Parser\HTML\Parser;
 
-use PHPUnit\Framework\TestCase;
 use Niccolo\DocparserPhp\Model\Core\Parser\Node;
-use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\HtmlElementType;
 use Niccolo\DocparserPhp\Model\Parser\HTML\Element\ParagraphParser;
+use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\HtmlElementType;
+use PHPUnit\Framework\TestCase;
 
 class ParagraphParserTest extends TestCase
 {

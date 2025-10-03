@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Model\Parser\HTML\Validator;
 
-use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
 use Niccolo\DocparserPhp\Model\Core\Validator\AbstractValidator;
+use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
 use Niccolo\DocparserPhp\Model\Utils\Error\MalformedElementError;
 use Niccolo\DocparserPhp\Model\Utils\Error\NotUniqueElementError;
-use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
 
 class HeadValidator extends AbstractValidator
 {
@@ -17,8 +17,9 @@ class HeadValidator extends AbstractValidator
     /**
      * Checks if the tag is unique.
      * 
-     * @param  array $matchesHead
-     * @param  ElementValidationResult $elementValidationResult
+     * @param array                   $matchesHead
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function isUnique(array $matchesHead, ElementValidationResult $elementValidationResult): void
@@ -35,8 +36,9 @@ class HeadValidator extends AbstractValidator
     /**
      * Checks if the content before the head element and after the html element contains only whitespaces.
      * 
-     * @param  string $content
-     * @param  ElementValidationResult $elementValidationResult
+     * @param string                  $content
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function hasValidPrefix(string $content, ElementValidationResult $elementValidationResult): void
@@ -59,8 +61,9 @@ class HeadValidator extends AbstractValidator
     /**
      * Checks if the head element has a closing tag.
      * 
-     * @param  string $content
-     * @param  ElementValidationResult $elementValidationResult
+     * @param string                  $content
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function hasClosingTag(string $content, ElementValidationResult $elementValidationResult): void
@@ -82,8 +85,9 @@ class HeadValidator extends AbstractValidator
     /**
      * Checks if the head element contains nested elements.
      * 
-     * @param  array $matchesHead
-     * @param  ElementValidationResult $elementValidationResult
+     * @param array                   $matchesHead
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function checkNestedElements(array $matchesHead, ElementValidationResult $elementValidationResult): void

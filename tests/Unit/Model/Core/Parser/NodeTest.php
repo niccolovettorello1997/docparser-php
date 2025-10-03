@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Tests\Unit\Model\Core\Parser;
 
-use PHPUnit\Framework\TestCase;
 use Niccolo\DocparserPhp\Model\Core\Parser\Node;
+use PHPUnit\Framework\TestCase;
 
 class NodeTest extends TestCase
 {

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Tests\Unit\Model\Parser\HTML\Validator;
 
-use PHPUnit\Framework\TestCase;
-use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
-use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
-use Niccolo\DocparserPhp\Model\Utils\Error\MissingElementError;
-use Niccolo\DocparserPhp\Model\Utils\Error\MalformedElementError;
-use Niccolo\DocparserPhp\Model\Utils\Error\NotUniqueElementError;
 use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\HtmlValidator;
+use Niccolo\DocparserPhp\Model\Utils\Error\MalformedElementError;
+use Niccolo\DocparserPhp\Model\Utils\Error\MissingElementError;
+use Niccolo\DocparserPhp\Model\Utils\Error\NotUniqueElementError;
+use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
+use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
 use Niccolo\DocparserPhp\Model\Utils\Warning\RecommendedAttributeWarning;
+use PHPUnit\Framework\TestCase;
 
 class HtmlValidatorTest extends TestCase
 {

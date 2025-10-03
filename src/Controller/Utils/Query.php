@@ -34,9 +34,11 @@ class Query
     /**
      * Build query from file or textarea.
      * 
-     * @param  array $data
-     * @param  array $files
+     * @param array $data
+     * @param array $files
+     *
      * @throws \InvalidArgumentException
+     *
      * @return ?Query
      */
     public static function getQuery(array $data, array $files): ?Query

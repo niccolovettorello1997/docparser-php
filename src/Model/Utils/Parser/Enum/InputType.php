@@ -13,6 +13,7 @@ enum InputType: string
      * Get file extension for the language.
      * 
      * @param InputType $type
+     *
      * @return string
      */
     public static function getExtension(self $type): string

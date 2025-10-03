@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Model\Parser\HTML\Element;
 
-use Niccolo\DocparserPhp\Model\Core\Parser\ParserInterface;
 use Niccolo\DocparserPhp\Model\Core\Parser\Node;
+use Niccolo\DocparserPhp\Model\Core\Parser\ParserInterface;
 use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\HtmlElementType;
 
 class TitleParser implements ParserInterface
@@ -13,7 +13,8 @@ class TitleParser implements ParserInterface
     /**
      * Parse title content.
      * 
-     * @param  string $content
+     * @param string $content
+     *
      * @return string
      */
     private function parseTitle(string $content): string

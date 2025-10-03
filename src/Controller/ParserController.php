@@ -6,22 +6,23 @@ namespace Niccolo\DocparserPhp\Controller;
 
 use Niccolo\DocparserPhp\Controller\Utils\Query;
 use Niccolo\DocparserPhp\Controller\Utils\Response;
-use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
-use Niccolo\DocparserPhp\View\Parser\HtmlParserView;
-use Niccolo\DocparserPhp\View\Parser\JsonParserView;
-use Niccolo\DocparserPhp\View\RenderableInterface;
-use Niccolo\DocparserPhp\View\ElementValidationResultView;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponentFactory;
 use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
 use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
+use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
 use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\RenderingType;
+use Niccolo\DocparserPhp\View\ElementValidationResultView;
+use Niccolo\DocparserPhp\View\Parser\HtmlParserView;
+use Niccolo\DocparserPhp\View\Parser\JsonParserView;
+use Niccolo\DocparserPhp\View\RenderableInterface;
 
 class ParserController
 {
     /**
      * Handle pre-validation errors.
      *
-     * @param  string $message
+     * @param string $message
+     *
      * @return ElementValidationResultView[]
      */
     private function handlePreValidationError(string $message): array
@@ -42,8 +43,10 @@ class ParserController
     /**
      * Perform validation.
      * 
-     * @param  Query $query
+     * @param Query $query
+     *
      * @throws \InvalidArgumentException
+     *
      * @return ElementValidationResult
      */
     private function runValidation(Query $query): ElementValidationResult
@@ -59,7 +62,8 @@ class ParserController
     /**
      * Handle the form data and return the validation view.
      * 
-     * @param  array $data
+     * @param array $data
+     *
      * @return RenderableInterface[]
      */
     public function handleRequest(array $data): array
@@ -106,7 +110,8 @@ class ParserController
     /**
      * Get parsing result as downloadable JSON.
      * 
-     * @param  RenderableInterface[] $views
+     * @param RenderableInterface[] $views
+     *
      * @return Response
      */
     public function getJsonResult(array $views): Response

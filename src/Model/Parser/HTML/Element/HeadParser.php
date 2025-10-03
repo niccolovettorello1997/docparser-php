@@ -13,7 +13,8 @@ class HeadParser implements ParserInterface
     /**
      * Parse head content and attributes.
      * 
-     * @param  string $content
+     * @param string $content
+     *
      * @return array
      */
     private function parseHead(string $content): array

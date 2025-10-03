@@ -9,9 +9,11 @@ class ParserComponentFactory
     /**
      * Dynamically create a new instance of ParserComponent.
      * 
-     * @param  string $context
-     * @param  string $inputType
+     * @param string $context
+     * @param string $inputType
+     *
      * @throws \InvalidArgumentException
+     *
      * @return ParserComponent
      */
     public static function getParserComponent(string $context, string $inputType): ParserComponent

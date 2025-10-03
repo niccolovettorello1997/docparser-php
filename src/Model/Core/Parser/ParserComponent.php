@@ -4,10 +4,10 @@ declare(strict_types= 1);
 
 namespace Niccolo\DocparserPhp\Model\Core\Parser;
 
-use Symfony\Component\Yaml\Yaml;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserAdapter;
 use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
 use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Yaml;
 
 class ParserComponent
 {
@@ -26,10 +26,12 @@ class ParserComponent
     /**
      * Given a context and a parser configuration path, returns a new ParserComponent.
      * 
-     * @param  string $context
-     * @param  string $configPath
+     * @param string $context
+     * @param string $configPath
+     *
      * @throws \RuntimeException
      * @throws ParseException
+     *
      * @return ParserComponent
      */
     public static function build(string $context, string $configPath): ParserComponent

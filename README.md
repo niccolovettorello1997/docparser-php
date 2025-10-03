@@ -43,6 +43,8 @@ A simple **HTML parser and validator** written in PHP 8, designed as a learning 
 - [Example Input/Output](#example-inputoutput)
 - [Project Structure](#project-structure)
 - [Validation and Parsing Logic](#validation-and-parsing-logic)
+- [Tests & Quality Assurance](#tests--quality-assurance)
+- [Code Style & Formatting](#code-style--formatting)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -370,6 +372,19 @@ To run tests:
 docker exec -it docparser-php-web-1 bash
 vendor/bin/phpunit
 ```
+
+---
+
+## **Code Style & Formatting**
+
+This project uses **PHP-CS-Fixer** to enforce consistent coding standards (PSR-12, short array syntax, strict parameters, etc.).  
+Run it locally:
+
+```bash
+vendor/bin/php-cs-fixer fix
+```
+
+In CI, the pipeline runs `php-cs-fixer` in `dry-run` mode to validate formatting.
 
 ---
 

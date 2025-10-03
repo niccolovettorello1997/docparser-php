@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Model\Parser\HTML\Validator;
 
-use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
 use Niccolo\DocparserPhp\Model\Core\Validator\AbstractValidator;
+use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
 use Niccolo\DocparserPhp\Model\Utils\Error\MalformedElementError;
 use Niccolo\DocparserPhp\Model\Utils\Error\NotUniqueElementError;
 use Niccolo\DocparserPhp\Model\Utils\Warning\EmptyElementWarning;
-use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
 
 class BodyValidator extends AbstractValidator
 {
@@ -54,8 +54,9 @@ class BodyValidator extends AbstractValidator
     /**
      * Checks if the body element has valid attributes.
      * 
-     * @param  string $bodyAttributes
-     * @param  ElementValidationResult $elementValidationResult
+     * @param string                  $bodyAttributes
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function checkInvalidAttributes(string $bodyAttributes, ElementValidationResult $elementValidationResult): void
@@ -74,8 +75,9 @@ class BodyValidator extends AbstractValidator
     /**
      * Checks if the body element contains any invalid tags.
      *
-     * @param  string $bodyContent
-     * @param  ElementValidationResult $elementValidationResult
+     * @param string                  $bodyContent
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function checkInvalidTags(string $bodyContent, ElementValidationResult $elementValidationResult): void
@@ -99,8 +101,9 @@ class BodyValidator extends AbstractValidator
     /**
      * Checks if the tag is unique.
      * 
-     * @param  array $matchesBody
-     * @param  ElementValidationResult $elementValidationResult
+     * @param array                   $matchesBody
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function isUnique(array $matchesBody, ElementValidationResult $elementValidationResult): void
@@ -117,8 +120,9 @@ class BodyValidator extends AbstractValidator
     /**
      * Checks if the body element is not empty.
      * 
-     * @param  string $elementContent
-     * @param  ElementValidationResult $elementValidationResult
+     * @param string                  $elementContent
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function isNotEmpty(string $elementContent, ElementValidationResult $elementValidationResult): void

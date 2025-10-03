@@ -43,6 +43,8 @@ Ein einfacher **HTML-Parser und -Validator**, geschrieben in PHP 8, entworfen al
 - [Eingabe/Ausgabe Beispiel](#ea-beispiel)
 - [Projektstruktur](#projektstruktur)
 - [Validierungs- und Parsing-Logik](#validierungs--und-parsing-logik)
+- [Tests & Qualitätssicherung](#tests--qualitätssicherung)
+- [Code-Stil & Formatierung](#code-stil--formatierung)
 - [Beitragen](#beitragen)
 - [Lizenz](#lizenz)
 
@@ -368,6 +370,19 @@ Tests ausführen:
 docker exec -it docparser-php-web-1 bash
 vendor/bin/phpunit
 ```
+
+---
+
+## **Code-Stil & Formatierung**
+
+Dieses Projekt verwendet **PHP-CS-Fixer**, um einheitliche Coding-Standards durchzusetzen (PSR-12, kurze Array-Syntax, strikte Parameter usw.).  
+Führe es lokal aus:
+
+```bash
+vendor/bin/php-cs-fixer fix
+```
+
+In der CI-Pipeline wird `php-cs-fixer` im `dry-run-Modus` ausgeführt, um die Formatierung zu validieren.
 
 ---
 

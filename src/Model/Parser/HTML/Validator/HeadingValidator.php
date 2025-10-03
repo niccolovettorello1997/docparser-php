@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Model\Parser\HTML\Validator;
 
-use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
-use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
 use Niccolo\DocparserPhp\Model\Core\Validator\AbstractValidator;
 use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
+use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
 
 class HeadingValidator extends AbstractValidator
 {
@@ -67,8 +67,9 @@ class HeadingValidator extends AbstractValidator
     /**
      * Returns true if opening and closing tags are balanced, false otherwise.
      * 
-     * @param  string $content
-     * @param  ElementValidationResult $elementValidationResult
+     * @param string                  $content
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function areHeadingTagsBalanced(string $content, ElementValidationResult $elementValidationResult): void {
@@ -128,8 +129,9 @@ class HeadingValidator extends AbstractValidator
     /**
      * Checks if all heading elements have valid content.
      * 
-     * @param  string $content
-     * @param  ElementValidationResult $elementValidationResult
+     * @param string                  $content
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function checkHeadingElementsValidContent(string $content, ElementValidationResult $elementValidationResult): void

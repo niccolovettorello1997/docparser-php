@@ -17,7 +17,8 @@ class ParserAdapter
     /**
      * Invoke parse method on root element classes.
      * 
-     * @param  SharedContext $sharedContext
+     * @param SharedContext $sharedContext
+     *
      * @return Node|null
      */
     public function parse(SharedContext $sharedContext): ?Node
