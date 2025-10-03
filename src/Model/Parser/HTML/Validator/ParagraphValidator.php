@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Model\Parser\HTML\Validator;
 
-use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
-use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
 use Niccolo\DocparserPhp\Model\Core\Validator\AbstractValidator;
-use Niccolo\DocparserPhp\Model\Utils\Error\MalformedElementError;
-use Niccolo\DocparserPhp\Model\Utils\Warning\EmptyElementWarning;
 use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
+use Niccolo\DocparserPhp\Model\Utils\Error\MalformedElementError;
+use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
+use Niccolo\DocparserPhp\Model\Utils\Warning\EmptyElementWarning;
 
 class ParagraphValidator extends AbstractValidator
 {
@@ -49,7 +49,8 @@ class ParagraphValidator extends AbstractValidator
     /**
      * Check if there are nested paragraphs.
      *
-     * @param  ElementValidationResult $elementValidationResult
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     function hasNestedParagraphs(ElementValidationResult $elementValidationResult): void
@@ -81,7 +82,8 @@ class ParagraphValidator extends AbstractValidator
     /**
      * Check for invalid tags within paragraph elements.
      * 
-     * @param  ElementValidationResult $elementValidationResult
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function checkInvalidTags(ElementValidationResult $elementValidationResult): void
@@ -112,8 +114,9 @@ class ParagraphValidator extends AbstractValidator
     /**
      * Check for empty paragraph elements.
      * 
-     * @param  string $content
-     * @param  ElementValidationResult $elementValidationResult
+     * @param string                  $content
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function checkEmptyParagraphs(string $content, ElementValidationResult $elementValidationResult): void
@@ -126,7 +129,7 @@ class ParagraphValidator extends AbstractValidator
         )) {
             $elementValidationResult->addWarning(
                 warning: new EmptyElementWarning(
-                    message: 'Empty '. self::ELEMENT_NAME .' element detected.',
+                    message: 'Empty ' . self::ELEMENT_NAME . ' element detected.',
                 )
             );
         }
@@ -135,8 +138,9 @@ class ParagraphValidator extends AbstractValidator
     /**
      * Check if paragraph tags are balanced.
      *
-     * @param  string $content
-     * @param  ElementValidationResult $elementValidationResult
+     * @param string                  $content
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function checkBalancedParagraphTags(string $content, ElementValidationResult $elementValidationResult): void

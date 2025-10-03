@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Tests\Unit\Controller;
 
-use PHPUnit\Framework\TestCase;
+use Niccolo\DocparserPhp\Controller\ParserController;
 use Niccolo\DocparserPhp\Model\Core\Parser\Node;
+use Niccolo\DocparserPhp\View\ElementValidationResultView;
 use Niccolo\DocparserPhp\View\Parser\HtmlParserView;
 use Niccolo\DocparserPhp\View\Parser\JsonParserView;
-use Niccolo\DocparserPhp\Controller\ParserController;
-use Niccolo\DocparserPhp\View\ElementValidationResultView;
+use PHPUnit\Framework\TestCase;
 
 class ParserControllerTest extends TestCase
 {

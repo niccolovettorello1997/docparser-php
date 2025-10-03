@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Tests\Unit\Model\Parser\HTML\Parser;
 
-use PHPUnit\Framework\TestCase;
 use Niccolo\DocparserPhp\Model\Parser\HTML\Element\TitleParser;
+use PHPUnit\Framework\TestCase;
 
 class TitleParserTest extends TestCase
 {

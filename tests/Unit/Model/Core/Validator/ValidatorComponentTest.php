@@ -4,14 +4,14 @@ declare(strict_types= 1);
 
 namespace Niccolo\DocparserPhp\Tests\Unit\Model\Core\Validator;
 
-use PHPUnit\Framework\TestCase;
-use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
+use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponent;
 use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
 use Niccolo\DocparserPhp\Model\Utils\Error\MissingElementError;
-use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponent;
 use Niccolo\DocparserPhp\Model\Utils\Error\NotUniqueElementError;
+use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
 use Niccolo\DocparserPhp\Model\Utils\Warning\EmptyElementWarning;
 use Niccolo\DocparserPhp\Model\Utils\Warning\RecommendedAttributeWarning;
+use PHPUnit\Framework\TestCase;
 
 class ValidatorComponentTest extends TestCase
 {

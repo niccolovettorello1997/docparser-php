@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Tests\Performance;
 
-use PHPUnit\Framework\TestCase;
-use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponentFactory;
+use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
+use PHPUnit\Framework\TestCase;
 
 class PerformanceTest extends TestCase
 {

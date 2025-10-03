@@ -19,10 +19,12 @@ class ValidatorComponent
     /**
      * Given a context and a validator configuration path, returns a new ValidatorComponent.
      * 
-     * @param  string $context
-     * @param  string $configPath
+     * @param string $context
+     * @param string $configPath
+     *
      * @throws \RuntimeException
      * @throws ParseException
+     *
      * @return ValidatorComponent
      */
     public static function build(string $context, string $configPath): ValidatorComponent

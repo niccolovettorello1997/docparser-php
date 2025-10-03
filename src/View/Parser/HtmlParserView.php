@@ -17,7 +17,8 @@ class HtmlParserView implements RenderableInterface
     /**
      * Render an array into html.
      * 
-     * @param  array $input
+     * @param array $input
+     *
      * @return string
      */
     private function arrayToHtml(array $input): string

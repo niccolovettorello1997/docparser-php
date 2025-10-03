@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Tests\Config;
 
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Yaml\Yaml;
 use Niccolo\DocparserPhp\Model\Core\Validator\AbstractValidator;
 use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponent;
 use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\BodyValidator;
@@ -15,8 +13,10 @@ use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\HeadValidator;
 use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\HtmlValidator;
 use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\ParagraphValidator;
 use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\TitleValidator;
+use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Yaml;
 
 class ValidatorConfigTest extends TestCase
 {

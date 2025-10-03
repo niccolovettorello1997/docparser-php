@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Tests\Integration;
 
-use Niccolo\DocparserPhp\View\Parser\HtmlParserView;
-use PHPUnit\Framework\TestCase;
-use Niccolo\DocparserPhp\View\ElementValidationResultView;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponentFactory;
 use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
+use Niccolo\DocparserPhp\View\ElementValidationResultView;
+use Niccolo\DocparserPhp\View\Parser\HtmlParserView;
+use PHPUnit\Framework\TestCase;
 
 class ValidatorParserViewTest extends TestCase
 {

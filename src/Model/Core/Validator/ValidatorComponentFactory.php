@@ -9,8 +9,9 @@ class ValidatorComponentFactory
     /**
      * Dynamically create a new instance of ValidatorComponent, based on the provided parameters.
      * 
-     * @param  string $context
-     * @param  string $inputType
+     * @param string $context
+     * @param string $inputType
+     *
      * @return ValidatorComponent
      */
     public static function getValidatorComponent(string $context, string $inputType): ValidatorComponent

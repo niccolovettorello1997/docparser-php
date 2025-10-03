@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Model\Parser\HTML\Validator;
 
-use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
-use Niccolo\DocparserPhp\Model\Utils\Error\MissingElementError;
 use Niccolo\DocparserPhp\Model\Core\Validator\AbstractValidator;
-use Niccolo\DocparserPhp\Model\Utils\Error\MalformedElementError;
-use Niccolo\DocparserPhp\Model\Utils\Error\NotUniqueElementError;
 use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use Niccolo\DocparserPhp\Model\Utils\Error\MalformedElementError;
+use Niccolo\DocparserPhp\Model\Utils\Error\MissingElementError;
+use Niccolo\DocparserPhp\Model\Utils\Error\NotUniqueElementError;
+use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
 use Niccolo\DocparserPhp\Model\Utils\Warning\RecommendedAttributeWarning;
 
 class HtmlValidator extends AbstractValidator
@@ -19,8 +19,9 @@ class HtmlValidator extends AbstractValidator
     /**
      * Validates the structure of the html tag.
      * 
-     * @param  array $matchesHtml
-     * @param  ElementValidationResult $elementValidationResult
+     * @param array                   $matchesHtml
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function validateHtmlStructure(array $matchesHtml, ElementValidationResult $elementValidationResult): void
@@ -66,8 +67,9 @@ class HtmlValidator extends AbstractValidator
     /**
      * Check for the html element presence and if it has a closing tag.
      * 
-     * @param  array $matchesHtml
-     * @param  ElementValidationResult $elementValidationResult
+     * @param array                   $matchesHtml
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function htmlElementPresenceAndClosingTag(array $matchesHtml, ElementValidationResult $elementValidationResult): void
@@ -98,8 +100,9 @@ class HtmlValidator extends AbstractValidator
     /**
      * Check if the html element is unique.
      * 
-     * @param  array $matchesHtml
-     * @param  ElementValidationResult $elementValidationResult
+     * @param array                   $matchesHtml
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function isUnique(array $matchesHtml, ElementValidationResult $elementValidationResult): void
@@ -116,8 +119,9 @@ class HtmlValidator extends AbstractValidator
     /**
      * Check if the html element has both head and body elements. Body must be after head.
      * 
-     * @param  array $matchesHtml
-     * @param  ElementValidationResult $elementValidationResult
+     * @param array                   $matchesHtml
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function hasHeadAndBodyElements(array $matchesHtml, ElementValidationResult $elementValidationResult): void
@@ -171,8 +175,9 @@ class HtmlValidator extends AbstractValidator
     /**
      * Check if the html element has a lang attribute.
      * 
-     * @param  array $matchesHtml
-     * @param  ElementValidationResult $elementValidationResult
+     * @param array                   $matchesHtml
+     * @param ElementValidationResult $elementValidationResult
+     *
      * @return void
      */
     private function shouldHaveLangAttribute(array $matchesHtml, ElementValidationResult $elementValidationResult): void

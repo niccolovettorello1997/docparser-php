@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Tests\Unit\Controller\Utils;
 
-use PHPUnit\Framework\TestCase;
 use Niccolo\DocparserPhp\Controller\Utils\Query;
 use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\InputType;
 use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\RenderingType;
+use PHPUnit\Framework\TestCase;
 
 class QueryTest extends TestCase
 {

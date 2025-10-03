@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Tests\Config;
 
-use RuntimeException;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\Yaml\Yaml;
-use Symfony\Component\Yaml\Exception\ParseException;
-use Niccolo\DocparserPhp\Model\Core\Parser\ParserInterface;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponent;
+use Niccolo\DocparserPhp\Model\Core\Parser\ParserInterface;
+use PHPUnit\Framework\TestCase;
+use RuntimeException;
+use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Yaml;
 
 class ParserConfigTest extends TestCase
 {

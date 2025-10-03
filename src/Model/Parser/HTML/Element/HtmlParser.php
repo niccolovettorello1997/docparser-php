@@ -13,7 +13,8 @@ class HtmlParser implements ParserInterface
     /**
      * Get html element content and attributes.
      * 
-     * @param  string $content
+     * @param string $content
+     *
      * @return array
      */
     private function parseHtmlElement(string $content): array
