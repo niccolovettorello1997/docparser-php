@@ -64,17 +64,18 @@ class QueryTest extends TestCase
             files: $files,
         );
 
+	$this->assertNotNull($query);
         $this->assertEquals(
-            expected: $data['context'],
-            actual: $query->getContext(),
+            $data['context'],
+            $query->getContext(),
         );
         $this->assertEquals(
-            expected: InputType::HTML->value,
-            actual: $query->getInputType()->value,
+            InputType::HTML->value,
+            $query->getInputType()->value,
         );
         $this->assertEquals(
-            expected: RenderingType::HTML->value,
-            actual: $query->getRenderingType()->value,
+            RenderingType::HTML->value,
+            $query->getRenderingType()->value,
         );
     }
 
@@ -83,9 +84,16 @@ class QueryTest extends TestCase
         $path = __DIR__ . "/../../../../fixtures/tests/valid_html.html";
         $html = file_get_contents(filename: $path);
 
-        $files = [];
-        $files['file']['name'] = 'valid_html.html';
-        $files['file']['tmp_name'] = $path;
+	$fileObject = [];
+	$fileObject['name'] = 'valid_html.html';
+	$fileObject['type'] = 'test type';
+        $fileObject['tmp_name'] = $path;
+	$fileObject['error'] = 0;
+	$fileObject['size'] = 1;
+	
+	/** @var array<string, array{name: string, type: string, tmp_name: string, error: int, size: int}> $files */
+	$files = [];
+	$files['file'] = $fileObject;
 
         $data = [];
         $data['context'] = '';
@@ -97,25 +105,35 @@ class QueryTest extends TestCase
             files: $files,
         );
 
+	$this->assertNotNull($query);
         $this->assertEquals(
-            expected: $html,
-            actual: $query->getContext(),
+            $html,
+            $query->getContext(),
         );
         $this->assertEquals(
-            expected: InputType::HTML->value,
-            actual: $query->getInputType()->value,
+            InputType::HTML->value,
+            $query->getInputType()->value,
         );
         $this->assertEquals(
-            expected: RenderingType::HTML->value,
-            actual: $query->getRenderingType()->value,
+            RenderingType::HTML->value,
+            $query->getRenderingType()->value,
         );
     }
 
     public function test_build_context_with_invalid_file(): void
     {
-        $files = [];
-        $files['file']['name'] = 'invalid_html_format.c';
-        $files['file']['tmp_name'] = __DIR__ . "/../../../../fixtures/tests/invalid_html_format.c";
+        $path = __DIR__ . "/../../../../fixtures/tests/invalid_html_format.c";
+	
+	$fileObject = [];
+	$fileObject['name'] = 'invalid_html_format.c';
+	$fileObject['type'] = 'test type';
+        $fileObject['tmp_name'] = $path;
+	$fileObject['error'] = 0;
+	$fileObject['size'] = 1;
+	
+	/** @var array<string, array{name: string, type: string, tmp_name: string, error: int, size: int}> $files */
+	$files = [];
+	$files['file'] = $fileObject;
 
         $data = [];
         $data['context'] = '';
@@ -127,6 +145,6 @@ class QueryTest extends TestCase
             files: $files,
         );
 
-        $this->assertNull(actual: $query);
+        $this->assertNull($query);
     }
 }

@@ -29,9 +29,10 @@ class JsonParserViewTest extends TestCase
 
         $jsonParserView = new JsonParserView(tree: $node);
 
+	$this->assertIsString($json);
         $this->assertJsonStringEqualsJsonString(
-            expectedJson: $json,
-            actualJson: $jsonParserView->render()
+            $json,
+            $jsonParserView->render()
         );
     }
 
@@ -48,16 +49,19 @@ class JsonParserViewTest extends TestCase
             'Name' => 'a',
             'Attributes' => ['href' => 'https://example.com'],
             'Content' => 'Example',
-        ];
+	];
+
+	$encodedExpectedJson = json_encode(
+	    value: $expected,
+	    flags: JSON_PRETTY_PRINT,
+	);
 
         $jsonParserView = new JsonParserView(tree: $node);
 
+	$this->assertIsString($encodedExpectedJson);
         $this->assertJsonStringEqualsJsonString(
-            expectedJson: json_encode(
-                value: $expected,
-                flags: JSON_PRETTY_PRINT
-            ),
-            actualJson: $jsonParserView->render()
+            $encodedExpectedJson,
+            $jsonParserView->render()
         );
     }
 
@@ -87,14 +91,17 @@ class JsonParserViewTest extends TestCase
             ]
         ];
 
+	$encodedExpectedJson = json_encode(
+            value: $expected,
+            flags: JSON_PRETTY_PRINT
+        );
+
         $jsonParserView = new JsonParserView(tree: $parent);
 
-        $this->assertJsonStringEqualsJsonString(
-            expectedJson: json_encode(
-                value: $expected,
-                flags: JSON_PRETTY_PRINT
-            ),
-            actualJson: $jsonParserView->render()
+	$this->assertIsString($encodedExpectedJson);
+	$this->assertJsonStringEqualsJsonString(
+	    $encodedExpectedJson,
+            $jsonParserView->render()
         );
     }
 }

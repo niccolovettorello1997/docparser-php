@@ -51,26 +51,26 @@ class BodyParserTest extends TestCase
         $bodyParser = new BodyParser();
         $bodyNode = $bodyParser->parse(content: $content);
 
-        $this->assertNotNull(actual: $bodyNode);
+        $this->assertNotNull($bodyNode);
         $this->assertEquals(
-            expected: HtmlElementType::BODY->value,
-            actual: $bodyNode->getTagName()
+            HtmlElementType::BODY->value,
+            $bodyNode->getTagName()
         );
-        $this->assertNull(actual: $bodyNode->getContent());
+        $this->assertNull($bodyNode->getContent());
         $this->assertCount(
-            expectedCount:2,
-            haystack: $bodyNode->getChildren()
+            2,
+            $bodyNode->getChildren()
         );
         $this->assertCount(
-            expectedCount:1,
-            haystack: array_filter(
+            1,
+            array_filter(
                 array: $bodyNode->getChildren(),
                 callback: fn (Node $node): bool => $node->getTagName() === HtmlElementType::HEADINGS->value
             )
         );
         $this->assertCount(
-            expectedCount:1,
-            haystack: array_filter(
+            1,
+            array_filter(
                 array: $bodyNode->getChildren(),
                 callback: fn (Node $node): bool => $node->getTagName() === HtmlElementType::PARAGRAPHS->value
             )

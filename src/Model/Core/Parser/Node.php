@@ -9,6 +9,7 @@ class Node
     public function __construct(
         private readonly string $tagName,
         private readonly ?string $content,
+        /** @var array<string, string> */
         private array $attributes,
         /** @var Node[] */
         private array $children,
@@ -25,11 +26,17 @@ class Node
         return $this->content;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getAttributes(): array
     {
         return $this->attributes;
     }
 
+    /**
+     * @return Node[]
+     */
     public function getChildren(): array
     {
         return $this->children;
@@ -43,7 +50,7 @@ class Node
     /**
      * Convert the node structure into an array.
      * 
-     * @return array
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {

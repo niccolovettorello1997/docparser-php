@@ -27,7 +27,7 @@ class ParserAdapter
             return null;
         }
 
-        /** @var ParserInterface[] */
+        /** @var Node[] */
         $result = [];
 
         foreach ($this->rootElements as $rootElement) {

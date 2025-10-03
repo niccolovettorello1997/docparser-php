@@ -24,8 +24,8 @@ class NodeTest extends TestCase
         ];
 
         $this->assertSame(
-            expected: $expected,
-            actual: $node->toArray()
+            $expected,
+            $node->toArray()
         );
     }
 
@@ -41,20 +41,20 @@ class NodeTest extends TestCase
         $result = $node->toArray();
 
         $this->assertSame(
-            expected: 'a',
-            actual: $result['Name']
+            'a',
+            $result['Name']
         );
         $this->assertSame(
-            expected: ['href' => 'https://example.com'],
-            actual: $result['Attributes']
+            ['href' => 'https://example.com'],
+            $result['Attributes']
         );
         $this->assertSame(
-            expected: 'Example',
-            actual: $result['Content']
+            'Example',
+            $result['Content']
         );
         $this->assertArrayNotHasKey(
-            key: 'Children',
-            array: $result
+            'Children',
+            $result
         );
     }
 
@@ -74,31 +74,32 @@ class NodeTest extends TestCase
             children: [$child]
         );
 
+	/** @var array{Name: string, Attributes: array<string,string>, Children: array<int,array<string,string>>} $result */
         $result = $parent->toArray();
 
         $this->assertSame(
-            expected: 'div',
-            actual: $result['Name']
+            'div',
+            $result['Name']
         );
         $this->assertSame(
-            expected: ['class' => 'container'],
-            actual: $result['Attributes']
+            ['class' => 'container'],
+            $result['Attributes']
         );
         $this->assertArrayNotHasKey(
-            key: 'Content',
-            array: $result
+            'Content',
+            $result
         );
         $this->assertCount(
-            expectedCount: 1,
-            haystack: $result['Children']
+            1,
+            $result['Children']
         );
         $this->assertSame(
-            expected: 'span',
-            actual: $result['Children'][0]['Name']
+            'span',
+            $result['Children'][0]['Name']
         );
         $this->assertSame(
-            expected: 'child text',
-            actual: $result['Children'][0]['Content']
+            'child text',
+            $result['Children'][0]['Content']
         );
     }
 
@@ -122,24 +123,25 @@ class NodeTest extends TestCase
             attributes: [],
             children: [$child]
         );
+	
+	/** @var array{Name: string, Children: array<int,array{Name: string, Children: array<int, array{Name: string, Content: string}>}>} $result */
+        $result = $parent->toArray();
 
-        $array = $parent->toArray();
-
         $this->assertSame(
-            expected: 'body',
-            actual: $array['Name']
+            'body',
+            $result['Name']
         );
         $this->assertSame(
-            expected: 'p',
-            actual: $array['Children'][0]['Name']
+            'p',
+            $result['Children'][0]['Name']
         );
         $this->assertSame(
-            expected: 'em',
-            actual: $array['Children'][0]['Children'][0]['Name']
+            'em',
+            $result['Children'][0]['Children'][0]['Name']
         );
         $this->assertSame(
-            expected: 'italic',
-            actual: $array['Children'][0]['Children'][0]['Content']
+            'italic',
+            $result['Children'][0]['Children'][0]['Content']
         );
     }
 }

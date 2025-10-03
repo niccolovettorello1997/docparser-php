@@ -28,11 +28,11 @@ class HeadParserTest extends TestCase
         $headParser = new HeadParser();
         $headNode = $headParser->parse(content: $html);
 
-        $this->assertNotNull(actual: $headNode);
-        $this->assertNull(actual: $headNode->getContent());
+        $this->assertNotNull($headNode);
+        $this->assertNull($headNode->getContent());
         $this->assertEquals(
-          expected: HtmlElementType::HEAD->value,
-          actual: $headNode->getTagName()
+          HtmlElementType::HEAD->value,
+          $headNode->getTagName()
         );
     }
 }

@@ -18,6 +18,9 @@ class ParserComponent
     ) {
     }
 
+    /**
+     * @return array<string>
+     */
     public function getRootElements(): array
     {
         return $this->rootElements;
@@ -39,7 +42,7 @@ class ParserComponent
         // Create shared context
         $sharedContext = new SharedContext(context: $context);
 
-        // Parse configuration file
+        /** @var array<string,array<int,string>> $config */
         $config = Yaml::parseFile(filename: $configPath);
 
         // If config file is empty, raise exception

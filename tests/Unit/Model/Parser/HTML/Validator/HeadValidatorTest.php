@@ -21,9 +21,9 @@ class HeadValidatorTest extends TestCase
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertTrue(condition: $elementValidationResult->isValid());
-        $this->assertEmpty(actual: $elementValidationResult->getErrors());
-        $this->assertEmpty(actual: $elementValidationResult->getWarnings());
+        $this->assertTrue($elementValidationResult->isValid());
+        $this->assertEmpty($elementValidationResult->getErrors());
+        $this->assertEmpty($elementValidationResult->getWarnings());
     }
 
     public function test_multiple_head_elements(): void
@@ -35,15 +35,15 @@ class HeadValidatorTest extends TestCase
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertFalse(condition: $elementValidationResult->isValid());
-        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
+        $this->assertFalse($elementValidationResult->isValid());
+        $this->assertNotEmpty($elementValidationResult->getErrors());
         $this->assertInstanceOf(
-            expected: NotUniqueElementError::class,
-            actual: $elementValidationResult->getErrors()[0]
+            NotUniqueElementError::class,
+            $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
-            expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getErrors()[0]->getMessage()
+            $expectedErrorMessage,
+            $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 
@@ -56,15 +56,15 @@ class HeadValidatorTest extends TestCase
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertFalse(condition: $elementValidationResult->isValid());
-        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
+        $this->assertFalse($elementValidationResult->isValid());
+        $this->assertNotEmpty($elementValidationResult->getErrors());
         $this->assertInstanceOf(
-            expected: StructuralError::class,
-            actual: $elementValidationResult->getErrors()[0]
+            StructuralError::class,
+            $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
-            expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getErrors()[0]->getMessage()
+            $expectedErrorMessage,
+            $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 
@@ -77,15 +77,15 @@ class HeadValidatorTest extends TestCase
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertFalse(condition: $elementValidationResult->isValid());
-        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
+        $this->assertFalse($elementValidationResult->isValid());
+        $this->assertNotEmpty($elementValidationResult->getErrors());
         $this->assertInstanceOf(
-            expected: MalformedElementError::class,
-            actual: $elementValidationResult->getErrors()[0]
+            MalformedElementError::class,
+            $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
-            expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getErrors()[0]->getMessage()
+            $expectedErrorMessage,
+            $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 
@@ -98,15 +98,15 @@ class HeadValidatorTest extends TestCase
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertFalse(condition: $elementValidationResult->isValid());
-        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
+        $this->assertFalse($elementValidationResult->isValid());
+        $this->assertNotEmpty($elementValidationResult->getErrors());
         $this->assertInstanceOf(
-            expected: StructuralError::class,
-            actual: $elementValidationResult->getErrors()[0]
+            StructuralError::class,
+            $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
-            expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getErrors()[0]->getMessage()
+            $expectedErrorMessage,
+            $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 
@@ -119,15 +119,15 @@ class HeadValidatorTest extends TestCase
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertFalse(condition: $elementValidationResult->isValid());
-        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
+        $this->assertFalse($elementValidationResult->isValid());
+        $this->assertNotEmpty($elementValidationResult->getErrors());
         $this->assertInstanceOf(
-            expected: StructuralError::class,
-            actual: $elementValidationResult->getErrors()[0]
+            StructuralError::class,
+            $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
-            expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getErrors()[0]->getMessage()
+            $expectedErrorMessage,
+            $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 }

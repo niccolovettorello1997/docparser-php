@@ -50,32 +50,32 @@ class HeadingParserTest extends TestCase
         $headingParser = new HeadingParser();
         $headingNode = $headingParser->parse(content: $body);
 
-        $this->assertNotNull(actual: $headingNode);
+        $this->assertNotNull($headingNode);
         $this->assertEquals(
-            expected: HtmlElementType::HEADINGS->value,
-            actual: $headingNode->getTagName()
+            HtmlElementType::HEADINGS->value,
+            $headingNode->getTagName()
         );
         $this->assertCount(
-            expectedCount: 3,
-            haystack: $headingNode->getChildren()
+            3,
+            $headingNode->getChildren()
         );
         $this->assertCount(
-            expectedCount: 1,
-            haystack: array_filter(
+            1,
+            array_filter(
                 array: $headingNode->getChildren(),
                 callback: fn (Node $node): bool => $node->getContent() === $firstHeadingContent
             )
         );
         $this->assertCount(
-            expectedCount: 1,
-            haystack: array_filter(
+            1,
+            array_filter(
                 array: $headingNode->getChildren(),
                 callback: fn (Node $node): bool => $node->getContent() === $secondHeadingContent
             )
         );
         $this->assertCount(
-            expectedCount: 1,
-            haystack: array_filter(
+            1,
+            array_filter(
                 array: $headingNode->getChildren(),
                 callback: fn (Node $node): bool => $node->getContent() === $thirdHeadingContent
             )

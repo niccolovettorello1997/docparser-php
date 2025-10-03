@@ -6,6 +6,7 @@ namespace Niccolo\DocparserPhp\Model\Parser\HTML\Validator;
 
 use Niccolo\DocparserPhp\Model\Core\Validator\AbstractValidator;
 use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use Niccolo\DocparserPhp\Model\Utils\Error\InternalError;
 use Niccolo\DocparserPhp\Model\Utils\Error\MalformedElementError;
 use Niccolo\DocparserPhp\Model\Utils\Error\MissingElementError;
 use Niccolo\DocparserPhp\Model\Utils\Error\NotUniqueElementError;
@@ -19,8 +20,8 @@ class HtmlValidator extends AbstractValidator
     /**
      * Validates the structure of the html tag.
      * 
-     * @param array                   $matchesHtml
-     * @param ElementValidationResult $elementValidationResult
+     * @param array<int,array<int,string>> $matchesHtml
+     * @param ElementValidationResult      $elementValidationResult
      *
      * @return void
      */
@@ -42,12 +43,25 @@ class HtmlValidator extends AbstractValidator
             $patternAllowedPrefix = '/\A(?:\s|<!--[\s\S]*?-->|<!DOCTYPE\b[^>]*>)+/is';
 
             // Compute the prefix before the html element opening tag and remove any allowed prefixes
+            $replacedPrefix = preg_replace(
+                pattern: $patternAllowedPrefix,
+                replacement: ' ',
+                subject: $matchesHtmlOpeningTag[1],
+            );
+
+            // Handle the case in which the preg replace fails
+            if (null === $replacedPrefix) {
+                $elementValidationResult->addError(
+                    error: new InternalError(
+                        message: 'An error occurred while parsing the prefix of the ' . self::ELEMENT_NAME . ' element.',
+                    ),
+                );
+
+                $replacedPrefix = '';
+            }
+
             $prefix = trim(
-                string: preg_replace(
-                    pattern: $patternAllowedPrefix,
-                    replacement: ' ',
-                    subject: $matchesHtmlOpeningTag[1],
-                ),
+                string: $replacedPrefix,
             );
 
             // Compute the suffix after the html element closing tag
@@ -67,8 +81,8 @@ class HtmlValidator extends AbstractValidator
     /**
      * Check for the html element presence and if it has a closing tag.
      * 
-     * @param array                   $matchesHtml
-     * @param ElementValidationResult $elementValidationResult
+     * @param array<int,array<int,string>> $matchesHtml
+     * @param ElementValidationResult      $elementValidationResult
      *
      * @return void
      */
@@ -100,8 +114,8 @@ class HtmlValidator extends AbstractValidator
     /**
      * Check if the html element is unique.
      * 
-     * @param array                   $matchesHtml
-     * @param ElementValidationResult $elementValidationResult
+     * @param array<int,array<int,string>> $matchesHtml
+     * @param ElementValidationResult      $elementValidationResult
      *
      * @return void
      */
@@ -119,8 +133,8 @@ class HtmlValidator extends AbstractValidator
     /**
      * Check if the html element has both head and body elements. Body must be after head.
      * 
-     * @param array                   $matchesHtml
-     * @param ElementValidationResult $elementValidationResult
+     * @param array<int,array<int,string>> $matchesHtml
+     * @param ElementValidationResult      $elementValidationResult
      *
      * @return void
      */
@@ -175,8 +189,8 @@ class HtmlValidator extends AbstractValidator
     /**
      * Check if the html element has a lang attribute.
      * 
-     * @param array                   $matchesHtml
-     * @param ElementValidationResult $elementValidationResult
+     * @param array<int,array<int,string>> $matchesHtml
+     * @param ElementValidationResult      $elementValidationResult
      *
      * @return void
      */

@@ -14,6 +14,10 @@ class HtmlParserViewTest extends TestCase
     {
         $html = file_get_contents(filename: __DIR__ . "/../../../fixtures/tests/valid_html.html");
 
+        if (false === $html) {
+            $this->fail('Failed to read the HTML fixture file.');
+        }
+
         $parserComponent = ParserComponent::build(
             context: $html,
             configPath: __DIR__ . "/../../../config/Parser/parser_html.yaml"
@@ -28,16 +32,16 @@ class HtmlParserViewTest extends TestCase
         $result = $htmlParserView->render();
 
         $this->assertStringContainsString(
-            needle: '<li>0: <ul><li>Name: title</li><li>Content: Example Document</li></ul></li>',
-            haystack: $result,
+            '<li>0: <ul><li>Name: title</li><li>Content: Example Document</li></ul></li>',
+            $result,
         );
         $this->assertStringContainsString(
-            needle: '<li>0: <ul><li>Name: p</li><li>Content: This is the first section of the page.</li></ul></li>',
-            haystack: $result,
+            '<li>0: <ul><li>Name: p</li><li>Content: This is the first section of the page.</li></ul></li>',
+            $result,
         );
         $this->assertStringContainsString(
-            needle: '<li>0: <ul><li>Name: h1</li><li>Content: Welcome to My Page</li></ul></li>',
-            haystack: $result,
+            '<li>0: <ul><li>Name: h1</li><li>Content: Welcome to My Page</li></ul></li>',
+            $result,
         );
     }
 }

@@ -15,7 +15,7 @@ class HtmlParser implements ParserInterface
      * 
      * @param string $content
      *
-     * @return array
+     * @return array<int,string|array<string,string>>
      */
     private function parseHtmlElement(string $content): array
     {
@@ -42,8 +42,8 @@ class HtmlParser implements ParserInterface
             flags: PREG_SET_ORDER
         )) {
             foreach ($attributesMatches as $m) {
-                $name  = $m[1] ?: $m[3] ?: $m[5];
-                $value = $m[2] ?: $m[4] ?: $m[6];
+                $name  = $m[1] ?? $m[3] ?? $m[5] ?? '';
+                $value = $m[2] ?? $m[4] ?? $m[6] ?? '';
 
                 $attributes[$name] = $value;
             }
@@ -57,7 +57,8 @@ class HtmlParser implements ParserInterface
      */
     public function parse(string $content): ?Node
     {
-        // Parse html element
+        /** @var string $htmlContent */
+        /** @var array<string,string> $attributes */
         list($htmlContent, $attributes) = $this->parseHtmlElement(content: $content);
 
         // Get head node
@@ -68,11 +69,22 @@ class HtmlParser implements ParserInterface
         $bodyParser = new BodyParser();
         $bodyNode = $bodyParser->parse(content: $htmlContent);
 
+        /** @var array<Node> $children */
+        $children = [];
+
+        if ($headNode !== null) {
+            $children[] = $headNode;
+        }
+
+        if ($bodyNode !== null) {
+            $children[] = $bodyNode;
+        }
+
         return new Node(
             tagName: HtmlElementType::HTML->value,
             content: null,
             attributes: $attributes,
-            children: [$headNode, $bodyNode]
+            children: $children,
         );
     }
 }

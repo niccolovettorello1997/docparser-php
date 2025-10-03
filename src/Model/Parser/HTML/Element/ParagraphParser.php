@@ -15,7 +15,7 @@ class ParagraphParser implements ParserInterface
      * 
      * @param string $content
      *
-     * @return array
+     * @return array<Node>
      */
     private function parseParagraphs(string $content): array
     {

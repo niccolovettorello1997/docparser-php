@@ -23,8 +23,8 @@ class ElementValidationResultViewTest extends TestCase
         $result = $elementValidationResultView->render();
 
         $this->assertEquals(
-            expected: $expectedResult,
-            actual: $result,
+            $expectedResult,
+            $result,
         );
     }
 
@@ -44,8 +44,8 @@ class ElementValidationResultViewTest extends TestCase
         $result = $elementValidationResultView->render();
 
         $this->assertEquals(
-            expected: $expectedResult,
-            actual: $result,
+            $expectedResult,
+            $result,
         );
     }
 
@@ -65,8 +65,8 @@ class ElementValidationResultViewTest extends TestCase
         $result = $elementValidationResultView->render();
 
         $this->assertEquals(
-            expected: $expectedResult,
-            actual: $result,
+            $expectedResult,
+            $result,
         );
     }
 
@@ -92,8 +92,8 @@ class ElementValidationResultViewTest extends TestCase
         $result = $elementValidationResultView->render();
 
         $this->assertEquals(
-            expected: $expectedResultWarnings . $expectedResultError,
-            actual: $result,
+            $expectedResultWarnings . $expectedResultError,
+            $result,
         );
     }
 }

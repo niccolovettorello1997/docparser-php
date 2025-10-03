@@ -24,16 +24,18 @@ class ValidatorConfigTest extends TestCase
 
     public function test_validator_classes_exist_and_are_valid(): void
     {
+	/** @var array<string,array<int,string>> $config */
         $config = Yaml::parseFile(filename: $this->configPath);
 
         foreach ($config['validators'] as $validatorClass) {
-            $this->assertTrue(condition: class_exists(class: $validatorClass));
-            $this->assertTrue(condition: is_subclass_of(object_or_class: $validatorClass, class: AbstractValidator::class));
+            $this->assertTrue(class_exists(class: $validatorClass));
+            $this->assertTrue(is_subclass_of(object_or_class: $validatorClass, class: AbstractValidator::class));
         }
     }
 
     public function test_validator_order_is_respected(): void
     {
+	/** @var array<string,array<int,string>> $config */
         $config = Yaml::parseFile(filename: $this->configPath);
 
         $expected = [
@@ -47,14 +49,14 @@ class ValidatorConfigTest extends TestCase
         ];
 
         $this->assertSame(
-            expected: $expected,
-            actual: $config['validators'],
+            $expected,
+            $config['validators'],
         );
     }
 
     public function test_inexistent_validator_config(): void
     {
-        $this->expectException(exception: ParseException::class);
+        $this->expectException(ParseException::class);
 
         $configPath = __DIR__ . '/../../fixtures/tests/inexistent_validator_configuration.yaml';
 
@@ -66,8 +68,8 @@ class ValidatorConfigTest extends TestCase
 
     public function test_empty_validator_config(): void
     {
-        $this->expectException(exception: RuntimeException::class);
-        $this->expectExceptionMessage(message: 'Validator configuration is empty.');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Validator configuration is empty.');
 
         $configPath = __DIR__ . '/../../fixtures/tests/empty_validator_configuration.yaml';
 
@@ -79,8 +81,8 @@ class ValidatorConfigTest extends TestCase
 
     public function test_invalid_validator_config(): void
     {
-        $this->expectException(exception: RuntimeException::class);
-        $this->expectExceptionMessage(message: "Class not found: Niccolo\DocparserPhp\Model\Parser\HTML\Validator\InexistentValidator");
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage("Class not found: Niccolo\DocparserPhp\Model\Parser\HTML\Validator\InexistentValidator");
 
         $configPath = __DIR__ . '/../../fixtures/tests/invalid_validator_configuration.yaml';
 
@@ -92,8 +94,8 @@ class ValidatorConfigTest extends TestCase
 
     public function test_invalid_validator_configuration_with_duplicates(): void
     {
-        $this->expectException(exception: RuntimeException::class);
-        $this->expectExceptionMessage(message: 'Validator configuration contains duplicates.');
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Validator configuration contains duplicates.');
 
         $configPath = __DIR__ . '/../../fixtures/tests/validator_configuration_with_duplicates.yaml';
 

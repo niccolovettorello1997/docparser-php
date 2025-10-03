@@ -15,40 +15,44 @@ class HtmlParserTest extends TestCase
     {
         $html = file_get_contents(filename: __DIR__ . "/../../../../../../fixtures/tests/valid_html.html");
 
+        if (false === $html) {
+            $this->fail('Failed to read the HTML fixture file.');
+        }
+
         $htmlParser = new HtmlParser();
         $htmlNode = $htmlParser->parse(content: $html);
 
-        $this->assertNotNull(actual: $htmlNode);
+        $this->assertNotNull($htmlNode);
         $this->assertEquals(
-            expected: HtmlElementType::HTML->value,
-            actual: $htmlNode->getTagName()
+            HtmlElementType::HTML->value,
+            $htmlNode->getTagName()
         );
-        $this->assertNull(actual: $htmlNode->getContent());
+        $this->assertNull($htmlNode->getContent());
         $this->assertCount(
-            expectedCount:2,
-            haystack: $htmlNode->getChildren()
+            2,
+            $htmlNode->getChildren()
         );
         $this->assertCount(
-            expectedCount:1,
-            haystack: array_filter(
+            1,
+            array_filter(
                 array: $htmlNode->getChildren(),
                 callback: fn (Node $node): bool => $node->getTagName() === HtmlElementType::HEAD->value
             )
         );
         $this->assertCount(
-            expectedCount:1,
-            haystack: array_filter(
+            1,
+            array_filter(
                 array: $htmlNode->getChildren(),
                 callback: fn (Node $node): bool => $node->getTagName() === HtmlElementType::BODY->value
             )
         );
         $this->assertArrayHasKey(
-            key: 'lang',
-            array: $htmlNode->getAttributes()
+            'lang',
+            $htmlNode->getAttributes()
         );
         $this->assertEquals(
-            expected: 'en',
-            actual: $htmlNode->getAttributes()['lang']
+            'en',
+            $htmlNode->getAttributes()['lang']
         );
     }
 }

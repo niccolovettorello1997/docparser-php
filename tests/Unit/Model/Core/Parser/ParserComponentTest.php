@@ -13,6 +13,11 @@ class ParserComponentTest extends TestCase
     public function test_parse(): void
     {
         $html = file_get_contents(filename: __DIR__ . "/../../../../../fixtures/tests/valid_html.html");
+
+        if (false === $html) {
+            $this->fail('Failed to read the HTML fixture file.');
+        }
+
         $parserComponent = ParserComponent::build(
             context: $html,
             configPath: __DIR__ . "/../../../../../config/Parser/parser_html.yaml"
@@ -20,19 +25,19 @@ class ParserComponentTest extends TestCase
 
         $result = $parserComponent->run();
 
-        $this->assertNotNull(actual: $result);
+        $this->assertNotNull($result);
         $this->assertEquals(
-            expected: HtmlElementType::DOCTYPE->value,
-            actual: $result->getChildren()[0]->getTagName(),
+            HtmlElementType::DOCTYPE->value,
+            $result->getChildren()[0]->getTagName(),
         );
-        $this->assertNull(actual: $result->getChildren()[0]->getContent());
+        $this->assertNull($result->getChildren()[0]->getContent());
         $this->assertCount(
-            expectedCount:1,
-            haystack: $result->getChildren()[0]->getChildren()
+            1,
+            $result->getChildren()[0]->getChildren()
         );
         $this->assertEquals(
-            expected: HtmlElementType::HTML->value,
-            actual: $result->getChildren()[0]->getChildren()[0]->getTagName()
+            HtmlElementType::HTML->value,
+            $result->getChildren()[0]->getChildren()[0]->getTagName()
         );
     }
 }
