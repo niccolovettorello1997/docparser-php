@@ -17,12 +17,27 @@ Ein einfacher **HTML-Parser und -Validator**, geschrieben in PHP 8, entworfen al
 
 ---
 
+## **Visuelle Demo**
+
+<p align="center">
+    <img src="./assets/img/docparser_php.gif" alt="DocParser-PHP demo" width="800" />
+</p>
+
+---
+
+## **Englische Version**
+
+[README auf Englisch](README.md)
+
+---
+
 ## **Inhaltsverzeichnis**
 
 - [Funktionen](#funktionen)
 - [Architekturübersicht](#architekturübersicht)
 - [Technologie-Stack](#technologie-stack)
 - [Gezeigte Fähigkeiten](#gezeigte-fähigkeiten)
+- [Warum dieses Projekt wichtig ist](#warum-dieses-projekt-wichtig-ist)
 - [Installation](#installation)
 - [Verwendung](#verwendung)
 - [Eingabe/Ausgabe Beispiel](#ea-beispiel)
@@ -40,11 +55,11 @@ Ein einfacher **HTML-Parser und -Validator**, geschrieben in PHP 8, entworfen al
   - Prüfung auf leere Elemente und ungültige Zeichen
   - Warnsystem für optionale Attribute
 - Parsen von HTML in eine strukturierte, DOM-ähnliche Baumstruktur
-- Die HTML-Unterstützung ist nicht vollständig, da sie nicht der Hauptfokus dieses Projekts war
+- Die aktuelle Implementierung konzentriert sich auf Validierung und modulares Design; vollständige HTML-Unterstützung kann dank der Architektur problemlos erreicht werden
 - Ausgabe der Ergebnisse in:
   - Menschlich lesbares HTML
   - Strukturiertes JSON für weitere Verarbeitung
-- Modulare Architektur zur Unterstützung zusätzlicher Dokumenttypen (Stub-Code für Markdown als Beispiel)
+- Modulare Architektur zur Unterstützung zusätzlicher Dokumenttypen (*Stub-Code* für Markdown als Beispiel)
 - Vollständig mit PHPUnit getestet
 - Dockerisiert für einfache Einrichtung
 - Konfigurierbare Validatoren und Parser über YAML
@@ -58,27 +73,68 @@ flowchart TD
     %% Entry point / UI
     A["index.php UI"] --> B["ParserController"]
 
-    %% Controller orchestration
-    B --> C["ParserFactory"]
+    %% Validation
+    B --> C["ValidatorComponentFactory"]
+    C --> D["ValidatorComponent"]
 
-    %% Parsers and Validators
-    C --> D["HTMLValidator & HTMLParser"]
-    C --> E["MarkdownValidator & MarkdownParser"]
+    %% Validators
+    D --> E["HtmlValidator"]
+    D --> F["MarkdownValidator"]
 
-    %% Model: validation results
-    D --> F["ElementValidationResult (Model)"]
-    E --> F
+    %% ElementValidationResult
+    E --> G["ElementValidationResult"]
+    F --> G
 
-    %% Views: render output
-    F --> G["HtmlParserView (HTML Output)"]
-    F --> H["JsonParserView (JSON Output)"]
+    %% Validation fails
+    G --> A
+
+    %% Validation ok
+    G --> B
+
+    %% Parsing
+    B --> H["ParserComponentFactory"]
+    H --> I["ParserComponent"]
+
+    %% Parsers
+    I --> J["HtmlParser"]
+    I --> K["MarkdownParser"]
+
+    %% Node
+    J --> L["Node"]
+    K --> L
+
+    %% View
+    L --> M["HtmlParserView"]
+    L --> N["JsonParserView"]
 
     %% Back to UI
-    G --> A
-    H --> A
+    M --> A
+    N --> A
 
     %% Optional: File download
-    H --> I["Download Endpoint"]
+    N --> O["Download JSON"]
+
+    %% ---------------------------
+    %% Style definitions
+    classDef ui fill:#ffe599,stroke:#333,stroke-width:2px
+    classDef controller fill:#a2c4c9,stroke:#333,stroke-width:2px
+    classDef factory fill:#c27ba0,stroke:#333,stroke-width:2px
+    classDef validator fill:#b6d7a8,stroke:#333,stroke-width:2px
+    classDef model fill:#f6b26b,stroke:#333,stroke-width:2px
+    classDef parser fill:#9fc5e8,stroke:#333,stroke-width:2px
+    classDef view fill:#d9d2e9,stroke:#333,stroke-width:2px
+    classDef download fill:#ead1dc,stroke:#333,stroke-width:2px
+
+    %% ---------------------------
+    %% Assign classes
+    class A ui
+    class B controller
+    class C,H factory
+    class D,E,F validator
+    class G,L model
+    class I,J,K parser
+    class M,N view
+    class O download
 ```
 
 ---
@@ -94,13 +150,28 @@ flowchart TD
 ---
 
 ## **Gezeigte Fähigkeiten**
-- Modulare, MVC-ähnliche Architektur in PHP 8.3
-- OOP und Entwurfsmuster (Factory, Validator)
-- Unit-Tests und Regressionstests mit PHPUnit
+- Stark typisiertes PHP 8.3 mit Schnittstellen und abstrakten Klassen
+- Factory + Strategy-Muster für Erweiterbarkeit
+- Dependency Injection Prinzipien
+- Unit-Tests, Integrationstests, Performance-Tests und Regressionstests mit PHPUnit
 - Composer für Abhängigkeitsverwaltung
 - CI/CD mit GitHub Actions
 - Dockerisierte Umgebung für Portabilität
 - Erweiterbares Design für neue Parser/Validatoren
+
+---
+
+## **Warum dieses Projekt wichtig ist**
+
+Dieses Projekt zeigt meine Fähigkeit:
+
+- **Modulare, erweiterbare Software in PHP zu entwerfen**
+
+- **Validierungs- und Parsing-Pipelines für reale Anwendungsfälle zu implementieren**
+
+- **Testgetriebene Entwicklung anzuwenden (Abdeckung >90%)**
+
+- **Eine Anwendung mit Docker für Portabilität bereitzustellen**
 
 ---
 
@@ -142,7 +213,7 @@ http://localhost:8080
 ## **Verwendung**
 
 1. HTML-Inhalt direkt in das Textfeld eingeben **oder** eine HTML-Datei hochladen.
-2. Datentyp auswählen (derzeit nur `HTML` und Stub-Code für `Markdown` unterstützt).
+2. Datentyp auswählen (derzeit nur `HTML` und *Stub-Code* für `Markdown` unterstützt).
 3. Auf **Parse** klicken.
 4. Ergebnisse werden angezeigt:
 
@@ -220,7 +291,7 @@ http://localhost:8080
 }
 ```
 
-**Markdown Eingabe (stub)**
+**Markdown Eingabe (*stub*)**
 ```md
 # Example title
 ```
