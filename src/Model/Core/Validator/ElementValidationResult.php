@@ -43,6 +43,9 @@ class ElementValidationResult
         $this->errors[] = $error;
     }
 
+    /**
+     * @param array<AbstractError> $errors
+      */
     public function addErrors(array $errors): void
     {
         $this->errors = array_merge($this->errors, $errors);
@@ -53,6 +56,9 @@ class ElementValidationResult
         $this->warnings[] = $warning;
     }
 
+    /**
+     * @param array<AbstractWarning> $warnings
+     */
     public function addWarnings(array $warnings): void
     {
         $this->warnings = array_merge($this->warnings, $warnings);

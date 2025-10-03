@@ -15,7 +15,7 @@ class BodyParser implements ParserInterface
      * 
      * @param string $content
      *
-     * @return array
+     * @return array<int,string|array<string,string>>
      */
     private function parseBody(string $content): array
     {
@@ -55,7 +55,8 @@ class BodyParser implements ParserInterface
      */
     public function parse(string $content): ?Node
     {
-        // Parse the body element
+        /** @var string $bodyContent */
+        /** @var array<string,string> $attributes */
         list($bodyContent, $attributes) = $this->parseBody(content: $content);
 
         // Get paragraph children
@@ -66,11 +67,22 @@ class BodyParser implements ParserInterface
         $headingParser = new HeadingParser();
         $headingNode = $headingParser->parse(content: $bodyContent);
 
+        /** @var array<int,Node> $children */
+        $children = [];
+
+        if ($paragraphNode !== null) {
+            $children[] = $paragraphNode;
+        }
+
+        if ($headingNode !== null) {
+            $children[] = $headingNode;
+        }
+
         return new Node(
             tagName: HtmlElementType::BODY->value,
             content: null,
             attributes: $attributes,
-            children: [$paragraphNode, $headingNode]
+            children: $children,
         );
     }
 }

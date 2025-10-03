@@ -43,14 +43,20 @@ class ParserController
     /**
      * Perform validation.
      * 
-     * @param Query $query
+     * @param Query|null $query
      *
      * @throws \InvalidArgumentException
      *
      * @return ElementValidationResult
      */
-    private function runValidation(Query $query): ElementValidationResult
+    private function runValidation(?Query $query): ElementValidationResult
     {
+        if (null === $query) {
+            throw new \InvalidArgumentException(
+                message: 'There was an error processing the input.'
+            );
+        }
+
         $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
             context: $query->getContext(),
             inputType: $query->getInputType()->value,
@@ -62,7 +68,7 @@ class ParserController
     /**
      * Handle the form data and return the validation view.
      * 
-     * @param array $data
+     * @param array<string,string> $data
      *
      * @return RenderableInterface[]
      */
@@ -71,10 +77,13 @@ class ParserController
         /** @var RenderableInterface[] */
         $result = [];
 
+        /** @var array<string, array{name:string,type:string,tmp_name:string,error:int,size:int}> $files */
+        $files = $_FILES;
+
         try {
             $query = Query::getQuery(
                 data: $data,
-                files: $_FILES,
+                files: $files,
             );
 
             $validationResult = $this->runValidation(query: $query);
@@ -86,8 +95,8 @@ class ParserController
             elementValidationResult: $validationResult,
         );
 
-        // Errors found, don't parse the content
-        if (!$validationResult->isValid()) {
+        // Errors happened, don't parse the content
+        if (!$validationResult->isValid() || null === $query) {
             return $result;
         }
 
@@ -130,9 +139,12 @@ class ParserController
             );
         }
 
+        // Something went wrong, return a 500 error
+        $errorContent = json_encode(value: ['error' => 'An error occurred while rendering JSON']);
+
         return new Response(
             statusCode: 500,
-            content: json_encode(value: ['error' => 'An error occurred while rendering JSON'])
+            content: $errorContent ? $errorContent : ''
         );
     }
 }

@@ -32,7 +32,7 @@ class ValidatorComponent
         // Create shared context
         $sharedContext = new SharedContext(context: $context);
 
-        // Parse configuration file
+        /** @var array<string,array<int,string>> $config */
         $config = Yaml::parseFile(filename: $configPath);
 
         // If validator config is found to be empty, raise an exception

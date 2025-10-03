@@ -15,7 +15,7 @@ class HeadParser implements ParserInterface
      * 
      * @param string $content
      *
-     * @return array
+     * @return array<int,string|array<string,string>>
      */
     private function parseHead(string $content): array
     {
@@ -55,18 +55,26 @@ class HeadParser implements ParserInterface
      */
     public function parse(string $content): ?Node
     {
-        // Parse head element
-        list($headContent, $attributes) = $this->parseHead($content);
+        /** @var string $headContent */
+        /** @var array<string,string> $attributes */
+        list($headContent, $attributes) = $this->parseHead(content: $content);
 
         // Get title child
         $titleParser = new TitleParser();
         $titleNode = $titleParser->parse(content: $headContent);
 
+        /** @var array<Node> $children */
+        $children = [];
+
+        if ($titleNode !== null) {
+            $children[] = $titleNode;
+        }
+
         return new Node(
             tagName: HtmlElementType::HEAD->value,
             content: null,
             attributes: $attributes,
-            children: [$titleNode]
+            children: $children,
         );
     }
 }

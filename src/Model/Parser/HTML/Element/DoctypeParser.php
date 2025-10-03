@@ -24,11 +24,18 @@ class DoctypeParser implements ParserInterface
             )
         );
 
+        /** @var array<Node> $children */
+        $children = [];
+
+        if ($htmlNode !== null) {
+            $children[] = $htmlNode;
+        }
+
         return new Node(
             tagName: HtmlElementType::DOCTYPE->value,
             content: null,
             attributes: [],
-            children: [$htmlNode]
+            children: $children,
         );
     }
 }
