@@ -24,16 +24,18 @@ class ValidatorConfigTest extends TestCase
 
     public function test_validator_classes_exist_and_are_valid(): void
     {
+	/** @var array<string,array<int,string>> $config */
         $config = Yaml::parseFile(filename: $this->configPath);
 
         foreach ($config['validators'] as $validatorClass) {
-            $this->assertTrue(condition: class_exists(class: $validatorClass));
-            $this->assertTrue(condition: is_subclass_of(object_or_class: $validatorClass, class: AbstractValidator::class));
+            $this->assertTrue(class_exists(class: $validatorClass));
+            $this->assertTrue(is_subclass_of(object_or_class: $validatorClass, class: AbstractValidator::class));
         }
     }
 
     public function test_validator_order_is_respected(): void
     {
+	/** @var array<string,array<int,string>> $config */
         $config = Yaml::parseFile(filename: $this->configPath);
 
         $expected = [
@@ -47,8 +49,8 @@ class ValidatorConfigTest extends TestCase
         ];
 
         $this->assertSame(
-            expected: $expected,
-            actual: $config['validators'],
+            $expected,
+            $config['validators'],
         );
     }
 

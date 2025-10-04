@@ -101,8 +101,8 @@ class BodyValidator extends AbstractValidator
     /**
      * Checks if the tag is unique.
      * 
-     * @param array                   $matchesBody
-     * @param ElementValidationResult $elementValidationResult
+     * @param array<int,array<int,string>> $matchesBody
+     * @param ElementValidationResult      $elementValidationResult
      *
      * @return void
      */

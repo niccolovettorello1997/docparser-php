@@ -40,7 +40,7 @@ class ElementValidationResultView implements RenderableInterface
             return $resultHtml;
         }
 
-        if (null !== $this->elementValidationResult->getErrors()) {
+        if (!empty($this->elementValidationResult->getErrors())) {
             $resultHtml .= "<div><strong>Errors: </strong><ul>";
 
             foreach ($this->elementValidationResult->getErrors() as $error) {

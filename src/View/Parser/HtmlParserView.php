@@ -17,7 +17,7 @@ class HtmlParserView implements RenderableInterface
     /**
      * Render an array into html.
      * 
-     * @param array $input
+     * @param array<string,mixed> $input
      *
      * @return string
      */
@@ -28,9 +28,11 @@ class HtmlParserView implements RenderableInterface
         foreach ($input as $key => $value) {
             $html .= '<li>';
 
-            if (is_array(value: $value)) {
+	    if (is_array(value: $value)) {
+		/** @var array<string,mixed> $value */
                 $html .= htmlspecialchars(string: (string)$key) . ': ' . $this->arrayToHtml(input: $value);
-            } else {
+	    } else {
+		/** @var string $value */
                 $html .= htmlspecialchars(string: (string)$key) . ': ' . htmlspecialchars(string: (string)$value);
             }
 
@@ -49,9 +51,13 @@ class HtmlParserView implements RenderableInterface
      */
     public function render(): string
     {
-        $result = '<div><strong>Parsing result: </strong>';
-        $result .= $this->arrayToHtml(input: $this->tree->toArray());
-        $result .= '</div>';
+	$result = '<div>An error occurred while displaying parsing result!</div>';
+
+	if (null !== $this->tree) {
+       	    $result = '<div><strong>Parsing result: </strong>';
+            $result .= $this->arrayToHtml(input: $this->tree->toArray());
+	    $result .= '</div>';
+	}
 
         return $result;
     }

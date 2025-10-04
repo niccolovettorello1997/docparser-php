@@ -17,8 +17,8 @@ class HeadValidator extends AbstractValidator
     /**
      * Checks if the tag is unique.
      * 
-     * @param array                   $matchesHead
-     * @param ElementValidationResult $elementValidationResult
+     * @param array<int,array<int,string>> $matchesHead
+     * @param ElementValidationResult      $elementValidationResult
      *
      * @return void
      */
@@ -85,8 +85,8 @@ class HeadValidator extends AbstractValidator
     /**
      * Checks if the head element contains nested elements.
      * 
-     * @param array                   $matchesHead
-     * @param ElementValidationResult $elementValidationResult
+     * @param array<int,array<int,string>> $matchesHead
+     * @param ElementValidationResult      $elementValidationResult
      *
      * @return void
      */
