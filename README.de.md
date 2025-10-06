@@ -3,13 +3,14 @@
 </p>
 
 <a href="https://codecov.io/gh/niccolovettorello1997/docparser-php" > 
- <img src="https://codecov.io/gh/niccolovettorello1997/docparser-php/graph/badge.svg?token=LNQFFW4GD3" style="height:auto; margin-right:10px; vertical-align:top;"/>
+ <img src="https://codecov.io/gh/niccolovettorello1997/docparser-php/graph/badge.svg?token=LNQFFW4GD3" style="height:auto; margin-right:10px; vertical-align:top;"/></a>
  <img src="https://github.com/niccolovettorello1997/docparser-php/actions/workflows/tests.yml/badge.svg" style="height:auto; vertical-align:top; margin-right:10px;">
  <img src="https://img.shields.io/badge/PHP-8.3-777BB4?logo=php" style="height:auto; vertical-align:top; margin-right:10px;">
  <img src="https://img.shields.io/github/license/niccolovettorello1997/docparser-php" style="height:auto; vertical-align:top; margin-right:10px;">
  <img src="https://github.com/niccolovettorello1997/docparser-php/actions/workflows/phpstan.yaml/badge.svg" style="height:auto; vertical-align:top; margin-right:10px;">
  <img src="https://github.com/niccolovettorello1997/docparser-php/actions/workflows/docker_build.yaml/badge.svg" style="height:auto; vertical-align:top; margin-right:10px;">
-</a>
+ <a href="https://docparser-php.onrender.com" target="_blank">
+    <img src="https://img.shields.io/badge/DocParser_PHP-Running-brightgreen" alt="DocParser-PHP Running"></a>
 
 ---
 
@@ -22,7 +23,7 @@ Ein einfacher **HTML-Parser und -Validator**, geschrieben in PHP 8, entworfen al
 ## **Visuelle Demo**
 
 <p align="center">
-    <img src="./assets/img/docparser_php.gif" alt="DocParser-PHP demo" width="800" />
+    <a href="https://docparser-php.onrender.com/"><img src="./assets/img/docparser_php.gif" alt="DocParser-PHP demo" width="800" /></a>
 </p>
 
 ---
@@ -46,7 +47,7 @@ Ein einfacher **HTML-Parser und -Validator**, geschrieben in PHP 8, entworfen al
 - [Projektstruktur](#projektstruktur)
 - [Validierungs- und Parsing-Logik](#validierungs--und-parsing-logik)
 - [Tests & Qualitätssicherung](#tests--qualitätssicherung)
-- [Code-Stil & Formatierung](#code-stil--formatierung)
+- [CI/CD mit Github Actions](#cicd-mit-github-actions)
 - [Beitragen](#beitragen)
 - [Lizenz](#lizenz)
 
@@ -385,6 +386,107 @@ vendor/bin/php-cs-fixer fix
 ```
 
 In der CI-Pipeline wird `php-cs-fixer` im `dry-run-Modus` ausgeführt, um die Formatierung zu validieren.
+
+---
+
+## CI/CD mit GitHub Actions
+
+Dieses Projekt verwendet **GitHub Actions**, um Tests, Codequalitätsprüfungen, Docker-Builds und Deployments zu automatisieren. Der Workflow ist in mehrere Jobs unterteilt, die jeweils einen spezifischen Zweck haben.
+
+### 1. Tests & Coverage
+
+**Datei:** `tests.yaml`
+
+**Zweck:** Führen von PHPUnit-Tests und Erzeugen der Testabdeckung.
+
+**Was es macht:**
+- Installiert PHP 8.3 mit Xdebug
+- Installiert Projektabhängigkeiten
+- Führt PHPUnit aus und erzeugt Coverage-Berichte
+- Lädt die Coverage zu Codecov hoch
+
+**Lokal ausführen:**
+
+```bash
+vendor/bin/phpunit
+```
+
+### 2. PHPStan
+
+**Datei:** `phpstan.yaml`
+
+**Zweck:** Statische Codeanalyse mit PHPStan durchführen.
+
+**Was es macht:**
+
+* Installiert PHP 8.3
+* Installiert Projektabhängigkeiten
+* Führt PHPStan aus, um Typfehler und andere statische Probleme zu prüfen
+* Standardmäßig ist die Strenge von PHPStan auf `max` gesetzt
+
+**Lokal ausführen:**
+
+```bash
+vendor/bin/phpstan analyse
+```
+
+### 3. PHP CS Fixer
+
+**Datei:** `php_cs_fixer.yaml`
+
+**Zweck:** Überprüft Codeformatierung und Coding-Style.
+
+**Was es macht:**
+
+* Installiert PHP 8.3
+* Installiert Projektabhängigkeiten
+
+**Lokal ausführen:**
+
+```bash
+vendor/bin/php-cs-fixer fix
+```
+
+### 4. Docker Build
+
+**Datei:** `docker_build.yaml`
+
+**Zweck:** Baut das Docker-Image des Projekts.
+
+**Was es macht:**
+
+* Richtet Docker Buildx ein
+* Baut das Docker-Image mit `docker compose build`
+* Schiebt das Image **nicht** zu einem Registry
+
+**Lokal ausführen:**
+
+```bash
+docker compose build
+```
+
+### 5. Release & Deploy
+
+**Datei:** `release_deploy.yaml`
+
+**Zweck:** Deployment auf Render auslösen.
+
+**Trigger:** Manuell (`workflow_dispatch`)
+
+**Was es macht:**
+
+* Sendet eine POST-Anfrage an die Render-API, um den neuesten Code zu deployen
+* Verwendet die Secrets `RENDER_API_KEY` und `RENDER_SERVICE_ID` zur Authentifizierung
+* Kann nur von Benutzern mit Zugriff auf das Repository ausgelöst werden
+
+**Lokal ausführen:**
+
+```bash
+curl -X POST "https://api.render.com/v1/services/<RENDER_SERVICE_ID>/deploys" \
+     -H "Authorization: Bearer <RENDER_API_KEY>" \
+     -H "Content-Type: application/json" \
+     -d '{}'
+```
 
 ---
 
