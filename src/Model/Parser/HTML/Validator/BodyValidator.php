@@ -54,20 +54,22 @@ class BodyValidator extends AbstractValidator
     /**
      * Checks if the body element has valid attributes.
      * 
-     * @param string                  $bodyAttributes
+     * @param string|null             $bodyAttributes
      * @param ElementValidationResult $elementValidationResult
      *
      * @return void
      */
-    private function checkInvalidAttributes(string $bodyAttributes, ElementValidationResult $elementValidationResult): void
+    private function checkInvalidAttributes(?string $bodyAttributes, ElementValidationResult $elementValidationResult): void
     {
-        foreach ($this->getInvalidAttributes() as $attribute) {
-            if (stripos(haystack: $bodyAttributes, needle: $attribute) !== false) {
-                $elementValidationResult->addError(
-                    error: new MalformedElementError(
-                        message: 'Invalid attribute ' . $attribute . ' detected in ' . self::ELEMENT_NAME . ' element.',
-                    )
-                );
+        if (null !== $bodyAttributes) {
+            foreach ($this->getInvalidAttributes() as $attribute) {
+                if (stripos(haystack: $bodyAttributes, needle: $attribute) !== false) {
+                    $elementValidationResult->addError(
+                        error: new MalformedElementError(
+                            message: 'Invalid attribute ' . $attribute . ' detected in ' . self::ELEMENT_NAME . ' element.',
+                        )
+                    );
+                }
             }
         }
     }
@@ -75,25 +77,27 @@ class BodyValidator extends AbstractValidator
     /**
      * Checks if the body element contains any invalid tags.
      *
-     * @param string                  $bodyContent
+     * @param string|null             $bodyContent
      * @param ElementValidationResult $elementValidationResult
      *
      * @return void
      */
-    private function checkInvalidTags(string $bodyContent, ElementValidationResult $elementValidationResult): void
+    private function checkInvalidTags(?string $bodyContent, ElementValidationResult $elementValidationResult): void
     {
-        foreach ($this->getInvalidTags() as $tag) {
-            $patternInternalTag = '/<(\/)?(' . $tag . ')\b[^>]*>/i';
+        if (null !== $bodyContent) {
+            foreach ($this->getInvalidTags() as $tag) {
+                $patternInternalTag = '/<(\/)?(' . $tag . ')\b[^>]*>/i';
 
-            if (preg_match(
-                pattern: $patternInternalTag,
-                subject: $bodyContent,
-            )) {
-                $elementValidationResult->addError(
-                    error: new InvalidContentError(
-                        message: 'Invalid tag <' . $tag . '> detected in ' . self::ELEMENT_NAME . ' element.',
-                    )
-                );
+                if (preg_match(
+                    pattern: $patternInternalTag,
+                    subject: $bodyContent,
+                )) {
+                    $elementValidationResult->addError(
+                        error: new InvalidContentError(
+                            message: 'Invalid tag <' . $tag . '> detected in ' . self::ELEMENT_NAME . ' element.',
+                        )
+                    );
+                }
             }
         }
     }
@@ -120,17 +124,38 @@ class BodyValidator extends AbstractValidator
     /**
      * Checks if the body element is not empty.
      * 
-     * @param string                  $elementContent
+     * @param string|null             $elementContent
      * @param ElementValidationResult $elementValidationResult
      *
      * @return void
      */
-    private function isNotEmpty(string $elementContent, ElementValidationResult $elementValidationResult): void
+    private function isNotEmpty(?string $elementContent, ElementValidationResult $elementValidationResult): void
     {
-        if (trim(string: $elementContent) === '') {
-            $elementValidationResult->addWarning(
-                warning: new EmptyElementWarning(
-                    message: self::ELEMENT_NAME . ' element should not be empty.'
+        if (null !== $elementContent) {
+            if (trim(string: $elementContent) === '') {
+                $elementValidationResult->addWarning(
+                    warning: new EmptyElementWarning(
+                        message: self::ELEMENT_NAME . ' element should not be empty.'
+                    )
+                );
+            }
+        }
+    }
+
+    /**
+     * Checks if the body element is present.
+     * 
+     * @param array<int,array<int,string>> $matches
+     * @param ElementValidationResult      $elementValidationResult
+     * 
+     * @return void
+     */
+    private function isPresent(array $matches, ElementValidationResult $elementValidationResult): void
+    {
+        if (count(value: $matches[0]) === 0) {
+            $elementValidationResult->addError(
+                error: new MalformedElementError(
+                    message: 'The ' . self::ELEMENT_NAME . ' element is missing in the HTML document.',
                 )
             );
         }
@@ -154,6 +179,12 @@ class BodyValidator extends AbstractValidator
             matches: $matchesBody
         );
 
+        // body element must be present
+        $this->isPresent(
+            matches: $matchesBody,
+            elementValidationResult: $elementValidationResult
+        );
+
         // body element must be unique
         $this->isUnique(
             matchesBody: $matchesBody,
@@ -162,19 +193,19 @@ class BodyValidator extends AbstractValidator
 
         // body element must have valid content
         $this->checkInvalidTags(
-            bodyContent: $matchesBody[2][0],
+            bodyContent: $matchesBody[2][0] ?? null,
             elementValidationResult: $elementValidationResult
         );
 
         // body element must have valid attributes
         $this->checkInvalidAttributes(
-            bodyAttributes: $matchesBody[1][0],
+            bodyAttributes: $matchesBody[1][0] ?? null,
             elementValidationResult: $elementValidationResult
         );
 
         // body element should not be empty
         $this->isNotEmpty(
-            elementContent: $matchesBody[2][0],
+            elementContent: $matchesBody[2][0] ?? null,
             elementValidationResult: $elementValidationResult
         );
 

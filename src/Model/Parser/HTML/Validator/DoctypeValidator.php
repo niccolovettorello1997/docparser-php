@@ -33,7 +33,7 @@ class DoctypeValidator extends AbstractValidator
             );
         }
 
-        if ($start !== 0) {
+        if ($start !== 0 && $start !== false) {
             $elementValidationResult->addError(
                 error: new StructuralError(
                     message: 'The ' . self::ELEMENT_NAME . ' element is preceded by invalid content.',

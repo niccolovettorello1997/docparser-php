@@ -79,13 +79,17 @@ class HeadValidatorTest extends TestCase
 
         $this->assertFalse($elementValidationResult->isValid());
         $this->assertNotEmpty($elementValidationResult->getErrors());
+        $this->assertCount(
+            2,
+            $elementValidationResult->getErrors()
+        );
         $this->assertInstanceOf(
             MalformedElementError::class,
-            $elementValidationResult->getErrors()[0]
+            $elementValidationResult->getErrors()[1]
         );
         $this->assertEquals(
             $expectedErrorMessage,
-            $elementValidationResult->getErrors()[0]->getMessage()
+            $elementValidationResult->getErrors()[1]->getMessage()
         );
     }
 

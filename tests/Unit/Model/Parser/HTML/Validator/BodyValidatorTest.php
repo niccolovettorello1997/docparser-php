@@ -111,4 +111,29 @@ class BodyValidatorTest extends TestCase
             $result->getWarnings()[0]->getMessage()
         );
     }
+
+    public function test_missing_body_element(): void
+    {
+        $expectedErrorMessage = 'The body element is missing in the HTML document.';
+        $html = 'Useless content without body tag';
+        $sharedContext = new SharedContext(context: $html);
+        $validator = new BodyValidator(sharedContext: $sharedContext);
+
+        $result = $validator->validate();
+
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
+        $this->assertCount(
+            1,
+            $result->getErrors()
+        );
+        $this->assertInstanceOf(
+            MalformedElementError::class,
+            $result->getErrors()[0]
+        );
+        $this->assertEquals(
+            $expectedErrorMessage,
+            $result->getErrors()[0]->getMessage()
+        );
+    }
 }

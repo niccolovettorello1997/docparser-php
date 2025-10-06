@@ -61,24 +61,26 @@ class HeadValidator extends AbstractValidator
     /**
      * Checks if the head element has a closing tag.
      * 
-     * @param string                  $content
+     * @param string|null             $content
      * @param ElementValidationResult $elementValidationResult
      *
      * @return void
      */
-    private function hasClosingTag(string $content, ElementValidationResult $elementValidationResult): void
+    private function hasClosingTag(?string $content, ElementValidationResult $elementValidationResult): void
     {
-        $patternHeadClosing = '/<\/head>/i';
+        if (null !== $content) {
+            $patternHeadClosing = '/<\/head>/i';
 
-        if (!preg_match(
-            pattern: $patternHeadClosing,
-            subject: $content
-        )) {
-            $elementValidationResult->addError(
-                error: new MalformedElementError(
-                    message: self::ELEMENT_NAME . ' element is missing a closing tag.'
-                )
-            );
+            if (!preg_match(
+                pattern: $patternHeadClosing,
+                subject: $content
+            )) {
+                $elementValidationResult->addError(
+                    error: new MalformedElementError(
+                        message: self::ELEMENT_NAME . ' element is missing a closing tag.'
+                    )
+                );
+            }
         }
     }
 
@@ -122,6 +124,25 @@ class HeadValidator extends AbstractValidator
     }
 
     /**
+     * Checks if the head element is present.
+     * 
+     * @param array<int,array<int,string>> $matchesHead
+     * @param ElementValidationResult      $elementValidationResult
+     * 
+     * @return void
+     */
+    private function isPresent(array $matchesHead, ElementValidationResult $elementValidationResult): void
+    {
+        if (count(value: $matchesHead[0]) === 0) {
+            $elementValidationResult->addError(
+                error: new MalformedElementError(
+                    message: 'The ' . self::ELEMENT_NAME . ' element is missing in the HTML document.'
+                )
+            );
+        }
+    }
+
+    /**
      * Validates the head element in the HTML.
      *
      * @return ElementValidationResult
@@ -137,6 +158,12 @@ class HeadValidator extends AbstractValidator
             pattern: $patternHead,
             subject: $this->sharedContext->getContext(),
             matches: $matchesHead
+        );
+
+        // head element must be present
+        $this->isPresent(
+            matchesHead: $matchesHead,
+            elementValidationResult: $elementValidationResult
         );
 
         // head element must be unique
