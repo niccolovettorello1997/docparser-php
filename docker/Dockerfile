@@ -1,27 +1,35 @@
+# --- Base image ---
 FROM php:8.3-apache
 
+# --- Install system dependencies & Composer ---
 RUN apt-get update && apt-get install -y \
-    curl \
-    unzip \
-    && rm -rf /var/lib/apt/lists/*
+        curl \
+        unzip \
+        git \
+    && rm -rf /var/lib/apt/lists/* \
+    && curl -sS https://getcomposer.org/installer | php -- \
+        --install-dir=/usr/local/bin \
+        --filename=composer
 
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+# --- Install and configure Xdebug ---
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && { \
+        echo "zend_extension=xdebug.so"; \
+        echo "xdebug.mode=coverage,debug"; \
+        echo "xdebug.start_with_request=yes"; \
+        echo "xdebug.client_host=host.docker.internal"; \
+        echo "xdebug.client_port=9003"; \
+    } > /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-RUN apt-get update && apt-get install -y \
-    git \
-    && pecl install xdebug \
-    && docker-php-ext-enable xdebug
+# --- Configure Apache to serve from /public ---
+RUN sed -i \
+        -e 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' \
+        -e '/<Directory \/var\/www\/html>/c\<Directory /var/www/html/public>' \
+        /etc/apache2/sites-available/000-default.conf
 
-RUN echo "zend_extension=xdebug.so" > /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.mode=coverage,debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.start_with_request=yes" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.client_host=172.17.0.1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
-    && echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-
-# --- Ensure Apache serves public/ ---
-RUN sed -i "s|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|" /etc/apache2/sites-available/000-default.conf
-RUN sed -i "/<Directory \/var\/www\/html>/c\<Directory /var/www/html/public>" /etc/apache2/sites-available/000-default.conf
-
+# --- Set working directory ---
 WORKDIR /var/www/html
 
+# --- Adjust permissions ---
 RUN chown -R www-data:www-data /var/www/html
