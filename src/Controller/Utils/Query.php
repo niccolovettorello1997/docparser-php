@@ -34,12 +34,12 @@ class Query
     /**
      * Build query from file or textarea.
      * 
-     * @param array $data
-     * @param array $files
+     * @param array<string,string>                                                             $data
+     * @param array<string, array{name:string,type:string,tmp_name:string,error:int,size:int}> $files
      *
      * @throws \InvalidArgumentException
      *
-     * @return ?Query
+     * @return Query|null
      */
     public static function getQuery(array $data, array $files): ?Query
     {
@@ -73,9 +73,11 @@ class Query
                 needle: InputType::getExtension(type: $inputType),
             );
 
-            if ($hasCorrectFormat) {
+            $fileContent = file_get_contents(filename: $files['file']['tmp_name']);
+
+            if ($hasCorrectFormat && false !== $fileContent) {
                 $result = new Query(
-                    context: file_get_contents(filename: $files['file']['tmp_name']),
+                    context: $fileContent,
                     inputType: $inputType,
                     renderingType: $renderingType,
                 );

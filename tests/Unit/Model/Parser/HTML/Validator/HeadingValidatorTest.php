@@ -20,9 +20,9 @@ class HeadingValidatorTest extends TestCase
 
         $result = $validator->validate();
 
-        $this->assertTrue(condition: $result->isValid());
-        $this->assertEmpty(actual: $result->getErrors());
-        $this->assertEmpty(actual: $result->getWarnings());
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
+        $this->assertEmpty($result->getWarnings());
     }
 
     public function test_heading_element_opening_and_closing_tags_not_balanced(): void
@@ -34,15 +34,15 @@ class HeadingValidatorTest extends TestCase
 
         $result = $validator->validate();
 
-        $this->assertFalse(condition: $result->isValid());
-        $this->assertNotEmpty(actual: $result->getErrors());
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
         $this->assertInstanceOf(
-            expected: StructuralError::class,
-            actual: $result->getErrors()[0]
+            StructuralError::class,
+            $result->getErrors()[0]
         );
         $this->assertEquals(
-            expected: $expectedErrorMessage,
-            actual: $result->getErrors()[0]->getMessage()
+            $expectedErrorMessage,
+            $result->getErrors()[0]->getMessage()
         );
     }
 
@@ -55,15 +55,15 @@ class HeadingValidatorTest extends TestCase
 
         $result = $validator->validate();
 
-        $this->assertFalse(condition: $result->isValid());
-        $this->assertNotEmpty(actual: $result->getErrors());
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
         $this->assertInstanceOf(
-            expected: InvalidContentError::class,
-            actual: $result->getErrors()[0]
+            InvalidContentError::class,
+            $result->getErrors()[0]
         );
         $this->assertEquals(
-            expected: $expectedErrorMessage,
-            actual: $result->getErrors()[0]->getMessage()
+            $expectedErrorMessage,
+            $result->getErrors()[0]->getMessage()
         );
     }
 
@@ -76,15 +76,15 @@ class HeadingValidatorTest extends TestCase
 
         $result = $validator->validate();
 
-        $this->assertFalse(condition: $result->isValid());
-        $this->assertNotNull(actual: $result->getErrors());
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
         $this->assertInstanceOf(
-            expected: InvalidContentError::class,
-            actual: $result->getErrors()[0]
+            InvalidContentError::class,
+            $result->getErrors()[0]
         );
         $this->assertEquals(
-            expected: $expectedErrorMessage,
-            actual: $result->getErrors()[0]->getMessage()
+            $expectedErrorMessage,
+            $result->getErrors()[0]->getMessage()
         );
     }
 }

@@ -50,32 +50,32 @@ class ParagraphParserTest extends TestCase
         $paragraphsParser = new ParagraphParser();
         $paragraphNode = $paragraphsParser->parse(content: $body);
 
-        $this->assertNotNull(actual: $paragraphNode);
+        $this->assertNotNull($paragraphNode);
         $this->assertEquals(
-            expected: HtmlElementType::PARAGRAPHS->value,
-            actual: $paragraphNode->getTagName()
+            HtmlElementType::PARAGRAPHS->value,
+            $paragraphNode->getTagName()
         );
         $this->assertCount(
-            expectedCount: 3,
-            haystack: $paragraphNode->getChildren()
+            3,
+            $paragraphNode->getChildren()
         );
         $this->assertCount(
-            expectedCount: 1,
-            haystack: array_filter(
+            1,
+            array_filter(
                 array: $paragraphNode->getChildren(),
                 callback: fn (Node $node): bool => $node->getContent() === $firstParagraphContent
             )
         );
         $this->assertCount(
-            expectedCount: 1,
-            haystack: array_filter(
+            1,
+            array_filter(
                 array: $paragraphNode->getChildren(),
                 callback: fn (Node $node): bool => $node->getContent() === $secondParagraphContent
             )
         );
         $this->assertCount(
-            expectedCount: 1,
-            haystack: array_filter(
+            1,
+            array_filter(
                 array: $paragraphNode->getChildren(),
                 callback: fn (Node $node): bool => $node->getContent() === $thirdParagraphContent
             )

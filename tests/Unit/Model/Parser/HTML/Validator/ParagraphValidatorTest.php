@@ -22,9 +22,9 @@ class ParagraphValidatorTest extends TestCase
 
         $result = $validator->validate();
 
-        $this->assertTrue(condition: $result->isValid());
-        $this->assertEmpty(actual: $result->getErrors());
-        $this->assertEmpty(actual: $result->getWarnings());
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
+        $this->assertEmpty($result->getWarnings());
     }
 
     public function test_paragraph_element_missing_closing_or_opening_tag(): void
@@ -36,15 +36,15 @@ class ParagraphValidatorTest extends TestCase
 
         $result = $validator->validate();
 
-        $this->assertFalse(condition: $result->isValid());
-        $this->assertNotEmpty(actual: $result->getErrors());
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
         $this->assertInstanceOf(
-            expected: MalformedElementError::class,
-            actual: $result->getErrors()[0]
+            MalformedElementError::class,
+            $result->getErrors()[0]
         );
         $this->assertEquals(
-            expected: $expectedErrorMessage,
-            actual: $result->getErrors()[0]->getMessage()
+            $expectedErrorMessage,
+            $result->getErrors()[0]->getMessage()
         );
     }
 
@@ -57,15 +57,15 @@ class ParagraphValidatorTest extends TestCase
 
         $result = $validator->validate();
 
-        $this->assertFalse(condition: $result->isValid());
-        $this->assertNotEmpty(actual: $result->getErrors());
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
         $this->assertInstanceOf(
-            expected: StructuralError::class,
-            actual: $result->getErrors()[0]
+            StructuralError::class,
+            $result->getErrors()[0]
         );
         $this->assertEquals(
-            expected: $expectedErrorMessage,
-            actual: $result->getErrors()[0]->getMessage()
+            $expectedErrorMessage,
+            $result->getErrors()[0]->getMessage()
         );
     }
 
@@ -78,15 +78,15 @@ class ParagraphValidatorTest extends TestCase
 
         $result = $validator->validate();
 
-        $this->assertFalse(condition: $result->isValid());
-        $this->assertNotEmpty(actual: $result->getErrors());
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
         $this->assertInstanceOf(
-            expected: InvalidContentError::class,
-            actual: $result->getErrors()[0]
+            InvalidContentError::class,
+            $result->getErrors()[0]
         );
         $this->assertEquals(
-            expected: $expectedErrorMessage,
-            actual: $result->getErrors()[0]->getMessage()
+            $expectedErrorMessage,
+            $result->getErrors()[0]->getMessage()
         );
     }
 
@@ -99,19 +99,19 @@ class ParagraphValidatorTest extends TestCase
 
         $result = $validator->validate();
 
-        $this->assertTrue(condition: $result->isValid());
-        $this->assertNotEmpty(actual: $result->getWarnings());
+        $this->assertTrue($result->isValid());
+        $this->assertNotEmpty($result->getWarnings());
         $this->assertCount(
-            expectedCount: 1,
-            haystack: $result->getWarnings()
+            1,
+            $result->getWarnings()
         );
         $this->assertInstanceOf(
-            expected: EmptyElementWarning::class,
-            actual: $result->getWarnings()[0]
+            EmptyElementWarning::class,
+            $result->getWarnings()[0]
         );
         $this->assertEquals(
-            expected: $expectedWarningMessage,
-            actual: $result->getWarnings()[0]->getMessage()
+            $expectedWarningMessage,
+            $result->getWarnings()[0]->getMessage()
         );
     }
 }

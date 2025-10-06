@@ -47,24 +47,24 @@ class ValidatorParserViewTest extends TestCase
         $parsingRender = $parsingResultView->render();
 
         $this->assertStringContainsString(
-            needle: '<div>Your content is valid!</div>',
-            haystack: $validationRender,
+            '<div>Your content is valid!</div>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li>0: <ul><li>Name: title</li><li>Content: Example</li></ul></li>',
-            haystack: $parsingRender,
+            '<li>0: <ul><li>Name: title</li><li>Content: Example</li></ul></li>',
+            $parsingRender,
         );
         $this->assertStringContainsString(
-            needle: '<li>0: <ul><li>Name: p</li><li>Content: Hello World</li></ul></li>',
-            haystack: $parsingRender,
+            '<li>0: <ul><li>Name: p</li><li>Content: Hello World</li></ul></li>',
+            $parsingRender,
         );
         $this->assertStringNotContainsString(
-            needle: '<div><strong>Errors: </strong>',
-            haystack: $validationRender,
+            '<div><strong>Errors: </strong>',
+            $validationRender,
         );
         $this->assertStringNotContainsString(
-            needle: '<div><strong>Warnings: </strong>',
-            haystack: $validationRender,
+            '<div><strong>Warnings: </strong>',
+            $validationRender,
         );
     }
 
@@ -92,20 +92,20 @@ class ValidatorParserViewTest extends TestCase
         $validationRender = $validationResultView->render();
 
         $this->assertStringContainsString(
-            needle: '<strong>Errors: </strong>',
-            haystack: $validationRender,
+            '<strong>Errors: </strong>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li>head element in the html element is missing or incorrectly written.</li>',
-            haystack: $validationRender,
+            '<li>head element in the html element is missing or incorrectly written.</li>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li>The title element is missing or not written properly.</li>',
-            haystack: $validationRender,
+            '<li>The title element is missing or not written properly.</li>',
+            $validationRender,
         );
         $this->assertStringNotContainsString(
-            needle: '<div>Your content is valid!</div>',
-            haystack: $validationRender,
+            '<div>Your content is valid!</div>',
+            $validationRender,
         );
     }
 
@@ -138,20 +138,20 @@ class ValidatorParserViewTest extends TestCase
         $validationRender = $validationResultView->render();
 
         $this->assertStringContainsString(
-            needle: '<strong>Errors: </strong>',
-            haystack: $validationRender,
+            '<strong>Errors: </strong>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li>Nested paragraph elements are not allowed in paragraph element.</li>',
-            haystack: $validationRender,
+            '<li>Nested paragraph elements are not allowed in paragraph element.</li>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: "<li>{$nestedHeadingMessage}</li>",
-            haystack: $validationRender,
+            "<li>{$nestedHeadingMessage}</li>",
+            $validationRender,
         );
         $this->assertStringNotContainsString(
-            needle: '<div>Your content is valid!</div>',
-            haystack: $validationRender,
+            '<div>Your content is valid!</div>',
+            $validationRender,
         );
     }
 
@@ -184,16 +184,16 @@ class ValidatorParserViewTest extends TestCase
         $validationRender = $validationResultView->render();
 
         $this->assertStringContainsString(
-            needle: '<strong>Errors: </strong>',
-            haystack: $validationRender,
+            '<strong>Errors: </strong>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: "<li>{$invalidBodyContentMessage}</li>",
-            haystack: $validationRender,
+            "<li>{$invalidBodyContentMessage}</li>",
+            $validationRender,
         );
         $this->assertStringNotContainsString(
-            needle: '<div>Your content is valid!</div>',
-            haystack: $validationRender,
+            '<div>Your content is valid!</div>',
+            $validationRender,
         );
     }
 
@@ -232,32 +232,32 @@ class ValidatorParserViewTest extends TestCase
         $parsingRender = $parsingResultView->render();
 
         $this->assertStringNotContainsString(
-            needle: '<strong>Errors: </strong>',
-            haystack: $validationRender,
+            '<strong>Errors: </strong>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<div>Your content is valid!</div>',
-            haystack: $validationRender,
+            '<div>Your content is valid!</div>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<strong>Warnings: </strong>',
-            haystack: $validationRender,
+            '<strong>Warnings: </strong>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li>Empty paragraph element detected.</li>',
-            haystack: $validationRender,
+            '<li>Empty paragraph element detected.</li>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li>html element should have a lang attribute.</li>',
-            haystack: $validationRender,
+            '<li>html element should have a lang attribute.</li>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li>0: <ul><li>Name: title</li><li>Content: Example</li></ul></li>',
-            haystack: $parsingRender,
+            '<li>0: <ul><li>Name: title</li><li>Content: Example</li></ul></li>',
+            $parsingRender,
         );
         $this->assertStringContainsString(
-            needle: '<li>0: <ul><li>Name: p</li><li>Content: </li></ul></li>',
-            haystack: $parsingRender,
+            '<li>0: <ul><li>Name: p</li><li>Content: </li></ul></li>',
+            $parsingRender,
         );
     }
 
@@ -290,32 +290,32 @@ class ValidatorParserViewTest extends TestCase
         $validationRender = $validationResultView->render();
 
         $this->assertStringNotContainsString(
-            needle: '<div>Your content is valid!</div>',
-            haystack: $validationRender,
+            '<div>Your content is valid!</div>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<strong>Errors: </strong>',
-            haystack: $validationRender,
+            '<strong>Errors: </strong>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<strong>Warnings: </strong>',
-            haystack: $validationRender,
+            '<strong>Warnings: </strong>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li>Empty paragraph element detected.</li>',
-            haystack: $validationRender,
+            '<li>Empty paragraph element detected.</li>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li>html element should have a lang attribute.</li>',
-            haystack: $validationRender,
+            '<li>html element should have a lang attribute.</li>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li>The title element must be unique in the HTML document.</li>',
-            haystack: $validationRender,
+            '<li>The title element must be unique in the HTML document.</li>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li>Unclosed heading element(s) detected.</li>',
-            haystack: $validationRender,
+            '<li>Unclosed heading element(s) detected.</li>',
+            $validationRender,
         );
     }
 
@@ -344,20 +344,20 @@ class ValidatorParserViewTest extends TestCase
         $parsingRender = $parsingResultView->render();
 
         $this->assertStringContainsString(
-            needle: '<div>Your content is valid!</div>',
-            haystack: $validationRender,
+            '<div>Your content is valid!</div>',
+            $validationRender,
         );
         $this->assertStringNotContainsString(
-            needle: '<div><strong>Errors: </strong>',
-            haystack: $validationRender,
+            '<div><strong>Errors: </strong>',
+            $validationRender,
         );
         $this->assertStringNotContainsString(
-            needle: '<div><strong>Warnings: </strong>',
-            haystack: $validationRender,
+            '<div><strong>Warnings: </strong>',
+            $validationRender,
         );
         $this->assertStringContainsString(
-            needle: '<li>0: <ul><li>Name: markdown</li><li>Content: # Example Title</li></ul></li>',
-            haystack: $parsingRender,
+            '<li>0: <ul><li>Name: markdown</li><li>Content: # Example Title</li></ul></li>',
+            $parsingRender,
         );
     }
 }

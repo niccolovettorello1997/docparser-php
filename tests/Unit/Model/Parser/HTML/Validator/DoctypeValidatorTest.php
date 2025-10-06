@@ -20,9 +20,9 @@ class DoctypeValidatorTest extends TestCase
         
         $result = $validator->validate();
         
-        $this->assertTrue(condition: $result->isValid());
-        $this->assertEmpty(actual: $result->getErrors());
-        $this->assertEmpty(actual: $result->getWarnings());
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
+        $this->assertEmpty($result->getWarnings());
     }
 
     public function test_missing_doctype(): void
@@ -34,15 +34,15 @@ class DoctypeValidatorTest extends TestCase
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertFalse(condition: $elementValidationResult->isValid());
-        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
+        $this->assertFalse($elementValidationResult->isValid());
+        $this->assertNotEmpty($elementValidationResult->getErrors());
         $this->assertInstanceOf(
-            expected: MissingElementError::class,
-            actual: $elementValidationResult->getErrors()[0]
+            MissingElementError::class,
+            $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
-            expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getErrors()[0]->getMessage()
+            $expectedErrorMessage,
+            $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 
@@ -55,15 +55,15 @@ class DoctypeValidatorTest extends TestCase
 
         $elementValidationResult = $validator->validate();
 
-        $this->assertFalse(condition: $elementValidationResult->isValid());
-        $this->assertNotEmpty(actual: $elementValidationResult->getErrors());
+        $this->assertFalse($elementValidationResult->isValid());
+        $this->assertNotEmpty($elementValidationResult->getErrors());
         $this->assertInstanceOf(
-            expected: StructuralError::class,
-            actual: $elementValidationResult->getErrors()[0]
+            StructuralError::class,
+            $elementValidationResult->getErrors()[0]
         );
         $this->assertEquals(
-            expected: $expectedErrorMessage,
-            actual: $elementValidationResult->getErrors()[0]->getMessage()
+            $expectedErrorMessage,
+            $elementValidationResult->getErrors()[0]->getMessage()
         );
     }
 }

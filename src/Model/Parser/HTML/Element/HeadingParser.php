@@ -15,7 +15,7 @@ class HeadingParser implements ParserInterface
      * 
      * @param string $content
      *
-     * @return array
+     * @return array<Node>
      */
     private function parseHeadings(string $content): array
     {

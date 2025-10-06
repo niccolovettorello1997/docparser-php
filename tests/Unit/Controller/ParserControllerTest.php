@@ -29,16 +29,16 @@ class ParserControllerTest extends TestCase
         $rendered = $result[0]->render();
 
         $this->assertCount(
-            expectedCount: 1,
-            haystack: $result
+            1,
+            $result
         );
         $this->assertInstanceOf(
-            expected: ElementValidationResultView::class,
-            actual: $result[0]
+            ElementValidationResultView::class,
+            $result[0]
         );
         $this->assertStringContainsString(
-            needle: 'Unsupported input type: xml',
-            haystack: $rendered
+            'Unsupported input type: xml',
+            $rendered
         );
     }
 
@@ -58,16 +58,16 @@ class ParserControllerTest extends TestCase
         $rendered = $result[0]->render();
 
         $this->assertCount(
-            expectedCount: 1,
-            haystack: $result
+            1,
+            $result
         );
         $this->assertInstanceOf(
-            expected: ElementValidationResultView::class,
-            actual: $result[0]
+            ElementValidationResultView::class,
+            $result[0]
         );
         $this->assertStringContainsString(
-            needle: 'Unsupported rendering type: xml',
-            haystack: $rendered
+            'Unsupported rendering type: xml',
+            $rendered
         );
     }
 
@@ -87,16 +87,16 @@ class ParserControllerTest extends TestCase
         $rendered = $result[0]->render();
 
         $this->assertCount(
-            expectedCount: 1,
-            haystack: $result
+            1,
+            $result
         );
         $this->assertInstanceOf(
-            expected: ElementValidationResultView::class,
-            actual: $result[0]
+            ElementValidationResultView::class,
+            $result[0]
         );
         $this->assertStringContainsString(
-            needle: 'No context provided',
-            haystack: $rendered
+            'No context provided',
+            $rendered
         );
     }
 
@@ -116,16 +116,16 @@ class ParserControllerTest extends TestCase
         $rendered = $result[0]->render();
 
         $this->assertCount(
-            expectedCount: 1,
-            haystack: $result
+            1,
+            $result
         );
         $this->assertInstanceOf(
-            expected: ElementValidationResultView::class,
-            actual: $result[0]
+            ElementValidationResultView::class,
+            $result[0]
         );
         $this->assertStringContainsString(
-            needle: 'No context provided',
-            haystack: $rendered
+            'No context provided',
+            $rendered
         );
     }
 
@@ -147,16 +147,16 @@ class ParserControllerTest extends TestCase
 
         // Only validation view present
         $this->assertCount(
-            expectedCount: 1,
-            haystack: $result
+            1,
+            $result
         );
         $this->assertInstanceOf(
-            expected: ElementValidationResultView::class,
-            actual: $result[0]
+            ElementValidationResultView::class,
+            $result[0]
         );
         $this->assertStringContainsString(
-            needle: 'Errors:',
-            haystack: $rendered
+            'Errors:',
+            $rendered
         );
     }
 
@@ -176,24 +176,24 @@ class ParserControllerTest extends TestCase
 
         // Validation and parsing views present
         $this->assertCount(
-            expectedCount: 2,
-            haystack: $result
+            2,
+            $result
         );
         $this->assertInstanceOf(
-            expected: ElementValidationResultView::class,
-            actual: $result[0]
+            ElementValidationResultView::class,
+            $result[0]
         );
         $this->assertInstanceOf(
-            expected: HtmlParserView::class,
-            actual: $result[1]
+            HtmlParserView::class,
+            $result[1]
         );
         $this->assertStringContainsString(
-            needle: 'Your content is valid!',
-            haystack: $result[0]->render()
+            'Your content is valid!',
+            $result[0]->render()
         );
         $this->assertStringContainsString(
-            needle: 'Hello',
-            haystack: $result[1]->render()
+            'Hello',
+            $result[1]->render()
         );
     }
 
@@ -213,13 +213,13 @@ class ParserControllerTest extends TestCase
         $response = $controller->getJsonResult(views: [$view]);
 
         $this->assertSame(
-            expected: 200,
-            actual: $response->getStatusCode()
+            200,
+            $response->getStatusCode()
         );
-        $this->assertJson(actual: $response->getContent());
+        $this->assertJson($response->getContent());
         $this->assertStringContainsString(
-            needle: 'Hello',
-            haystack: $response->getContent()
+            'Hello',
+            $response->getContent()
         );
     }
 
@@ -229,13 +229,16 @@ class ParserControllerTest extends TestCase
 
         $response = $controller->getJsonResult(views: []);
 
+	/** @var array<mixed> $decodedContent */
+	$decodedContent = json_decode(json: $response->getContent(), associative: true);
+
         $this->assertSame(
-            expected: 500,
-            actual: $response->getStatusCode()
+            500,
+            $response->getStatusCode()
         );
         $this->assertArrayHasKey(
-            key: 'error',
-            array: json_decode(json: $response->getContent(), associative: true)
+	    'error',
+	    $decodedContent
         );
     }
 
@@ -255,6 +258,11 @@ class ParserControllerTest extends TestCase
             ]
         ];
 
+	$encodedJsonRender = json_encode(
+            value: $expectedJsonRender,
+            flags: JSON_PRETTY_PRINT,
+        );
+
         $result = $controller->handleRequest(
             data: [
                 'context' => $markdown,
@@ -265,27 +273,25 @@ class ParserControllerTest extends TestCase
 
         // Validation and parsing views present
         $this->assertCount(
-            expectedCount: 2,
-            haystack: $result
+            2,
+            $result
         );
         $this->assertInstanceOf(
-            expected: ElementValidationResultView::class,
-            actual: $result[0]
+            ElementValidationResultView::class,
+            $result[0]
         );
         $this->assertInstanceOf(
-            expected: JsonParserView::class,
-            actual: $result[1]
+            JsonParserView::class,
+            $result[1]
         );
         $this->assertStringContainsString(
-            needle: 'Your content is valid!',
-            haystack: $result[0]->render()
+            'Your content is valid!',
+            $result[0]->render()
         );
-        $this->assertJsonStringEqualsJsonString(
-            expectedJson: json_encode(
-                value: $expectedJsonRender,
-                flags: JSON_PRETTY_PRINT,
-            ),
-            actualJson: $result[1]->render()
+	$this->assertIsString($encodedJsonRender);
+	$this->assertJsonStringEqualsJsonString(
+	    $encodedJsonRender,
+            $result[1]->render()
         );
     }
 
@@ -305,24 +311,24 @@ class ParserControllerTest extends TestCase
 
         // Validation and parsing views present
         $this->assertCount(
-            expectedCount: 2,
-            haystack: $result
+            2,
+            $result
         );
         $this->assertInstanceOf(
-            expected: ElementValidationResultView::class,
-            actual: $result[0]
+            ElementValidationResultView::class,
+            $result[0]
         );
         $this->assertInstanceOf(
-            expected: HtmlParserView::class,
-            actual: $result[1]
+            HtmlParserView::class,
+            $result[1]
         );
         $this->assertStringContainsString(
-            needle: 'Your content is valid!',
-            haystack: $result[0]->render()
+            'Your content is valid!',
+            $result[0]->render()
         );
         $this->assertStringContainsString(
-            needle: 'Example Title',
-            haystack: $result[1]->render()
+            'Example Title',
+            $result[1]->render()
         );
     }
 
@@ -342,12 +348,12 @@ class ParserControllerTest extends TestCase
         $resultHtml = $controller->getJsonResult(views: $views);
 
         $this->assertStringContainsString(
-            needle: 'Ok',
-            haystack: $resultHtml->getContent()
+            'Ok',
+            $resultHtml->getContent()
         );
         $this->assertStringContainsString(
-            needle: 'Hello',
-            haystack: $resultHtml->getContent()
+            'Hello',
+            $resultHtml->getContent()
         );
 
         // --- Markdown ---
@@ -362,12 +368,12 @@ class ParserControllerTest extends TestCase
         $resultMarkdown = $controller->getJsonResult(views: $markdownViews);
 
         $this->assertStringContainsString(
-            needle: 'markdown',
-            haystack: $resultMarkdown->getContent()
+            'markdown',
+            $resultMarkdown->getContent()
         );
         $this->assertStringContainsString(
-            needle: '# Heading',
-            haystack: $resultMarkdown->getContent()
+            '# Heading',
+            $resultMarkdown->getContent()
         );
     }
 }

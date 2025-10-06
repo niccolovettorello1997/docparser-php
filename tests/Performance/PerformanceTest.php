@@ -61,16 +61,18 @@ class PerformanceTest extends TestCase
         $duration = $endTime - $startTime;
 
         // Validation and parsing completed
-        $this->assertNotNull(actual: $validationResult);
-        $this->assertNotNull(actual: $parsingResult);
+        $this->assertNotNull($parsingResult);
 
-        $this->assertTrue(condition: $validationResult->isValid());
-        $this->assertGreaterThan(minimum: 0, actual: count(value: $parsingResult->getChildren()));
+        $this->assertTrue($validationResult->isValid());
+	$this->assertGreaterThan(
+	    0,
+	    count(value: $parsingResult->getChildren())
+	);
 
         // Check execution time
         $this->assertLessThan(
-            maximum: 2,
-            actual: $duration,
+            2,
+            $duration,
         );
     }
 }

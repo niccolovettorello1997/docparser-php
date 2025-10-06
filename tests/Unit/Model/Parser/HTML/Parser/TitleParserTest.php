@@ -25,13 +25,13 @@ class TitleParserTest extends TestCase
         $titleParser = new TitleParser();
         $titleNode = $titleParser->parse(content: $html);
 
-        $this->assertNotNull(actual: $titleNode);
+        $this->assertNotNull($titleNode);
         $this->assertEquals(
-            expected: $titleContent,
-            actual: $titleNode->getContent()
+            $titleContent,
+            $titleNode->getContent()
         );
         $this->assertEmpty(
-            actual: $titleNode->getChildren()
+            $titleNode->getChildren()
         );
     }
 }

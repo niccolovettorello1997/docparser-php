@@ -14,18 +14,22 @@ class DoctypeParserTest extends TestCase
     {
         $html = file_get_contents(filename: __DIR__ . "/../../../../../../fixtures/tests/valid_html.html");
 
+        if (false === $html) {
+            $this->fail('Failed to read the HTML fixture file.');
+        }
+
         $doctypeParser = new DoctypeParser();
         $doctypeNode = $doctypeParser->parse(content: $html);
 
-        $this->assertNotNull(actual: $doctypeNode);
-        $this->assertNull(actual: $doctypeNode->getContent());
+        $this->assertNotNull($doctypeNode);
+        $this->assertNull($doctypeNode->getContent());
         $this->assertCount(
-            expectedCount:1,
-            haystack: $doctypeNode->getChildren()
+            1,
+            $doctypeNode->getChildren()
         );
         $this->assertEquals(
-            expected: HtmlElementType::HTML->value,
-            actual: $doctypeNode->getChildren()[0]->getTagName()
+            HtmlElementType::HTML->value,
+            $doctypeNode->getChildren()[0]->getTagName()
         );
     }
 }
