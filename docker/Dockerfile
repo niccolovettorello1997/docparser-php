@@ -18,7 +18,9 @@ RUN echo "zend_extension=xdebug.so" > /usr/local/etc/php/conf.d/docker-php-ext-x
     && echo "xdebug.client_host=172.17.0.1" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
     && echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
-COPY docker/apache-config/000-default.conf /etc/apache2/sites-available/000-default.conf
+# --- Ensure Apache serves public/ ---
+RUN sed -i "s|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|" /etc/apache2/sites-available/000-default.conf
+RUN sed -i "/<Directory \/var\/www\/html>/c\<Directory /var/www/html/public>" /etc/apache2/sites-available/000-default.conf
 
 WORKDIR /var/www/html
 
