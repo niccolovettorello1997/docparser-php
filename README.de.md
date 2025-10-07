@@ -2,15 +2,19 @@
     <img src="./assets/img/docparser_php.png">
 </p>
 
-<a href="https://codecov.io/gh/niccolovettorello1997/docparser-php" > 
- <img src="https://codecov.io/gh/niccolovettorello1997/docparser-php/graph/badge.svg?token=LNQFFW4GD3" style="height:auto; margin-right:10px; vertical-align:top;"/></a>
- <img src="https://github.com/niccolovettorello1997/docparser-php/actions/workflows/tests.yml/badge.svg" style="height:auto; vertical-align:top; margin-right:10px;">
- <img src="https://img.shields.io/badge/PHP-8.3-777BB4?logo=php" style="height:auto; vertical-align:top; margin-right:10px;">
- <img src="https://img.shields.io/github/license/niccolovettorello1997/docparser-php" style="height:auto; vertical-align:top; margin-right:10px;">
- <img src="https://github.com/niccolovettorello1997/docparser-php/actions/workflows/phpstan.yaml/badge.svg" style="height:auto; vertical-align:top; margin-right:10px;">
- <img src="https://github.com/niccolovettorello1997/docparser-php/actions/workflows/docker_build.yaml/badge.svg" style="height:auto; vertical-align:top; margin-right:10px;">
- <a href="https://docparser-php.onrender.com" target="_blank">
-    <img src="https://img.shields.io/badge/DocParser_PHP-Running-brightgreen" alt="DocParser-PHP Running"></a>
+<div style="display:flex; align-items:center; flex-wrap:wrap; gap:7px;">
+  <a href="https://codecov.io/gh/niccolovettorello1997/docparser-php">
+    <img src="https://codecov.io/gh/niccolovettorello1997/docparser-php/graph/badge.svg?token=LNQFFW4GD3" alt="Codecov">
+  </a>
+  <img src="https://github.com/niccolovettorello1997/docparser-php/actions/workflows/tests.yml/badge.svg" alt="Tests">
+  <img src="https://img.shields.io/badge/PHP-8.3-777BB4?logo=php" alt="PHP 8.3">
+  <img src="https://img.shields.io/github/license/niccolovettorello1997/docparser-php" alt="License">
+  <img src="https://github.com/niccolovettorello1997/docparser-php/actions/workflows/phpstan.yaml/badge.svg" alt="PHPStan">
+  <img src="https://github.com/niccolovettorello1997/docparser-php/actions/workflows/docker_build.yaml/badge.svg" alt="Docker Build">
+  <a href="https://docparser-php.onrender.com" target="_blank">
+    <img src="https://img.shields.io/badge/DocParser_PHP-Running-brightgreen" alt="DocParser-PHP Running">
+  </a>
+</div>
 
 ---
 
