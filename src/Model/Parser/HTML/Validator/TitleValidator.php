@@ -17,7 +17,7 @@ class TitleValidator extends AbstractValidator
 
     /**
      * Check if the title element is present in the HTML document.
-     * 
+     *
      * @param array<int,array<int,string>> $titleMatches
      * @param ElementValidationResult      $elementValidationResult
      *
@@ -36,7 +36,7 @@ class TitleValidator extends AbstractValidator
 
     /**
      * Check if the title element is unique.
-     * 
+     *
      * @param array<int,array<int,string>> $titleMatches
      * @param ElementValidationResult      $elementValidationResult
      *
@@ -55,7 +55,7 @@ class TitleValidator extends AbstractValidator
 
     /**
      * Check if the title element is not empty (at least one character different from whitespace).
-     * 
+     *
      * @param array<int,array<int,string>> $titleMatches
      * @param ElementValidationResult      $elementValidationResult
      *
@@ -74,7 +74,7 @@ class TitleValidator extends AbstractValidator
 
     /**
      * Check if the title element contains only valid characters in UTF-8.
-     * 
+     *
      * @param array<int,array<int,string>> $titleMatches
      * @param ElementValidationResult      $elementValidationResult
      *

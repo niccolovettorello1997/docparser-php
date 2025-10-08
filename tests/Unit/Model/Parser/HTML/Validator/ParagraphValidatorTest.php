@@ -48,6 +48,27 @@ class ParagraphValidatorTest extends TestCase
         );
     }
 
+    public function test_paragraph_element_closing_without_opening_tag(): void
+    {
+        $expectedErrorMessage = 'Closing tag for paragraph element without opening.';
+        $html = '<DOCTYPE html><html><head></head><body></p><p>Missing closing tag</body></html>';
+        $sharedContext = new SharedContext(context: $html);
+        $validator = new ParagraphValidator(sharedContext: $sharedContext);
+
+        $result = $validator->validate();
+
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
+        $this->assertInstanceOf(
+            MalformedElementError::class,
+            $result->getErrors()[0]
+        );
+        $this->assertEquals(
+            $expectedErrorMessage,
+            $result->getErrors()[0]->getMessage()
+        );
+    }
+
     public function test_paragraph_element_nested(): void
     {
         $expectedErrorMessage = 'Nested paragraph elements are not allowed in paragraph element.';

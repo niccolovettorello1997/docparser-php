@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types= 1);
+declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Model\Core\Parser;
 
@@ -28,7 +28,7 @@ class ParserComponent
 
     /**
      * Given a context and a parser configuration path, returns a new ParserComponent.
-     * 
+     *
      * @param string $context
      * @param string $configPath
      *
@@ -75,7 +75,7 @@ class ParserComponent
 
     /**
      * Run the parsing process.
-     * 
+     *
      * @return Node|null
      */
     public function run(): ?Node

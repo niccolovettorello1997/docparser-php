@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types= 1);
+declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Model\Core\Validator;
 
@@ -18,7 +18,7 @@ class ValidatorComponent
 
     /**
      * Given a context and a validator configuration path, returns a new ValidatorComponent.
-     * 
+     *
      * @param string $context
      * @param string $configPath
      *
@@ -62,7 +62,7 @@ class ValidatorComponent
 
     /**
      * Run the validation process.
-     * 
+     *
      * @return ElementValidationResult
      */
     public function run(): ElementValidationResult

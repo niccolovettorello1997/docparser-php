@@ -17,7 +17,7 @@ class ParserConfigTest extends TestCase
 
     public function test_parser_root_nodes_exist_and_are_valid(): void
     {
-	/** @var array<string,array<int,string>> $config */
+        /** @var array<string,array<int,string>> $config */
         $config = Yaml::parseFile(filename: $this->configPath);
 
         foreach ($config['rootElements'] as $parserClass) {

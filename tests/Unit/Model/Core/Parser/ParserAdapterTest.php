@@ -44,4 +44,13 @@ class ParserAdapterTest extends TestCase
             $result->getChildren()[0]->getChildren()[0]->getTagName()
         );
     }
+
+    public function test_parse_with_empty_root_elements(): void
+    {
+        $sharedContextMock = $this->createMock(SharedContext::class);
+
+        $parserAdapter = new ParserAdapter(rootElements: []);
+
+        $this->assertNull($parserAdapter->parse(sharedContext: $sharedContextMock));
+    }
 }

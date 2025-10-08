@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types= 1);
+declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Tests\Unit\Model\Core\Validator;
 
@@ -27,7 +27,7 @@ class ValidatorComponentTest extends TestCase
     {
         $found = array_filter(
             array: $items,
-            callback: fn($e): bool => $e->getMessage() === $expectedMessage
+            callback: fn ($e): bool => $e->getMessage() === $expectedMessage
         );
 
         $this->assertNotEmpty($found);
@@ -303,7 +303,8 @@ class ValidatorComponentTest extends TestCase
         $this->assertNotEmpty($result->getWarnings());
         $this->assertCount(
             1,
-            $result->getWarnings());
+            $result->getWarnings()
+        );
         $this->assertInstanceOf(
             RecommendedAttributeWarning::class,
             $result->getWarnings()[0],

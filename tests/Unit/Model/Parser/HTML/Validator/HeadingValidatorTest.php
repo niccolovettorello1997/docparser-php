@@ -46,6 +46,27 @@ class HeadingValidatorTest extends TestCase
         );
     }
 
+    public function test_heading_element_closing_tag_without_opening_tag(): void
+    {
+        $expectedErrorMessage = 'Closing tag for heading element <h1> without opening.';
+        $html = '<DOCTYPE html><html><head></head><body>Heading without opening tag</h1></body></html>';
+        $sharedContext = new SharedContext(context: $html);
+        $validator = new HeadingValidator(sharedContext: $sharedContext);
+
+        $result = $validator->validate();
+
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
+        $this->assertInstanceOf(
+            StructuralError::class,
+            $result->getErrors()[0]
+        );
+        $this->assertEquals(
+            $expectedErrorMessage,
+            $result->getErrors()[0]->getMessage()
+        );
+    }
+
     public function test_heading_element_invalid_internal_tag(): void
     {
         $expectedErrorMessage = 'Invalid content inside heading element <h1> : contains <div> tag.';

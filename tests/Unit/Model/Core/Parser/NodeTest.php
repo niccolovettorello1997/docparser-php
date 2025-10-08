@@ -29,6 +29,35 @@ class NodeTest extends TestCase
         );
     }
 
+    public function test_node_add_child(): void
+    {
+        $node = new Node(
+            tagName: 'p',
+            content: 'Hello',
+            attributes: [],
+            children: []
+        );
+
+        $parent = new Node(
+            tagName: 'body',
+            content: null,
+            attributes: [],
+            children: []
+        );
+
+        $parent->addChild(child: $node);
+
+        $expected = [
+            'Name' => 'p',
+            'Content' => 'Hello',
+        ];
+
+        $this->assertSame(
+            $expected,
+            $parent->getChildren()[0]->toArray()
+        );
+    }
+
     public function test_to_array_with_attributes(): void
     {
         $node = new Node(
@@ -58,7 +87,7 @@ class NodeTest extends TestCase
         );
     }
 
-    public function test_to_array_with_children(): void
+    public function test_node_with_children(): void
     {
         $child = new Node(
             tagName: 'span',
@@ -71,10 +100,12 @@ class NodeTest extends TestCase
             tagName: 'div',
             content: null,
             attributes: ['class' => 'container'],
-            children: [$child]
+            children: []
         );
 
-	/** @var array{Name: string, Attributes: array<string,string>, Children: array<int,array<string,string>>} $result */
+        $parent->addChild(child: $child);
+
+        /** @var array{Name: string, Attributes: array<string,string>, Children: array<int,array<string,string>>} $result */
         $result = $parent->toArray();
 
         $this->assertSame(
@@ -103,7 +134,7 @@ class NodeTest extends TestCase
         );
     }
 
-    public function test_to_array_nested_structure(): void
+    public function test_node_nested_structure(): void
     {
         $grandChild = new Node(
             tagName: 'em',
@@ -115,16 +146,19 @@ class NodeTest extends TestCase
             tagName: 'p',
             content: null,
             attributes: [],
-            children: [$grandChild]
+            children: []
         );
         $parent = new Node(
             tagName: 'body',
             content: null,
             attributes: [],
-            children: [$child]
+            children: []
         );
-	
-	/** @var array{Name: string, Children: array<int,array{Name: string, Children: array<int, array{Name: string, Content: string}>}>} $result */
+
+        $child->addChild(child: $grandChild);
+        $parent->addChild(child: $child);
+
+        /** @var array{Name: string, Children: array<int,array{Name: string, Children: array<int, array{Name: string, Content: string}>}>} $result */
         $result = $parent->toArray();
 
         $this->assertSame(

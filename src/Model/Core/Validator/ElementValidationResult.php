@@ -19,7 +19,7 @@ class ElementValidationResult
 
     public function isValid(): bool
     {
-        return count(value: $this->errors) === 0;
+        return 0 === count($this->getErrors());
     }
 
     /**
@@ -62,5 +62,23 @@ class ElementValidationResult
     public function addWarnings(array $warnings): void
     {
         $this->warnings = array_merge($this->warnings, $warnings);
+    }
+
+    /**
+     * @return array{Valid: 'yes'|'no', Errors: array<array<string, string>>, Warnings: array<array<string, string>>}
+     */
+    public function toArray(): array
+    {
+        return [
+            'Valid' => ($this->isValid()) ? 'yes' : 'no',
+            'Errors' => array_map(
+                callback: fn (AbstractError $error): array => $error->toArray(),
+                array: $this->getErrors()
+            ),
+            'Warnings' => array_map(
+                callback: fn (AbstractWarning $warning): array => $warning->toArray(),
+                array: $this->getWarnings()
+            ),
+        ];
     }
 }

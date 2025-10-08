@@ -1,0 +1,249 @@
+openapi: 3.0.1
+info:
+  title: DocParser-PHP API
+  version: 0.0.1
+  description: |
+    DocParser-PHP is a lightweight document parsing and validation microservice written in PHP 8.3.
+    It provides a RESTful API for programmatic validation and parsing of HTML documents.
+  contact:
+    name: Niccolò Vettorello
+    url: https://github.com/niccolovettorello1997/docparser-php
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local environment
+  - url: https://docparser-php.onrender.com/api/v1
+    description: Production environment
+
+security: []
+
+tags:
+  - name: Health
+    description: Service health and uptime
+  - name: Parser
+    description: Document parsing and validation
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Returns service health and version
+      operationId: getHealth
+      responses:
+        "200":
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  version:
+                    type: string
+                    example: 0.0.1
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /openapi.yaml:
+    get:
+      summary: Download OpenAPI Specification
+      description: |
+        Returns the current OpenAPI specification file (`openapi.yaml`) for DocParser-PHP.
+        This endpoint allows clients, documentation tools, or integrations to fetch the
+        latest API schema directly from the service.
+      operationId: downloadOpenApiSpec
+      tags:
+        - System
+      responses:
+        "200":
+          description: OpenAPI specification successfully returned
+          content:
+            application/yaml:
+              schema:
+                type: string
+              example: |
+                openapi: 3.1.0
+                info:
+                  title: DocParser-PHP
+                  version: 0.0.1
+                  description: API definition for DocParser-PHP microservice
+                paths: {}
+
+  /parse/file:
+    post:
+      tags: [Parser]
+      summary: Parses and validates an uploaded document file
+      operationId: parseFile
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [document, type]
+              properties:
+                document:
+                  type: string
+                  format: binary
+                  description: The file to upload
+                type:
+                  type: string
+                  enum: [html]
+                  example: html
+      responses:
+        "200":
+          description: File parsed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ParseResponse"
+        "400":
+          description: Missing or invalid fields
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "409":
+          description: Upload error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /parse/json:
+    post:
+      tags: [Parser]
+      summary: Parses and validates a document provided in JSON format
+      operationId: parseJson
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type, content]
+              properties:
+                type:
+                  type: string
+                  enum: [html, markdown]
+                  example: html
+                content:
+                  type: string
+                  description: Raw document content as an url-encoded string
+                  example: "%3C!DOCTYPE%20html%3E%3Chtml%3E%3Chead%3E%3Ctitle%3EDoc%3C%2Ftitle%3E%3C%2Fhead%3E%3Cbody%3E%3C%2Fbody%3E%3C%2Fhtml%3E"
+      responses:
+        "200":
+          description: JSON document parsed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ParseResponse"
+        "400":
+          description: Invalid or missing body
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    ParseResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: ok
+        requestId:
+          type: string
+          example: req-f77ecced103d7f6d
+        validation:
+          type: object
+          properties:
+            Valid:
+              type: string
+              example: yes
+            Errors:
+              type: array
+              items:
+                type: string
+              example: []
+            Warnings:
+              type: array
+              items:
+                type: string
+              example: []
+        parsed:
+          type: object
+          description: Parsed document tree
+          example:
+            Name: root
+            Children:
+              - Name: html
+                Children:
+                  - Name: head
+                    Children:
+                      - Name: title
+                        Content: Example Document
+                  - Name: body
+                    Children:
+                      - Name: p
+                        Content: This is a valid HTML5 document.
+        meta:
+          type: object
+          properties:
+            durationMs:
+              type: integer
+              example: 18
+            sizeBytes:
+              type: integer
+              example: 901
+            version:
+              type: string
+              example: 0.0.1
+
+    Error:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        code:
+          type: string
+          example: ERR_INTERNAL_SERVER_ERROR
+        message:
+          type: string
+          example: An internal error has happened
+        details:
+          type: string
+          example: Example details
+
+x-error-codes:
+  - ERR_NOT_FOUND: the requested resource was not found
+  - ERR_NO_AUTH_HEADER: authentication header not present
+  - ERR_INVALID_TOKEN: authentication token is invalid
+  - ERR_MISSING_REQUIRED_FIELD: required field is missing
+  - ERR_UNSUPPORTED_TYPE: requested to parse an unsupported type of language
+  - ERR_NO_FILE_UPLOADED: no file was uploaded
+  - ERR_UPLOAD: an error happened during upload
+  - ERR_INTERNAL_SERVER_ERROR: an internal error has happened

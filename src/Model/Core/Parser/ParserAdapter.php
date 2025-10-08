@@ -16,7 +16,7 @@ class ParserAdapter
 
     /**
      * Invoke parse method on root element classes.
-     * 
+     *
      * @param SharedContext $sharedContext
      *
      * @return Node|null

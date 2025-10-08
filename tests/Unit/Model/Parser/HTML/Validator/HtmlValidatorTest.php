@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Niccolo\DocparserPhp\Tests\Unit\Model\Parser\HTML\Validator;
 
 use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\HtmlValidator;
+use Niccolo\DocparserPhp\Model\Utils\Error\InternalError;
 use Niccolo\DocparserPhp\Model\Utils\Error\MalformedElementError;
 use Niccolo\DocparserPhp\Model\Utils\Error\MissingElementError;
 use Niccolo\DocparserPhp\Model\Utils\Error\NotUniqueElementError;
@@ -25,6 +26,31 @@ class HtmlValidatorTest extends TestCase
 
         $this->assertTrue($elementValidationResult->isValid());
         $this->assertEmpty($elementValidationResult->getErrors());
+        $this->assertEmpty($elementValidationResult->getWarnings());
+    }
+
+    public function test_valid_html_element_prefix_replacement_failure(): void
+    {
+        $expectedErrorMessage = 'An error occurred while parsing the prefix of the html element.';
+        $html = '<!DOCTYPE html><html lang="de"><head><title>Test</title></head><body><p>Hello, World!</p></body></html>';
+        $sharedContext = new SharedContext(context: $html);
+
+        $validatorMock = $this->getMockBuilder(HtmlValidator::class)
+            ->setConstructorArgs([$sharedContext])
+            ->onlyMethods(['replacePrefix'])
+            ->getMock();
+
+        $validatorMock->expects($this->once())
+            ->method('replacePrefix')
+            ->willReturn(null);
+
+        $elementValidationResult = $validatorMock->validate();
+
+        $this->assertFalse($elementValidationResult->isValid());
+        $this->assertNotEmpty($elementValidationResult->getErrors());
+        $this->assertCount(1, $elementValidationResult->getErrors());
+        $this->assertInstanceOf(InternalError::class, $elementValidationResult->getErrors()[0]);
+        $this->assertEquals($expectedErrorMessage, $elementValidationResult->getErrors()[0]->getMessage());
         $this->assertEmpty($elementValidationResult->getWarnings());
     }
 

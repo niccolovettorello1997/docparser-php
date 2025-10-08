@@ -18,8 +18,29 @@ class HtmlValidator extends AbstractValidator
     public const ELEMENT_NAME = 'html';
 
     /**
+     * Replace pattern inside string.
+     *
+     * @param string $pattern
+     * @param string $replacement
+     * @param string $subject
+     *
+     * @return string|null
+     */
+    public function replacePrefix(
+        string $pattern,
+        string $replacement,
+        string $subject
+    ): ?string {
+        return preg_replace(
+            pattern: $pattern,
+            replacement: $replacement,
+            subject: $subject
+        );
+    }
+
+    /**
      * Validates the structure of the html tag.
-     * 
+     *
      * @param array<int,array<int,string>> $matchesHtml
      * @param ElementValidationResult      $elementValidationResult
      *
@@ -43,7 +64,7 @@ class HtmlValidator extends AbstractValidator
             $patternAllowedPrefix = '/\A(?:\s|<!--[\s\S]*?-->|<!DOCTYPE\b[^>]*>)+/is';
 
             // Compute the prefix before the html element opening tag and remove any allowed prefixes
-            $replacedPrefix = preg_replace(
+            $replacedPrefix = $this->replacePrefix(
                 pattern: $patternAllowedPrefix,
                 replacement: ' ',
                 subject: $matchesHtmlOpeningTag[1],
@@ -80,7 +101,7 @@ class HtmlValidator extends AbstractValidator
 
     /**
      * Check for the html element presence and if it has a closing tag.
-     * 
+     *
      * @param array<int,array<int,string>> $matchesHtml
      * @param ElementValidationResult      $elementValidationResult
      *
@@ -113,7 +134,7 @@ class HtmlValidator extends AbstractValidator
 
     /**
      * Check if the html element is unique.
-     * 
+     *
      * @param array<int,array<int,string>> $matchesHtml
      * @param ElementValidationResult      $elementValidationResult
      *
@@ -132,7 +153,7 @@ class HtmlValidator extends AbstractValidator
 
     /**
      * Check if the html element has both head and body elements. Body must be after head.
-     * 
+     *
      * @param array<int,array<int,string>> $matchesHtml
      * @param ElementValidationResult      $elementValidationResult
      *
@@ -188,7 +209,7 @@ class HtmlValidator extends AbstractValidator
 
     /**
      * Check if the html element has a lang attribute.
-     * 
+     *
      * @param array<int,array<int,string>> $matchesHtml
      * @param ElementValidationResult      $elementValidationResult
      *

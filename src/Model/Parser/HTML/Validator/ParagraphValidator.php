@@ -17,7 +17,7 @@ class ParagraphValidator extends AbstractValidator
 
     /**
      * Return an array of tags that are considered invalid for paragraph element.
-     * 
+     *
      * @return string[]
      */
     private function getInvalidTags(): array
@@ -53,7 +53,7 @@ class ParagraphValidator extends AbstractValidator
      *
      * @return void
      */
-    function hasNestedParagraphs(ElementValidationResult $elementValidationResult): void
+    public function hasNestedParagraphs(ElementValidationResult $elementValidationResult): void
     {
         $patternParagraphs = '/<p\b[^>]*>(.*?)<\/p>/is';
 
@@ -68,7 +68,8 @@ class ParagraphValidator extends AbstractValidator
             // Check is there are nested paragraphs
             if (preg_match(
                 pattern: '/<p\b/i',
-                subject: $paragraph)
+                subject: $paragraph
+            )
             ) {
                 $elementValidationResult->addError(
                     error: new StructuralError(
@@ -81,7 +82,7 @@ class ParagraphValidator extends AbstractValidator
 
     /**
      * Check for invalid tags within paragraph elements.
-     * 
+     *
      * @param ElementValidationResult $elementValidationResult
      *
      * @return void
@@ -113,7 +114,7 @@ class ParagraphValidator extends AbstractValidator
 
     /**
      * Check for empty paragraph elements.
-     * 
+     *
      * @param string                  $content
      * @param ElementValidationResult $elementValidationResult
      *
@@ -181,7 +182,7 @@ class ParagraphValidator extends AbstractValidator
 
     /**
      * Validates the paragraph element in the HTML.
-     * 
+     *
      * @return ElementValidationResult
      */
     public function validate(): ElementValidationResult

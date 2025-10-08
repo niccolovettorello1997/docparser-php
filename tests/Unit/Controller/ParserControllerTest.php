@@ -6,16 +6,23 @@ namespace Niccolo\DocparserPhp\Tests\Unit\Controller;
 
 use Niccolo\DocparserPhp\Controller\ParserController;
 use Niccolo\DocparserPhp\Model\Core\Parser\Node;
-use Niccolo\DocparserPhp\View\ElementValidationResultView;
-use Niccolo\DocparserPhp\View\Parser\HtmlParserView;
-use Niccolo\DocparserPhp\View\Parser\JsonParserView;
+use Niccolo\DocparserPhp\Service\ParserService;
+use Niccolo\DocparserPhp\Service\ValidatorService;
+use Niccolo\DocparserPhp\View\HtmlParserView;
+use Niccolo\DocparserPhp\View\JsonParserView;
 use PHPUnit\Framework\TestCase;
 
 class ParserControllerTest extends TestCase
 {
     public function test_handle_request_with_unsupported_input_type(): void
     {
-        $controller = new ParserController();
+        $validatorService = new ValidatorService();
+        $parserService = new ParserService();
+
+        $controller = new ParserController(
+            validatorService: $validatorService,
+            parserService: $parserService
+        );
 
         // Unsupported type
         $result = $controller->handleRequest(
@@ -26,15 +33,11 @@ class ParserControllerTest extends TestCase
             ]
         );
 
-        $rendered = $result[0]->render();
+        $rendered = $result->render();
 
-        $this->assertCount(
-            1,
-            $result
-        );
         $this->assertInstanceOf(
-            ElementValidationResultView::class,
-            $result[0]
+            HtmlParserView::class,
+            $result
         );
         $this->assertStringContainsString(
             'Unsupported input type: xml',
@@ -42,9 +45,15 @@ class ParserControllerTest extends TestCase
         );
     }
 
-    public function test_handle_request_with_unsupported_rendering_type(): void
+    public function test_handle_request_unsupported_rendering_type_defaults_to_json(): void
     {
-        $controller = new ParserController();
+        $validatorService = new ValidatorService();
+        $parserService = new ParserService();
+
+        $controller = new ParserController(
+            validatorService: $validatorService,
+            parserService: $parserService
+        );
 
         // Unsupported type
         $result = $controller->handleRequest(
@@ -55,25 +64,23 @@ class ParserControllerTest extends TestCase
             ]
         );
 
-        $rendered = $result[0]->render();
+        $rendered = $result->render();
 
-        $this->assertCount(
-            1,
-            $result
-        );
         $this->assertInstanceOf(
-            ElementValidationResultView::class,
-            $result[0]
-        );
-        $this->assertStringContainsString(
-            'Unsupported rendering type: xml',
-            $rendered
+            JsonParserView::class,
+            $result
         );
     }
 
     public function test_handle_request_html_with_empty_context(): void
     {
-        $controller = new ParserController();
+        $validatorService = new ValidatorService();
+        $parserService = new ParserService();
+
+        $controller = new ParserController(
+            validatorService: $validatorService,
+            parserService: $parserService
+        );
 
         // Empty context
         $result = $controller->handleRequest(
@@ -84,15 +91,11 @@ class ParserControllerTest extends TestCase
             ]
         );
 
-        $rendered = $result[0]->render();
+        $rendered = $result->render();
 
-        $this->assertCount(
-            1,
-            $result
-        );
         $this->assertInstanceOf(
-            ElementValidationResultView::class,
-            $result[0]
+            HtmlParserView::class,
+            $result
         );
         $this->assertStringContainsString(
             'No context provided',
@@ -102,7 +105,13 @@ class ParserControllerTest extends TestCase
 
     public function test_handle_request_markdown_with_empty_context(): void
     {
-        $controller = new ParserController();
+        $validatorService = new ValidatorService();
+        $parserService = new ParserService();
+
+        $controller = new ParserController(
+            validatorService: $validatorService,
+            parserService: $parserService
+        );
 
         // Empty context
         $result = $controller->handleRequest(
@@ -113,15 +122,11 @@ class ParserControllerTest extends TestCase
             ]
         );
 
-        $rendered = $result[0]->render();
+        $rendered = $result->render();
 
-        $this->assertCount(
-            1,
-            $result
-        );
         $this->assertInstanceOf(
-            ElementValidationResultView::class,
-            $result[0]
+            HtmlParserView::class,
+            $result
         );
         $this->assertStringContainsString(
             'No context provided',
@@ -131,7 +136,13 @@ class ParserControllerTest extends TestCase
 
     public function test_handle_request_with_invalid_html(): void
     {
-        $controller = new ParserController();
+        $validatorService = new ValidatorService();
+        $parserService = new ParserService();
+
+        $controller = new ParserController(
+            validatorService: $validatorService,
+            parserService: $parserService
+        );
 
         $html = '<!DOCTYPE html><html><body><p>Hi</p></body></html>';
 
@@ -143,16 +154,11 @@ class ParserControllerTest extends TestCase
             ]
         );
 
-        $rendered = $result[0]->render();
+        $rendered = $result->render();
 
-        // Only validation view present
-        $this->assertCount(
-            1,
-            $result
-        );
         $this->assertInstanceOf(
-            ElementValidationResultView::class,
-            $result[0]
+            HtmlParserView::class,
+            $result
         );
         $this->assertStringContainsString(
             'Errors:',
@@ -162,7 +168,13 @@ class ParserControllerTest extends TestCase
 
     public function test_handle_request_with_valid_html(): void
     {
-        $controller = new ParserController();
+        $validatorService = new ValidatorService();
+        $parserService = new ParserService();
+
+        $controller = new ParserController(
+            validatorService: $validatorService,
+            parserService: $parserService
+        );
 
         $html = '<!DOCTYPE html><html lang="en"><head><title>Ok</title></head><body><p>Hello</p></body></html>';
 
@@ -174,91 +186,52 @@ class ParserControllerTest extends TestCase
             ]
         );
 
-        // Validation and parsing views present
-        $this->assertCount(
-            2,
-            $result
-        );
-        $this->assertInstanceOf(
-            ElementValidationResultView::class,
-            $result[0]
-        );
+        $rendered = $result->render();
+
         $this->assertInstanceOf(
             HtmlParserView::class,
-            $result[1]
+            $result
         );
         $this->assertStringContainsString(
-            'Your content is valid!',
-            $result[0]->render()
+            'Valid: yes',
+            $rendered
         );
-        $this->assertStringContainsString(
-            'Hello',
-            $result[1]->render()
-        );
-    }
-
-    public function test_get_json_result_success(): void
-    {
-        $controller = new ParserController();
-
-        $node = new Node(
-            tagName: 'p',
-            content: 'Hello',
-            attributes: [],
-            children: []
-        );
-
-        $view = new JsonParserView(tree: $node);
-
-        $response = $controller->getJsonResult(views: [$view]);
-
-        $this->assertSame(
-            200,
-            $response->getStatusCode()
-        );
-        $this->assertJson($response->getContent());
         $this->assertStringContainsString(
             'Hello',
-            $response->getContent()
-        );
-    }
-
-    public function test_get_json_result_error(): void
-    {
-        $controller = new ParserController();
-
-        $response = $controller->getJsonResult(views: []);
-
-	/** @var array<mixed> $decodedContent */
-	$decodedContent = json_decode(json: $response->getContent(), associative: true);
-
-        $this->assertSame(
-            500,
-            $response->getStatusCode()
-        );
-        $this->assertArrayHasKey(
-	    'error',
-	    $decodedContent
+            $rendered
         );
     }
 
     public function test_handle_request_stub_markdown_rendering_json(): void
     {
-        $controller = new ParserController();
+        $validatorService = new ValidatorService();
+        $parserService = new ParserService();
+
+        $controller = new ParserController(
+            validatorService: $validatorService,
+            parserService: $parserService
+        );
 
         $markdown = '# Example Title';
 
         $expectedJsonRender = [
-            'Name' => 'root',
-            'Children' => [
-                [
-                    'Name' => 'markdown',
-                    'Content' => $markdown,
+            'Validation' => [
+                'Valid' => 'yes',
+                'Errors' => [],
+                'Warnings' => [],
+            ],
+            'Parsed' => [
+                'Name' => 'root',
+                'Children' => [
+                    [
+                        'Name' => 'markdown',
+                        'Content' => $markdown,
+                    ]
                 ]
             ]
         ];
 
-	$encodedJsonRender = json_encode(
+        $encodedJsonRender = json_encode(
             value: $expectedJsonRender,
             flags: JSON_PRETTY_PRINT,
         );
@@ -271,33 +244,32 @@ class ParserControllerTest extends TestCase
             ]
         );
 
-        // Validation and parsing views present
-        $this->assertCount(
-            2,
-            $result
-        );
-        $this->assertInstanceOf(
-            ElementValidationResultView::class,
-            $result[0]
-        );
+        $rendered = $result->render();
+
         $this->assertInstanceOf(
             JsonParserView::class,
-            $result[1]
+            $result
         );
         $this->assertStringContainsString(
-            'Your content is valid!',
-            $result[0]->render()
+            "\"Valid\": \"yes\"",
+            $rendered
         );
-	$this->assertIsString($encodedJsonRender);
-	$this->assertJsonStringEqualsJsonString(
-	    $encodedJsonRender,
-            $result[1]->render()
+        $this->assertIsString($encodedJsonRender);
+        $this->assertJsonStringEqualsJsonString(
+            $encodedJsonRender,
+            $rendered
         );
     }
 
     public function test_handle_request_stub_markdown_html_rendering(): void
     {
-        $controller = new ParserController();
+        $validatorService = new ValidatorService();
+        $parserService = new ParserService();
+
+        $controller = new ParserController(
+            validatorService: $validatorService,
+            parserService: $parserService
+        );
 
         $markdown = '# Example Title';
 
@@ -309,27 +281,112 @@ class ParserControllerTest extends TestCase
             ]
         );
 
-        // Validation and parsing views present
-        $this->assertCount(
-            2,
-            $result
-        );
-        $this->assertInstanceOf(
-            ElementValidationResultView::class,
-            $result[0]
-        );
+        $rendered = $result->render();
+
         $this->assertInstanceOf(
             HtmlParserView::class,
-            $result[1]
+            $result
         );
         $this->assertStringContainsString(
-            'Your content is valid!',
-            $result[0]->render()
+            'Valid: yes',
+            $rendered
         );
         $this->assertStringContainsString(
             'Example Title',
-            $result[1]->render()
+            $rendered
         );
+    }
+
+    public function test_error_while_opening_uploaded_file(): void
+    {
+        $validatorServiceMock = $this->createMock(ValidatorService::class);
+        $parserServiceMock = $this->createMock(ParserService::class);
+
+        $parserController = new ParserController(
+            validatorService: $validatorServiceMock,
+            parserService: $parserServiceMock
+        );
+
+        $data = [
+            'context' => '',
+            'type' => 'html',
+            'renderingType' => 'json',
+        ];
+
+        $_FILES = [
+            'file' => [
+                'name' => 'inexistent_file.html',
+                'type' => 'text/html',
+                'tmp_name' => __DIR__ . '/../../../fixtures/tests/inexistent_file.html',
+                'error' => 0,
+                'size' => 999,
+            ]
+        ];
+
+        $expected = [
+            'Validation' => [
+                'Valid' => 'no',
+                'Errors' => [
+                    [
+                        'message' => 'Error while opening the uploaded file'
+                    ]
+                ],
+                'Warnings' => [],
+            ],
+            'Parsed' => [],
+        ];
+
+        $response = $parserController->handleRequest(data: $data);
+
+        $this->assertEquals(json_encode($expected, JSON_PRETTY_PRINT), $response->render());
+
+        $_FILES = [];
+    }
+
+    public function test_file_with_wrong_extension(): void
+    {
+        $validatorServiceMock = $this->createMock(ValidatorService::class);
+        $parserServiceMock = $this->createMock(ParserService::class);
+
+        $parserController = new ParserController(
+            validatorService: $validatorServiceMock,
+            parserService: $parserServiceMock
+        );
+
+        $data = [
+            'context' => '',
+            'type' => 'html',
+            'renderingType' => 'json',
+        ];
+
+        $_FILES = [
+            'file' => [
+                'name' => 'invalid_html_format.c',
+                'type' => 'text/html',
+                'tmp_name' => __DIR__ . '/../../../fixtures/tests/invalid_html_format.c',
+                'error' => 0,
+                'size' => 999,
+            ]
+        ];
+
+        $expected = [
+            'Validation' => [
+                'Valid' => 'no',
+                'Errors' => [
+                    [
+                        'message' => 'File uploaded has the wrong extension'
+                    ]
+                ],
+                'Warnings' => [],
+            ],
+            'Parsed' => [],
+        ];
+
+        $response = $parserController->handleRequest(data: $data);
+
+        $this->assertEquals(json_encode($expected, JSON_PRETTY_PRINT), $response->render());
+
+        $_FILES = [];
     }
 
     public function test_html_and_markdown_round_trip(): void
@@ -341,19 +398,25 @@ class ParserControllerTest extends TestCase
             'renderingType' => 'json',
         ];
 
-        $controller = new ParserController();
+        $validatorService = new ValidatorService();
+        $parserService = new ParserService();
 
-        $views = $controller->handleRequest(data: $htmlPost);
+        $controller = new ParserController(
+            validatorService: $validatorService,
+            parserService: $parserService
+        );
 
-        $resultHtml = $controller->getJsonResult(views: $views);
+        $htmlView = $controller->handleRequest(data: $htmlPost);
+
+        $rendered1 = $htmlView->render();
 
         $this->assertStringContainsString(
             'Ok',
-            $resultHtml->getContent()
+            $rendered1
         );
         $this->assertStringContainsString(
             'Hello',
-            $resultHtml->getContent()
+            $rendered1
         );
 
         // --- Markdown ---
@@ -363,17 +426,17 @@ class ParserControllerTest extends TestCase
             'renderingType' => 'json',
         ];
 
-        $markdownViews = $controller->handleRequest(data: $markdownPost);
+        $markdownView = $controller->handleRequest(data: $markdownPost);
 
-        $resultMarkdown = $controller->getJsonResult(views: $markdownViews);
+        $rendered2 = $markdownView->render();
 
         $this->assertStringContainsString(
             'markdown',
-            $resultMarkdown->getContent()
+            $rendered2
         );
         $this->assertStringContainsString(
             '# Heading',
-            $resultMarkdown->getContent()
+            $rendered2
         );
     }
 }

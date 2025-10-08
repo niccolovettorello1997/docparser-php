@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Model\Utils\Parser\Enum;
 
+/**
+ * @codeCoverageIgnore
+ */
 enum HtmlElementType: string
 {
     case DOCTYPE = 'doctype';

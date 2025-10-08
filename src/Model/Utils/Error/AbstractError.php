@@ -15,4 +15,14 @@ abstract class AbstractError
     {
         return $this->message;
     }
+
+    /**
+     * @return array<string, string>
+     */
+    public function toArray(): array
+    {
+        return [
+            'message' => $this->message,
+        ];
+    }
 }

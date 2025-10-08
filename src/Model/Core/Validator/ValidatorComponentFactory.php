@@ -1,16 +1,21 @@
 <?php
 
-declare(strict_types= 1);
+declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Model\Core\Validator;
+
+use Symfony\Component\Yaml\Exception\ParseException;
 
 class ValidatorComponentFactory
 {
     /**
      * Dynamically create a new instance of ValidatorComponent, based on the provided parameters.
-     * 
+     *
      * @param string $context
      * @param string $inputType
+     *
+     * @throws \RuntimeException
+     * @throws ParseException
      *
      * @return ValidatorComponent
      */

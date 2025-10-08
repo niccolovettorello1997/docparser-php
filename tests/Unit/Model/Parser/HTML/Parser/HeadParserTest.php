@@ -31,8 +31,37 @@ class HeadParserTest extends TestCase
         $this->assertNotNull($headNode);
         $this->assertNull($headNode->getContent());
         $this->assertEquals(
-          HtmlElementType::HEAD->value,
-          $headNode->getTagName()
+            HtmlElementType::HEAD->value,
+            $headNode->getTagName()
         );
+    }
+
+    public function test_parse_head_with_attributes(): void
+    {
+        $html = <<<HTML
+
+        <head id="myHeadTag">
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Example Document</title>
+          <meta name="description" content="A simple example of a well-structured HTML5 document.">
+        </head>
+        <body>
+        </body>
+
+        HTML;
+
+        $expectedAttributes = ['id' => 'myHeadTag'];
+
+        $headParser = new HeadParser();
+        $headNode = $headParser->parse(content: $html);
+
+        $this->assertNotNull($headNode);
+        $this->assertNull($headNode->getContent());
+        $this->assertEquals(
+            HtmlElementType::HEAD->value,
+            $headNode->getTagName()
+        );
+        $this->assertEquals($expectedAttributes, $headNode->getAttributes());
     }
 }

@@ -17,7 +17,7 @@ class BodyValidator extends AbstractValidator
 
     /**
      * Returns the array of invalid tags that are not allowed within the body element.
-     * 
+     *
      * @return string[]
      */
     private function getInvalidTags(): array
@@ -36,7 +36,7 @@ class BodyValidator extends AbstractValidator
 
     /**
      * Return the array of invalid attributes that are not allowed in the body element.
-     * 
+     *
      * @return string[]
      */
     private function getInvalidAttributes(): array
@@ -53,7 +53,7 @@ class BodyValidator extends AbstractValidator
 
     /**
      * Checks if the body element has valid attributes.
-     * 
+     *
      * @param string|null             $bodyAttributes
      * @param ElementValidationResult $elementValidationResult
      *
@@ -104,7 +104,7 @@ class BodyValidator extends AbstractValidator
 
     /**
      * Checks if the tag is unique.
-     * 
+     *
      * @param array<int,array<int,string>> $matchesBody
      * @param ElementValidationResult      $elementValidationResult
      *
@@ -123,7 +123,7 @@ class BodyValidator extends AbstractValidator
 
     /**
      * Checks if the body element is not empty.
-     * 
+     *
      * @param string|null             $elementContent
      * @param ElementValidationResult $elementValidationResult
      *
@@ -144,10 +144,10 @@ class BodyValidator extends AbstractValidator
 
     /**
      * Checks if the body element is present.
-     * 
+     *
      * @param array<int,array<int,string>> $matches
      * @param ElementValidationResult      $elementValidationResult
-     * 
+     *
      * @return void
      */
     private function isPresent(array $matches, ElementValidationResult $elementValidationResult): void
