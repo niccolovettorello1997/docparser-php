@@ -15,13 +15,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($_POST['renderingType'] === 'json') {
         $jsonResult = $controller->getJsonResult(views: $views);
 
-        header('Content-Type: application/json; charset=utf-8');
+        header(header: 'Content-Type: application/json; charset=utf-8');
 
         if ($jsonResult->getStatusCode() === 200) {
-            header('Content-Disposition: attachment; filename="parsed.json"');
+            header(header: 'Content-Disposition: attachment; filename="parsed.json"');
         }
 
-        http_response_code($jsonResult->getStatusCode());
+        http_response_code(response_code: $jsonResult->getStatusCode());
         echo $jsonResult->getContent();
         exit;
     }

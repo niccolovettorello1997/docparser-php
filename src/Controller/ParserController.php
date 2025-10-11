@@ -51,6 +51,7 @@ class ParserController
      */
     private function runValidation(?Query $query): ElementValidationResult
     {
+        // Query could not be created
         if (null === $query) {
             throw new \InvalidArgumentException(
                 message: 'There was an error processing the input.'
