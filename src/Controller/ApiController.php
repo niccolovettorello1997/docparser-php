@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Controller;
 
+use Niccolo\DocparserPhp\Controller\Responses\Response;
 use Niccolo\DocparserPhp\Service\ParserService;
+use Niccolo\DocparserPhp\Controller\Utils\Query;
+use Niccolo\DocparserPhp\View\Parser\JsonParserView;
+use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\RenderingType;
 
 class ApiController
 {
@@ -13,18 +17,38 @@ class ApiController
     ) {
     }
 
-    public function parseFile(): void
+    /**
+     * Parse the content of an uploaded file.
+     * 
+     * @return Response
+     */
+    public function parseFile(): Response
     {
-        // No file was uploaded
-        if (!isset($_FILES['file'])) {
-            http_response_code(response_code: 400);
-            echo json_encode(value: ['error' => 'No file uploaded']);
-            return;
+        try {
+            $query = Query::getQuery(
+                data: [
+                    'type' => $_POST['type'],
+                    'renderingType' => RenderingType::JSON->value,
+                ],
+                files: $_FILES,
+            );
+        } catch (\InvalidArgumentException $e) {
+            return new Response(
+                statusCode: 400,
+                content: $e->getMessage()
+            );
         }
 
-        $result = $this->parserService->parseUploadedFile(file: $_FILES['file']);
+        // Run validation
+        $validationResult = $this->parserService->runValidation(query: $query);
+        $parseResult = $this->parserService->parseUploadedFile(query: $query);
 
-        echo json_encode(value: ['parsed' => $result]);
+        $render = (new JsonParserView(tree: $resultTree))->render();
+
+        return new Response(
+            statusCode: 200,
+            content: $render
+        );
     }
 
     public function parseText(): void

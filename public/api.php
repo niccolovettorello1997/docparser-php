@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Niccolo\DocparserPhp\Controller\ApiController;
-use Niccolo\DocparserPhp\Middleware\AuthMiddleware;
+use Niccolo\DocparserPhp\Controller\Responses\Response;
 use Niccolo\DocparserPhp\Service\ParserService;
 
 // Get environment variables
@@ -27,12 +27,15 @@ header(header: 'Content-Type: application/json');
 // Handle authentication if set
 //$authMiddleware->handle();
 
+// TODO: find a way to automatize DI
 $parserService = new ParserService();
 $controller = new ApiController(parserService: $parserService);
 
 switch (true) {
     case $path === '/api/v1/parse/file' && $method === 'POST':
-        echo $controller->parseFile();
+        $response = $controller->parseFile();
+        http_response_code(response_code: $response->getStatusCode());
+        echo $response->getContent();
         break;
     case $path === '/api/v1/parse/text' && $method === 'POST':
         echo $controller->parseText();
@@ -41,10 +44,19 @@ switch (true) {
         echo $controller->parseJson();
         break;
     case $path === '/api/v1/health' && $method === 'GET':
-        echo json_encode(value: ['status' => 'ok']);
+        $response = new Response(
+            statusCode: 200,
+            content: 'ok'
+        );
+        http_response_code(response_code: $response->getStatusCode());
+        echo json_encode(value: $response->toArray());
         break;
     default:
-        http_response_code(response_code: 404);
-        echo json_encode(value: ['error' => 'Not Found']);
+        $response = new Response(
+            statusCode: 404,
+            content: 'Not Found'
+        );
+        http_response_code(response_code: $response->getStatusCode());
+        echo json_encode(value: $response->toArray());
         break;
 }

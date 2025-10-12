@@ -5,16 +5,16 @@ declare(strict_types= 1);
 namespace Niccolo\DocparserPhp\Controller;
 
 use Niccolo\DocparserPhp\Controller\Utils\Query;
-use Niccolo\DocparserPhp\Controller\Utils\Response;
+use Niccolo\DocparserPhp\View\RenderableInterface;
+use Niccolo\DocparserPhp\View\Parser\HtmlParserView;
+use Niccolo\DocparserPhp\View\Parser\JsonParserView;
+use Niccolo\DocparserPhp\Controller\Responses\Response;
+use Niccolo\DocparserPhp\View\ElementValidationResultView;
+use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
+use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\RenderingType;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponentFactory;
 use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
 use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
-use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
-use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\RenderingType;
-use Niccolo\DocparserPhp\View\ElementValidationResultView;
-use Niccolo\DocparserPhp\View\Parser\HtmlParserView;
-use Niccolo\DocparserPhp\View\Parser\JsonParserView;
-use Niccolo\DocparserPhp\View\RenderableInterface;
 
 class ParserController
 {

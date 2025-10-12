@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Controller\Utils;
+namespace Niccolo\DocparserPhp\Controller\Responses;
 
 class Response
 {
@@ -20,5 +20,16 @@ class Response
     public function getContent(): string
     {
         return $this->content;
+    }
+
+    /**
+     * @return array<string,string|int>
+     */
+    public function toArray(): array
+    {
+        return [
+            'statusCode' => $this->getStatusCode(),
+            'content' => $this->getContent(),
+        ];
     }
 }

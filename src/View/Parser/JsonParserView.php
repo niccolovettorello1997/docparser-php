@@ -21,19 +21,19 @@ class JsonParserView implements RenderableInterface
      */
     public function render(): string
     {
-	$result = "{\n\"success\": false,\n\"error\": \"An error occurred while rendering JSON\"\n}";
+        $result = "{\n\"success\": false,\n\"error\": \"An error occurred while rendering JSON\"\n}";
 
-	if (null !== $this->tree) {
-	    $encodedResult = json_encode(
-                value: $this->tree->toArray(),
-                flags: JSON_PRETTY_PRINT
-	    );
+        if (null !== $this->tree) {
+            $encodedResult = json_encode(
+                    value: $this->tree->toArray(),
+                    flags: JSON_PRETTY_PRINT
+            );
 
-	    if (false !== $encodedResult) {
-	        $result = $encodedResult; 
-	    }
-	}
+            if (false !== $encodedResult) {
+                $result = $encodedResult; 
+            }
+        }
 
-	return $result;
+        return $result;
     }
 }
