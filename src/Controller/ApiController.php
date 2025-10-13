@@ -21,6 +21,29 @@ class ApiController
     }
 
     /**
+     * Run validation and parsing and return a response.
+     *
+     * @param  Query $query
+     * @return Response
+     */
+    private function validateAndParse(Query $query): Response
+    {
+        // Validate
+        $validationResult = $this->validatorService->runValidation(query: $query);
+
+        // Parse if validation completed without errors
+        $parseResult = ($validationResult->isValid()) ? $this->parserService->parse(query: $query) : null;
+
+        return new Response(
+            statusCode: 200,
+            content: [
+                'validation' => $validationResult->toArray(),
+                'parsing' => $parseResult?->toArray() ?? [],
+            ]
+        );
+    }
+
+    /**
      * Parse the content of an uploaded file.
      * 
      * @return Response
@@ -72,19 +95,59 @@ class ApiController
             context: file_get_contents($file['tmp_name']),
             inputType: $inputType,
         );
+        
+        return $this->validateAndParse(query: $query);
+    }
 
-        // Validate
-        $validationResult = $this->validatorService->runValidation(query: $query);
+    /**
+     * Parse the content of the JSON request.
+     *
+     * @return Response
+     */
+    public function parseJson(): Response
+    {
+        // Handle request content
+        $rawInput = file_get_contents('php://input', true);
 
-        // Parse if validation completed without errors
-        $parseResult = ($validationResult->isValid()) ? $this->parserService->parse(query: $query) : null;
+        if (false === $rawInput) {
+            return new Response(
+                statusCode: 400,
+                content: ['error' => 'Could not read request content']
+            );
+        }
 
-        return new Response(
-            statusCode: 200,
-            content: [
-                'validation' => $validationResult->toArray(),
-                'parsing' => $parseResult?->toArray() ?? [],
-            ]
+        $request = json_decode($rawInput, true);
+
+        if (null === $request) {
+            return new Response(
+                statusCode: 400,
+                content: ['error' => 'Could not read request content']
+            );
+        }
+
+        // Handle request type
+        if (!isset($request['type'])) {
+            return new Response(
+                statusCode: 400,
+                content: ['error' => "Missing required 'type' field"]
+            );
+        }
+
+        $inputType = InputType::tryFrom($request['type']);
+
+        if (null === $inputType) {
+            return new Response(
+                statusCode: 400,
+                content: ['error' => 'Type not supported']
+            );
+        }
+
+        // Create Query
+        $query = new Query(
+            context: urldecode($request['content']),
+            inputType: $inputType,
         );
+        
+        return $this->validateAndParse(query: $query);
     }
 }
