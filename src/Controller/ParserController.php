@@ -17,6 +17,7 @@ use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\RenderingType;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponentFactory;
 use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
 use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
+use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\InputType;
 
 class ParserController
 {
@@ -46,6 +47,8 @@ class ParserController
                 message: sprintf('Unsupported rendering type: %s', $data['renderingType'])
             );
         }
+
+        return $renderingType;
     }
 
     /**
@@ -98,7 +101,6 @@ class ParserController
             $result = new Query(
                 context: $data['context'],
                 inputType: $inputType,
-                renderingType: $renderingType,
             );
         }
 
@@ -148,7 +150,7 @@ class ParserController
                 files: $files,
             );
 
-            $renderingType = $this->getRenderingType(data $data);
+            $renderingType = $this->getRenderingType(data: $data);
 
             $validationResult = $this->validatorService->runValidation(query: $query);
         } catch (\InvalidArgumentException $e) {
@@ -185,9 +187,9 @@ class ParserController
      * 
      * @param RenderableInterface[] $views
      *
-     * @return Response
+     * @return string|null
      */
-    public function getJsonResult(array $views): Response
+    public function getJsonResult(array $views): ?string
     {
         $filteredViews = array_values(
             array: array_filter(
@@ -196,19 +198,11 @@ class ParserController
             )
         );
 
-        if (count(value: $filteredViews) === 1) {
-            return new Response(
-                statusCode: 200,
-                content: $filteredViews[0]->render(),
-            );
+        // Something went wrong
+        if (count(value: $filteredViews) !== 1) {
+            return null;
         }
 
-        // Something went wrong, return a 500 error
-        $errorContent = json_encode(value: ['error' => 'An error occurred while rendering JSON']);
-
-        return new Response(
-            statusCode: 500,
-            content: $errorContent ? $errorContent : ''
-        );
+        return $filteredViews[0]->render();
     }
 }

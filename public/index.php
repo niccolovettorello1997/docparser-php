@@ -5,8 +5,17 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Niccolo\DocparserPhp\Controller\ParserController;
+use Niccolo\DocparserPhp\Service\ValidatorService;
+use Niccolo\DocparserPhp\Service\ParserService;
 
-$controller = new ParserController();
+$validatorService = new ValidatorService();
+$parserService = new ParserService();
+
+$controller = new ParserController(
+    validatorService: $validatorService,
+    parserService: $parserService,
+);
+
 $views = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -17,12 +26,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         header(header: 'Content-Type: application/json; charset=utf-8');
 
-        if ($jsonResult->getStatusCode() === 200) {
-            header(header: 'Content-Disposition: attachment; filename="parsed.json"');
+        if (null === $jsonResult) {
+            http_response_code(response_code: 500);
+            echo json_encode(['error' => 'Something went wrong while creating JSON file']);
+            exit;
         }
 
-        http_response_code(response_code: $jsonResult->getStatusCode());
-        echo $jsonResult->getContent();
+        header(header: 'Content-Disposition: attachment; filename="parsed.json"');
+        http_response_code(response_code: 200);
+        echo $jsonResult;
+        
         exit;
     }
 }

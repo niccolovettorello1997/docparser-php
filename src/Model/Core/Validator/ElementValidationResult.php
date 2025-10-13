@@ -71,8 +71,14 @@ class ElementValidationResult
     {
         return [
             'valid' => ($this->isValid()) ? 'yes' : 'no',
-            'errors' => $this->getErrors(),
-            'warnings' => $this->getWarnings(),
+            'errors' => array_map(
+                callback: fn (AbstractError $error): array => $error->toArray(),
+                array: $this->getErrors()
+            ),
+            'warnings' => array_map(
+                callback: fn (AbstractWarning $warning): array => $warning->toArray(),
+                array: $this->getWarnings()
+            ),
         ];
     }
 }
