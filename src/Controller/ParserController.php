@@ -19,6 +19,83 @@ use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
 class ParserController
 {
     /**
+     * Get rendering type.
+     *
+     * @param  array<string,string> $data
+     * @throws \InvalidArgumentException
+     * @return RenderingType
+     */
+    private function getRenderingType(array $data): RenderingType
+    {
+        // Get rendering type
+        $renderingType = RenderingType::tryFrom(value: $data['renderingType']);
+
+        // Handle invalid rendering type
+        if (null === $renderingType) {
+            throw new \InvalidArgumentException(
+                message: sprintf('Unsupported rendering type: %s', $data['renderingType'])
+            );
+        }
+    }
+
+    /**
+     * Build query from file or textarea.
+     * 
+     * @param array<string,string>                                                             $data
+     * @param array<string, array{name:string,type:string,tmp_name:string,error:int,size:int}> $files
+     *
+     * @throws \InvalidArgumentException
+     *
+     * @return Query|null
+     */
+    private function getQuery(array $data, array $files): ?Query
+    {
+        $result = null;
+
+        // Get type
+        $inputType = InputType::tryFrom(value: $data['type']);
+
+        // Handle invalid input type
+        if (null === $inputType) {
+            throw new \InvalidArgumentException(
+                message: sprintf('Unsupported input type: %s', $data['type'])
+            );
+        }
+
+        // Get the file content if the files array is not empty
+        if (!empty($files['file']['name']) && !empty($files['file']['tmp_name'])) {
+            // Check if the format is valid
+            $hasCorrectFormat = str_ends_with(
+                haystack: basename(path: $files['file']['name']),
+                needle: InputType::getExtension(type: $inputType),
+            );
+
+            $fileContent = file_get_contents(filename: $files['file']['tmp_name']);
+
+            if ($hasCorrectFormat && false !== $fileContent) {
+                $result = new Query(
+                    context: $fileContent,
+                    inputType: $inputType,
+                    renderingType: $renderingType,
+                );
+            }
+        } else {    // Otherwise get it from form data
+            // If context is empty or not set throw an exception
+            if (!isset($data['context']) || empty($data['context'])) {
+                throw new \InvalidArgumentException(message: 'No context provided');
+            }
+
+            $result = new Query(
+                context: $data['context'],
+                inputType: $inputType,
+                renderingType: $renderingType,
+            );
+        }
+
+        return $result;
+    }
+
+    /**
      * Handle pre-validation errors.
      *
      * @param string $message
@@ -82,10 +159,12 @@ class ParserController
         $files = $_FILES;
 
         try {
-            $query = Query::getQuery(
+            $query = $this->getQuery(
                 data: $data,
                 files: $files,
             );
+
+            $renderingType = $this->getRenderingType(data $data);
 
             $validationResult = $this->runValidation(query: $query);
         } catch (\InvalidArgumentException $e) {
@@ -109,7 +188,7 @@ class ParserController
 
         $parserResult = $parserComponent->run();
 
-        $result[] = match ($query->getRenderingType()) {
+        $result[] = match ($renderingType) {
             RenderingType::HTML => new HtmlParserView(tree: $parserResult),
             RenderingType::JSON => new JsonParserView(tree: $parserResult),
         };
