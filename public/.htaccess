@@ -1,0 +1,10 @@
+# Enable rewrite module
+RewriteEngine On
+
+# If file or folder requested do not exist, let the request through
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Re-route all requests starting with api/v1/ to api.php
+RewriteRule ^api/v1/(.*)$ api.php [QSA,L]
+

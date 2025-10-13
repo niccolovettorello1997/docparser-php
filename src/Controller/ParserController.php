@@ -4,7 +4,9 @@ declare(strict_types= 1);
 
 namespace Niccolo\DocparserPhp\Controller;
 
-use Niccolo\DocparserPhp\Controller\Utils\Query;
+use Niccolo\DocparserPhp\Service\Utils\Query;
+use Niccolo\DocparserPhp\Service\ValidatorService;
+use Niccolo\DocparserPhp\Service\ParserService;
 use Niccolo\DocparserPhp\View\RenderableInterface;
 use Niccolo\DocparserPhp\View\Parser\HtmlParserView;
 use Niccolo\DocparserPhp\View\Parser\JsonParserView;
@@ -18,11 +20,19 @@ use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
 
 class ParserController
 {
+    public function __construct(
+        private readonly ValidatorService $validatorService,
+        private readonly ParserService $parserService,
+    ) {
+    }
+
     /**
      * Get rendering type.
      *
      * @param  array<string,string> $data
+     *
      * @throws \InvalidArgumentException
+     *
      * @return RenderingType
      */
     private function getRenderingType(array $data): RenderingType
@@ -118,32 +128,6 @@ class ParserController
     }
 
     /**
-     * Perform validation.
-     * 
-     * @param Query|null $query
-     *
-     * @throws \InvalidArgumentException
-     *
-     * @return ElementValidationResult
-     */
-    private function runValidation(?Query $query): ElementValidationResult
-    {
-        // Query could not be created
-        if (null === $query) {
-            throw new \InvalidArgumentException(
-                message: 'There was an error processing the input.'
-            );
-        }
-
-        $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
-            context: $query->getContext(),
-            inputType: $query->getInputType()->value,
-        );
-
-        return $validatorComponent->run();
-    }
-
-    /**
      * Handle the form data and return the validation view.
      * 
      * @param array<string,string> $data
@@ -166,7 +150,7 @@ class ParserController
 
             $renderingType = $this->getRenderingType(data $data);
 
-            $validationResult = $this->runValidation(query: $query);
+            $validationResult = $this->validatorService->runValidation(query: $query);
         } catch (\InvalidArgumentException $e) {
             return $this->handlePreValidationError(message: $e->getMessage());
         }

@@ -7,6 +7,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 use Niccolo\DocparserPhp\Controller\ApiController;
 use Niccolo\DocparserPhp\Controller\Responses\Response;
 use Niccolo\DocparserPhp\Service\ParserService;
+use Niccolo\DocparserPhp\Service\ValidatorService;
 
 // Get environment variables
 // TODO: configure environment file
@@ -28,8 +29,13 @@ header(header: 'Content-Type: application/json');
 //$authMiddleware->handle();
 
 // TODO: find a way to automatize DI
+$validatorService = new ValidatorService();
 $parserService = new ParserService();
-$controller = new ApiController(parserService: $parserService);
+
+$controller = new ApiController(
+    validatorService: $validatorService,
+    parserService: $parserService
+);
 
 switch (true) {
     case $path === '/api/v1/parse/file' && $method === 'POST':
@@ -46,17 +52,17 @@ switch (true) {
     case $path === '/api/v1/health' && $method === 'GET':
         $response = new Response(
             statusCode: 200,
-            content: 'ok'
+            content: ['status' => 'ok']
         );
         http_response_code(response_code: $response->getStatusCode());
-        echo json_encode(value: $response->toArray());
+        echo $response->getContent();
         break;
     default:
         $response = new Response(
             statusCode: 404,
-            content: 'Not Found'
+            content: ['error' => 'Not Found'],
         );
         http_response_code(response_code: $response->getStatusCode());
-        echo json_encode(value: $response->toArray());
+        echo $response->getContent();
         break;
 }

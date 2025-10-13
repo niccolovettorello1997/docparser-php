@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Controller\Utils;
+namespace Niccolo\DocparserPhp\Service\Utils;
 
 use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\InputType;
 use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\RenderingType;
