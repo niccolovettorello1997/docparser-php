@@ -8,7 +8,7 @@ class Response
 {
     public function __construct(
         private readonly int $statusCode,
-        private readonly array $content,
+        private readonly string $content,
     ) {
     }
 
@@ -19,6 +19,7 @@ class Response
 
     public function getContent(): string
     {
-        return json_encode($this->content);
+        return $this->content;
     }
 }
+

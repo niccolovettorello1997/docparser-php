@@ -35,13 +35,13 @@ switch (true) {
     case $path === '/api/v1/health' && $method === 'GET':
         $response = new Response(
             statusCode: 200,
-            content: ['status' => 'ok']
+            content: json_encode(['status' => 'ok'])
         );
         break;
     default:
         $response = new Response(
             statusCode: 404,
-            content: ['error' => 'Not Found'],
+            content: json_encode(['error' => 'Not Found'])
         );
         break;
 }

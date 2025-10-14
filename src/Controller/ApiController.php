@@ -32,14 +32,16 @@ class ApiController
         $validationResult = $this->validatorService->runValidation(query: $query);
 
         // Parse if validation completed without errors
-        $parseResult = ($validationResult->isValid()) ? $this->parserService->parse(query: $query) : null;
+        $parseResult = ((null !== $validationResult) && ($validationResult->isValid())) ? $this->parserService->parse(query: $query) : null;
+
+        $jsonParserView = new JsonParserView(
+            elementValidationResult: $validationResult,
+            tree: $parseResult
+        );
 
         return new Response(
             statusCode: 200,
-            content: [
-                'validation' => $validationResult->toArray(),
-                'parsing' => $parseResult?->toArray() ?? [],
-            ]
+            content: $jsonParserView->render()
         );
     }
 
@@ -57,7 +59,7 @@ class ApiController
         if (!isset($type)) {
             return new Response(
                 statusCode: 400,
-                content: ['error' => "Missing 'type' field"],
+                content: json_encode(['error' => "Missing 'type' field"]),
             );
         }
 
@@ -67,7 +69,7 @@ class ApiController
         if (null === $inputType) {
             return new Response(
                 statusCode: 400,
-                content: ['error' => 'Input type not supported'],
+                content: json_encode(['error' => 'Input type not supported']),
             );
         }
 
@@ -76,7 +78,7 @@ class ApiController
         if (!isset($_FILES['document'])) {
             return new Response(
                 statusCode: 400,
-                content: ['error' => 'No file uploaded'],
+                content: json_encode(['error' => 'No file uploaded']),
             );
         }
 
@@ -86,7 +88,7 @@ class ApiController
         if ($file['error'] !== UPLOAD_ERR_OK) {
             return new Response(
                 statusCode: 400,
-                content: ['error' => \sprintf("Upload error: %s", $file['error'])],
+                content: json_encode(['error' => \sprintf("Upload error: %s", $file['error'])]),
             );
         }
 
@@ -112,7 +114,7 @@ class ApiController
         if (false === $rawInput) {
             return new Response(
                 statusCode: 400,
-                content: ['error' => 'Could not read request content']
+                content: json_encode(['error' => 'Could not read request content'])
             );
         }
 
@@ -121,7 +123,14 @@ class ApiController
         if (null === $request) {
             return new Response(
                 statusCode: 400,
-                content: ['error' => 'Could not read request content']
+                content: json_encode(['error' => 'Could not read request content'])
+            );
+        }
+
+        if (!isset($request['content']) || empty($request['content'])) {
+            return new Response(
+                statusCode: 400,
+                content: json_encode(['error' => "Required field 'content' is missing or empty"])
             );
         }
 
@@ -129,7 +138,7 @@ class ApiController
         if (!isset($request['type'])) {
             return new Response(
                 statusCode: 400,
-                content: ['error' => "Missing required 'type' field"]
+                content: json_encode(['error' => "Missing required 'type' field"])
             );
         }
 
@@ -138,7 +147,7 @@ class ApiController
         if (null === $inputType) {
             return new Response(
                 statusCode: 400,
-                content: ['error' => 'Type not supported']
+                content: json_encode(['error' => 'Type not supported'])
             );
         }
 
