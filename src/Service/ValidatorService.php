@@ -14,25 +14,20 @@ class ValidatorService
     /**
      * Perform validation.
      * 
-     * @param Query|null $query
+     * @param  Query $query
      *
-     * @throws \InvalidArgumentException
-     *
-     * @return ElementValidationResult
+     * @return ElementValidationResult|null
      */
-    public function runValidation(?Query $query): ElementValidationResult
+    public function runValidation(Query $query): ?ElementValidationResult
     {
-        // Query could not be created
-        if (null === $query) {
-            throw new \InvalidArgumentException(
-                message: 'There was an error processing the input.'
+        try {
+            $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
+                context: $query->getContext(),
+                inputType: $query->getInputType()->value,
             );
+        } catch (\RuntimeException|ParseException $e) {
+            return null;
         }
-
-        $validatorComponent = ValidatorComponentFactory::getValidatorComponent(
-            context: $query->getContext(),
-            inputType: $query->getInputType()->value,
-        );
 
         return $validatorComponent->run();
     }

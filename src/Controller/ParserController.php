@@ -59,12 +59,10 @@ class ParserController
      *
      * @throws \InvalidArgumentException
      *
-     * @return Query|null
+     * @return Query
      */
-    private function getQuery(array $data, array $files): ?Query
+    private function getQuery(array $data, array $files): Query
     {
-        $result = null;
-
         // Get type
         $inputType = InputType::tryFrom(value: $data['type']);
 
@@ -86,7 +84,7 @@ class ParserController
             $fileContent = file_get_contents(filename: $files['file']['tmp_name']);
 
             if ($hasCorrectFormat && false !== $fileContent) {
-                $result = new Query(
+                return new Query(
                     context: $fileContent,
                     inputType: $inputType,
                     renderingType: $renderingType,
@@ -98,13 +96,11 @@ class ParserController
                 throw new \InvalidArgumentException(message: 'No context provided');
             }
 
-            $result = new Query(
+            return new Query(
                 context: $data['context'],
                 inputType: $inputType,
             );
         }
-
-        return $result;
     }
 
     /**
@@ -134,13 +130,10 @@ class ParserController
      * 
      * @param array<string,string> $data
      *
-     * @return RenderableInterface[]
+     * @return RenderableInterface
      */
-    public function handleRequest(array $data): array
+    public function handleRequest(array $data): RenderableInterface
     {
-        /** @var RenderableInterface[] */
-        $result = [];
-
         /** @var array<string, array{name:string,type:string,tmp_name:string,error:int,size:int}> $files */
         $files = $_FILES;
 
@@ -151,35 +144,18 @@ class ParserController
             );
 
             $renderingType = $this->getRenderingType(data: $data);
-
-            $validationResult = $this->validatorService->runValidation(query: $query);
         } catch (\InvalidArgumentException $e) {
             return $this->handlePreValidationError(message: $e->getMessage());
         }
 
-        $result[] = new ElementValidationResultView(
-            elementValidationResult: $validationResult,
-        );
-
-        // Errors happened, don't parse the content
-        if (!$validationResult->isValid() || null === $query) {
-            return $result;
-        }
-
-        // Get ParserComponent and run parsing
-        $parserComponent = ParserComponentFactory::getParserComponent(
-            context: $query->getContext(),
-            inputType: $query->getInputType()->value,
-        );
-
-        $parserResult = $parserComponent->run();
-
-        $result[] = match ($renderingType) {
-            RenderingType::HTML => new HtmlParserView(tree: $parserResult),
-            RenderingType::JSON => new JsonParserView(tree: $parserResult),
+        $validationResult = $this->validatorService->runValidation(query: $query);
+            
+        $parserResult = ((null !== $validationResult) && ($validationResult->isValid())) ? $this->parserService->parse(query: $query) : null;
+        
+        return  match ($renderingType) {
+            RenderingType::HTML => new HtmlParserView(elementValidationResult: $validationResult, tree: $parserResult),
+            RenderingType::JSON => new JsonParserView(elementValidationResult: $validationResult, tree: $parserResult),
         };
-
-        return $result;
     }
 
     /**

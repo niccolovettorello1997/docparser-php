@@ -6,11 +6,14 @@ namespace Niccolo\DocparserPhp\View\Parser;
 
 use Niccolo\DocparserPhp\Model\Core\Parser\Node;
 use Niccolo\DocparserPhp\View\RenderableInterface;
+use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use Niccolo\DocparserPhp\Model\Utils\Error\InternalError;
 
 class HtmlParserView implements RenderableInterface
 {
     public function __construct(
-        private readonly ?Node $tree,
+        private readonly ?ElementValidationResult $elementValidationResult = null,
+        private readonly ?Node $tree = null,
     ) {
     }
 
@@ -51,13 +54,23 @@ class HtmlParserView implements RenderableInterface
      */
     public function render(): string
     {
-	$result = '<div>An error occurred while displaying parsing result!</div>';
+        if (null === $this->elementValidationResult) {
+            $this->elementValidationResult = new ElementValidationResult();
 
-	if (null !== $this->tree) {
-       	    $result = '<div><strong>Parsing result: </strong>';
+            $this->elementValidationResult->addError(
+                error: new InternalError(
+                    message: 'An error occurred when displaying validation result'
+                )
+            );
+        }
+
+        $result = $this->arrayToHtml(input: $this->elementValidationResult->toArray());
+
+	    if (null !== $this->tree) {
+       	    $result .= '<div><strong>Parsing result: </strong>';
             $result .= $this->arrayToHtml(input: $this->tree->toArray());
-	    $result .= '</div>';
-	}
+	        $result .= '</div>';
+	    }
 
         return $result;
     }

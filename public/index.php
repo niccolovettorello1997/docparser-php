@@ -16,25 +16,18 @@ $controller = new ParserController(
     parserService: $parserService,
 );
 
-$views = [];
+$view = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $views = $controller->handleRequest(data: $_POST);
+    $view = $controller->handleRequest(data: $_POST);
 
     if ($_POST['renderingType'] === 'json') {
-        $jsonResult = $controller->getJsonResult(views: $views);
-
         header(header: 'Content-Type: application/json; charset=utf-8');
-
-        if (null === $jsonResult) {
-            http_response_code(response_code: 500);
-            echo json_encode(['error' => 'Something went wrong while creating JSON file']);
-            exit;
-        }
-
         header(header: 'Content-Disposition: attachment; filename="parsed.json"');
+        
         http_response_code(response_code: 200);
-        echo $jsonResult;
+        
+        echo $view->render();
         
         exit;
     }
@@ -74,24 +67,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
 
         <div class="results">
-        <?php if (!empty($views)): ?>
-            <?php foreach ($views as $view): ?>
-                <?php
-                $rendered = $view->render();
-                $class = 'box-generic';
+        <?php if (null !== $view): ?>
+            <?php
+            $rendered = $view->render();
+            $class = 'box-generic';
 
-                if (stripos(haystack: $rendered, needle: 'error') !== false) {
-                    $class = 'box-error';
-                } elseif (stripos(haystack: $rendered, needle: 'warning') !== false) {
-                    $class = 'box-warning';
-                } elseif (stripos(haystack: $rendered, needle: 'valid') !== false) {
-                    $class = 'box-success';
-                }
-                ?>
-                <div class="box <?= $class ?>">
-                    <?= $rendered ?>
-                </div>
-            <?php endforeach; ?>
+            if (stripos(haystack: $rendered, needle: 'error') !== false) {
+                $class = 'box-error';
+            } elseif (stripos(haystack: $rendered, needle: 'warning') !== false) {
+                $class = 'box-warning';
+            } elseif (stripos(haystack: $rendered, needle: 'valid') !== false) {
+                $class = 'box-success';
+            }
+            ?>
+            <div class="box <?= $class ?>">
+                <?= $rendered ?>
+            </div>
         <?php endif; ?>
     </div>
     </div>

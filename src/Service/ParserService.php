@@ -8,29 +8,28 @@ use Niccolo\DocparserPhp\Service\Utils\Query;
 use Niccolo\DocparserPhp\Model\Core\Parser\Node;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponentFactory;
 use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponent;
+use Symfony\Component\Yaml\Exception\ParseException;
 
 class ParserService
 {
     /**
      * Parse the content.
      *
-     * @param  Query|null $query
-     *
-     * @throws \InvalidArgumentException
+     * @param  Query $query
      *
      * @return Node|null
      */
-    public function parse(?Query $query): ?Node
+    public function parse(Query $query): ?Node
     {
-        if (null === $query) {
-            throw \InvalidArgumentException(message: 'Error while reading input');
-        }
-
         // Get ParserComponent and run parsing
-        $parserComponent = ParserComponentFactory::getParserComponent(
-            context: $query->getContext(),
-            inputType: $query->getInputType()->value,
-        );
+        try {
+            $parserComponent = ParserComponentFactory::getParserComponent(
+                context: $query->getContext(),
+                inputType: $query->getInputType()->value,
+            );
+        } catch (\RuntimeException|ParseException $e) {
+            return null;
+        }
 
         return $parserComponent->run();
     }

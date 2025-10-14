@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Model\Core\Parser;
 
+use Symfony\Component\Yaml\Exception\ParseException;
+
 class ParserComponentFactory
 {
     /**
@@ -12,7 +14,8 @@ class ParserComponentFactory
      * @param string $context
      * @param string $inputType
      *
-     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @throws ParseException
      *
      * @return ParserComponent
      */

@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Niccolo\DocparserPhp\View;
 
 use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use Niccolo\DocparserPhp\Model\Utils\Error\InternalError;
 
 class ElementValidationResultView implements RenderableInterface
 {
     public function __construct(
-        private readonly ElementValidationResult $elementValidationResult
+        private readonly ?ElementValidationResult $elementValidationResult = null,
     ) {
     }
 
@@ -20,6 +21,16 @@ class ElementValidationResultView implements RenderableInterface
      */
     public function render(): string
     {
+        if (null === $this->elementValidationResult) {
+            $this->elementValidationResult = new ElementValidationResult();
+
+            $this->elementValidationResult->addError(
+                error: new InternalError(
+                    message: 'An error occurred when displaying validation result'
+                )
+            );
+        }
+
         $resultHtml = '<div><strong>Validation: </strong>';
 
         if (!empty($this->elementValidationResult->getWarnings())) {
