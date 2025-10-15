@@ -15,7 +15,7 @@ class AuthMiddleware
      */
     public function handle(): ?Response
     {
-        if (getenv('AUTH_REQUIRED') !== '1') {
+        if ($_ENV['AUTH_REQUIRED'] !== '1') {
             return null;
         }
 

@@ -9,6 +9,11 @@ use Niccolo\DocparserPhp\Controller\Responses\Response;
 use Niccolo\DocparserPhp\Service\ParserService;
 use Niccolo\DocparserPhp\Service\ValidatorService;
 use Niccolo\DocparserPhp\Middleware\AuthMiddleware;
+use Dotenv\Dotenv;
+
+// Load environment variables
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
 
 // Parse path and method
 $path = parse_url(url: $_SERVER['REQUEST_URI'], component: PHP_URL_PATH);
