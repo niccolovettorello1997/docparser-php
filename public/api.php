@@ -8,6 +8,7 @@ use Niccolo\DocparserPhp\Controller\ApiController;
 use Niccolo\DocparserPhp\Controller\Responses\Response;
 use Niccolo\DocparserPhp\Service\ParserService;
 use Niccolo\DocparserPhp\Service\ValidatorService;
+use Niccolo\DocparserPhp\Middleware\AuthMiddleware;
 
 // Parse path and method
 $path = parse_url(url: $_SERVER['REQUEST_URI'], component: PHP_URL_PATH);
@@ -25,15 +26,18 @@ $controller = new ApiController(
     parserService: $parserService
 );
 
+// TODO: implement auth
+$authMiddleware = new AuthMiddleware();
+
 switch (true) {
     case $path === '/api/v1/parse/file' && $method === 'POST':
-        $response = $controller->parseFile();
+        $response = $authMiddleware->handle() ?? $controller->parseFile();
         break;
     case $path === '/api/v1/parse/json' && $method === 'POST':
-        $response = $controller->parseJson();
+        $response = $authMiddleware->handle() ?? $controller->parseJson();
         break;
     case $path === '/api/v1/health' && $method === 'GET':
-        $response = new Response(
+        $response = $authMiddleware->handle() ?? new Response(
             statusCode: 200,
             content: json_encode(['status' => 'ok'])
         );
