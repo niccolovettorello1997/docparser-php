@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Controller;
 
-use Niccolo\DocparserPhp\Controller\Responses\Response;
+use Niccolo\DocparserPhp\Controller\Responses\ParseResponse;
+use Niccolo\DocparserPhp\Controller\Responses\ErrorResponse;
+use Niccolo\DocparserPhp\Controller\Responses\BaseResponse;
 use Niccolo\DocparserPhp\Service\ParserService;
 use Niccolo\DocparserPhp\Service\ValidatorService;
 use Niccolo\DocparserPhp\Service\Utils\Query;
@@ -24,16 +26,24 @@ class ApiController
      * Run validation and parsing and return a response.
      *
      * @param  Query $query
-     * @return Response
+     * @return ParseResponse
      */
-    private function validateAndParse(Query $query): Response
+    private function validateAndParse(Query $query): ParseResponse
     {
+        // Identify request
+        $requestId = 'req-' . bin2hex(random_bytes(8));
+
+        // Start stopwatch
+        $start = microtime(true);
+
         // Validate
         $validationResult = $this->validatorService->runValidation(query: $query);
 
         // Parse if validation completed without errors
         $parseResult = ((null !== $validationResult) && ($validationResult->isValid())) ? $this->parserService->parse(query: $query) : null;
 
+        $durationMs = (int) ((microtime(true) - $start) * 1000);
+        
         $jsonParserView = new JsonParserView(
             elementValidationResult: $validationResult,
             tree: $parseResult
@@ -41,25 +51,30 @@ class ApiController
 
         return new Response(
             statusCode: 200,
-            content: $jsonParserView->render()
+            content: $jsonParserView->render(),
+            requestId: $requestId,
+            durationMs: $durationMs,
+            sizeBytes: strlen($query->getContext()),
+            version: $this->parserService->getVersion()
         );
     }
 
     /**
      * Parse the content of an uploaded file.
      * 
-     * @return Response
+     * @return BaseResponse
      */
-    public function parseFile(): Response
+    public function parseFile(): BaseResponse
     {
         // Handle type
         $type = $_POST['type'];
 
         // Missing input type
         if (!isset($type)) {
-            return new Response(
+            return new ErrorResponse(
                 statusCode: 400,
-                content: json_encode(['error' => "Missing 'type' field"]),
+                content: "Missing 'type' field",
+                code: 'ERR_MISSING_REQUIRED_FIELD'
             );
         }
 
@@ -67,18 +82,20 @@ class ApiController
 
         // Input type not supported
         if (null === $inputType) {
-            return new Response(
+            return new ErrorResponse(
                 statusCode: 400,
-                content: json_encode(['error' => 'Input type not supported']),
+                content: 'Input type not supported',
+                code: 'ERR_SUPPORTED_TYPE'
             );
         }
 
         // Handle file
         // No file uploaded
         if (!isset($_FILES['document'])) {
-            return new Response(
+            return new ErrorResponse(
                 statusCode: 400,
-                content: json_encode(['error' => 'No file uploaded']),
+                content: 'No file uploaded',
+                code: 'ERR_NO_FILE_UPLOADED'
             );
         }
 
@@ -86,9 +103,11 @@ class ApiController
 
         // Upload error
         if ($file['error'] !== UPLOAD_ERR_OK) {
-            return new Response(
+            return new ErrorResponse(
                 statusCode: 400,
-                content: json_encode(['error' => \sprintf("Upload error: %s", $file['error'])]),
+                content: 'Upload error',
+                code: 'ERR_FILE_UPLOAD',
+                details: $file['error']
             );
         }
 
@@ -104,17 +123,17 @@ class ApiController
     /**
      * Parse the content of the JSON request.
      *
-     * @return Response
+     * @return BaseResponse
      */
-    public function parseJson(): Response
+    public function parseJson(): BaseResponse
     {
         // Handle request content
         $rawInput = file_get_contents('php://input', true);
 
         if (false === $rawInput) {
-            return new Response(
+            return new ErrorResponse(
                 statusCode: 400,
-                content: json_encode(['error' => 'Could not read request content'])
+                content: 'Could not read request content'])
             );
         }
 

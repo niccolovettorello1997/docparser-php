@@ -5,7 +5,7 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Niccolo\DocparserPhp\Controller\ApiController;
-use Niccolo\DocparserPhp\Controller\Responses\Response;
+use Niccolo\DocparserPhp\Controller\Responses\BaseResponse;
 use Niccolo\DocparserPhp\Service\ParserService;
 use Niccolo\DocparserPhp\Service\ValidatorService;
 use Niccolo\DocparserPhp\Middleware\AuthMiddleware;
@@ -34,6 +34,13 @@ $controller = new ApiController(
 // TODO: implement auth
 $authMiddleware = new AuthMiddleware();
 
+/** @var BaseResponse $response */
+$response = new ErrorResponse(
+    statusCode: 404,
+    content: 'Not Found',
+    code: 'ERR_NOT_FOUND'
+);
+
 switch (true) {
     case $path === '/api/v1/parse/file' && $method === 'POST':
         $response = $authMiddleware->handle() ?? $controller->parseFile();
@@ -45,12 +52,6 @@ switch (true) {
         $response = $authMiddleware->handle() ?? new Response(
             statusCode: 200,
             content: json_encode(['status' => 'ok'])
-        );
-        break;
-    default:
-        $response = new Response(
-            statusCode: 404,
-            content: json_encode(['error' => 'Not Found'])
         );
         break;
 }

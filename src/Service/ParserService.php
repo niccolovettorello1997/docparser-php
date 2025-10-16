@@ -12,6 +12,18 @@ use Symfony\Component\Yaml\Exception\ParseException;
 
 class ParserService
 {
+    private const VERSION = '0.0.1';
+
+    /**
+     * Get parser version.
+     *
+     * @return string
+     */
+    public function getVersion(): string
+    {
+        return self::VERSION;
+    }
+
     /**
      * Parse the content.
      *
