@@ -5,24 +5,30 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Niccolo\DocparserPhp\Controller\ParserController;
+use Niccolo\DocparserPhp\Service\ValidatorService;
+use Niccolo\DocparserPhp\Service\ParserService;
 
-$controller = new ParserController();
-$views = [];
+$validatorService = new ValidatorService();
+$parserService = new ParserService();
+
+$controller = new ParserController(
+    validatorService: $validatorService,
+    parserService: $parserService,
+);
+
+$view = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $views = $controller->handleRequest(data: $_POST);
+    $view = $controller->handleRequest(data: $_POST);
 
     if ($_POST['renderingType'] === 'json') {
-        $jsonResult = $controller->getJsonResult(views: $views);
-
-        header('Content-Type: application/json; charset=utf-8');
-
-        if ($jsonResult->getStatusCode() === 200) {
-            header('Content-Disposition: attachment; filename="parsed.json"');
-        }
-
-        http_response_code($jsonResult->getStatusCode());
-        echo $jsonResult->getContent();
+        header(header: 'Content-Type: application/json; charset=utf-8');
+        header(header: 'Content-Disposition: attachment; filename="parsed.json"');
+        
+        http_response_code(response_code: 200);
+        
+        echo $view->render();
+        
         exit;
     }
 }
@@ -61,24 +67,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
 
         <div class="results">
-        <?php if (!empty($views)): ?>
-            <?php foreach ($views as $view): ?>
-                <?php
-                $rendered = $view->render();
-                $class = 'box-generic';
+        <?php if (null !== $view): ?>
+            <?php
+            $rendered = $view->render();
+            $class = 'box-generic';
 
-                if (stripos(haystack: $rendered, needle: 'error') !== false) {
-                    $class = 'box-error';
-                } elseif (stripos(haystack: $rendered, needle: 'warning') !== false) {
-                    $class = 'box-warning';
-                } elseif (stripos(haystack: $rendered, needle: 'valid') !== false) {
-                    $class = 'box-success';
-                }
-                ?>
-                <div class="box <?= $class ?>">
-                    <?= $rendered ?>
-                </div>
-            <?php endforeach; ?>
+            if (stripos(haystack: $rendered, needle: 'error') !== false) {
+                $class = 'box-error';
+            } elseif (stripos(haystack: $rendered, needle: 'warning') !== false) {
+                $class = 'box-warning';
+            } elseif (stripos(haystack: $rendered, needle: 'valid') !== false) {
+                $class = 'box-success';
+            }
+            ?>
+            <div class="box <?= $class ?>">
+                <?= $rendered ?>
+            </div>
         <?php endif; ?>
     </div>
     </div>

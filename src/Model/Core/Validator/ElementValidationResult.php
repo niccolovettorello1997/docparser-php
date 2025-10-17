@@ -63,4 +63,22 @@ class ElementValidationResult
     {
         $this->warnings = array_merge($this->warnings, $warnings);
     }
+
+    /**
+     * @return array<string,string|array<AbstractError>|array<AbstractWarning>>
+     */
+    public function toArray(): array
+    {
+        return [
+            'valid' => ($this->isValid()) ? 'yes' : 'no',
+            'errors' => array_map(
+                callback: fn (AbstractError $error): array => $error->toArray(),
+                array: $this->getErrors()
+            ),
+            'warnings' => array_map(
+                callback: fn (AbstractWarning $warning): array => $warning->toArray(),
+                array: $this->getWarnings()
+            ),
+        ];
+    }
 }

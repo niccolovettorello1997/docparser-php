@@ -17,4 +17,12 @@ abstract class AbstractWarning
     {
         return $this->message;
     }
+
+    public function toArray(): array
+    {
+        return [
+            'message' => $this->message,
+        ];
+    }
 }
+
