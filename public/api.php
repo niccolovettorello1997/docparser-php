@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
+use Niccolo\DocparserPhp\Model\Utils\Error\Enum\ErrorCode;
 use Niccolo\DocparserPhp\Controller\ApiController;
 use Niccolo\DocparserPhp\Controller\Responses\BaseResponse;
 use Niccolo\DocparserPhp\Service\ParserService;
 use Niccolo\DocparserPhp\Service\ValidatorService;
 use Niccolo\DocparserPhp\Middleware\AuthMiddleware;
 use Dotenv\Dotenv;
+use Niccolo\DocparserPhp\Controller\Responses\ErrorResponse;
 
 // Load environment variables
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
@@ -38,7 +40,7 @@ $authMiddleware = new AuthMiddleware();
 $response = new ErrorResponse(
     statusCode: 404,
     content: 'Not Found',
-    code: 'ERR_NOT_FOUND'
+    code: ErrorCode::NOT_FOUND->value
 );
 
 switch (true) {

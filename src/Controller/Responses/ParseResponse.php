@@ -7,24 +7,29 @@ namespace Niccolo\DocparserPhp\Controller\Responses;
 class ParseResponse extends BaseResponse
 {
     private string $requestId;
+    private array $validation;
+    private array $parsed;
     private int $durationMs;
     private int $sizeBytes;
     private string $version;
 
     public function __construct(
         int $statusCode,
-        string $content,
         string $requestId,
+        array $validation,
+        array $parsed,
         int $durationMs,
         int $sizeBytes,
         string $version
     ) {
         parent::__construct(
             statusCode: $statusCode,
-            content: $content
+            content: ''
         );
 
         $this->requestId = $requestId;
+        $this->validation = $validation;
+        $this->parsed = $parsed;
         $this->durationMs = $durationMs;
         $this->sizeBytes = $sizeBytes;
         $this->version = $version;
@@ -33,7 +38,16 @@ class ParseResponse extends BaseResponse
     public function getRequestId(): string
     {
         return $this->requestId;
+    }
 
+    public function getValidation(): array
+    {
+        return $this->validation;
+    }
+
+    public function getParsed(): array
+    {
+        return $this->parsed;
     }
 
     public function getDurationMs(): int
@@ -57,7 +71,8 @@ class ParseResponse extends BaseResponse
             [
                 'status' => 'ok',
                 'requestId' => $this->getRequestId(),
-                'parsed' => parent::getContent(),
+                'validation' => $this->getValidation(),
+                'parsed' => $this->getParsed(),
                 'meta' => [
                     'durationMs' => $this->getDurationMs(),
                     'sizeBytes' => $this->getSizeBytes(),

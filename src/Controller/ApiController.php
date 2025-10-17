@@ -10,9 +10,9 @@ use Niccolo\DocparserPhp\Controller\Responses\BaseResponse;
 use Niccolo\DocparserPhp\Service\ParserService;
 use Niccolo\DocparserPhp\Service\ValidatorService;
 use Niccolo\DocparserPhp\Service\Utils\Query;
-use Niccolo\DocparserPhp\View\Parser\JsonParserView;
 use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\RenderingType;
 use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\InputType;
+use Niccolo\DocparserPhp\Model\Utils\Error\Enum\ErrorCode;
 
 class ApiController
 {
@@ -44,15 +44,11 @@ class ApiController
 
         $durationMs = (int) ((microtime(true) - $start) * 1000);
         
-        $jsonParserView = new JsonParserView(
-            elementValidationResult: $validationResult,
-            tree: $parseResult
-        );
-
-        return new Response(
+        return new ParseResponse(
             statusCode: 200,
-            content: $jsonParserView->render(),
             requestId: $requestId,
+            validation: $validationResult->toArray(),
+            parsed: $parseResult?->toArray() ?? [],
             durationMs: $durationMs,
             sizeBytes: strlen($query->getContext()),
             version: $this->parserService->getVersion()
@@ -74,7 +70,7 @@ class ApiController
             return new ErrorResponse(
                 statusCode: 400,
                 content: "Missing 'type' field",
-                code: 'ERR_MISSING_REQUIRED_FIELD'
+                code: ErrorCode::MISSING_REQUIRED_FIELD->value
             );
         }
 
@@ -85,7 +81,7 @@ class ApiController
             return new ErrorResponse(
                 statusCode: 400,
                 content: 'Input type not supported',
-                code: 'ERR_SUPPORTED_TYPE'
+                code: ErrorCode::UNSUPPORTED_TYPE->value
             );
         }
 
@@ -95,7 +91,7 @@ class ApiController
             return new ErrorResponse(
                 statusCode: 400,
                 content: 'No file uploaded',
-                code: 'ERR_NO_FILE_UPLOADED'
+                code: ErrorCode::NO_FILE_UPLOADED->value
             );
         }
 
@@ -104,9 +100,9 @@ class ApiController
         // Upload error
         if ($file['error'] !== UPLOAD_ERR_OK) {
             return new ErrorResponse(
-                statusCode: 400,
+                statusCode: 409,
                 content: 'Upload error',
-                code: 'ERR_FILE_UPLOAD',
+                code: ErrorCode::UPLOAD_ERROR->value,
                 details: $file['error']
             );
         }
@@ -129,27 +125,21 @@ class ApiController
     {
         // Handle request content
         $rawInput = file_get_contents('php://input', true);
+        $request = (false !== $rawInput) ? json_decode($rawInput, true) : null;
 
-        if (false === $rawInput) {
+        if ((false === $rawInput) || (null === $request)) {
             return new ErrorResponse(
-                statusCode: 400,
-                content: 'Could not read request content'])
-            );
-        }
-
-        $request = json_decode($rawInput, true);
-
-        if (null === $request) {
-            return new Response(
-                statusCode: 400,
-                content: json_encode(['error' => 'Could not read request content'])
+                statusCode: 500,
+                content: 'Could not read request content',
+                code: ErrorCode::INTERNAL_SERVER_ERROR->value
             );
         }
 
         if (!isset($request['content']) || empty($request['content'])) {
             return new Response(
                 statusCode: 400,
-                content: json_encode(['error' => "Required field 'content' is missing or empty"])
+                content: "Missing required 'content' field",
+                code: ErrorCode::MISSING_REQUIRED_FIELD->value
             );
         }
 
@@ -157,16 +147,18 @@ class ApiController
         if (!isset($request['type'])) {
             return new Response(
                 statusCode: 400,
-                content: json_encode(['error' => "Missing required 'type' field"])
+                content: "Missing required 'type' field",
+                code: ErrorCode::MISSING_REQUIRED_FIELD->value
             );
         }
 
         $inputType = InputType::tryFrom($request['type']);
 
         if (null === $inputType) {
-            return new Response(
+            return new ErrorResponse(
                 statusCode: 400,
-                content: json_encode(['error' => 'Type not supported'])
+                content: 'Input type not supported',
+                code: ErrorCode::UNSUPPORTED_TYPE->value
             );
         }
 

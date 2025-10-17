@@ -4,16 +4,18 @@ declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Middleware;
 
+use Niccolo\DocparserPhp\Model\Utils\Error\Enum\ErrorCode;
 use Niccolo\DocparserPhp\Controller\Responses\ErrorResponse;
+use Niccolo\DocparserPhp\Controller\Responses\BaseResponse;
 
 class AuthMiddleware
 {
     /**
      * Handle authentication.
      *
-     * @return Response|null
+     * @return BaseResponse|null
      */
-    public function handle(): ?Response
+    public function handle(): ?BaseResponse
     {
         if ($_ENV['AUTH_REQUIRED'] !== '1') {
             return null;
@@ -25,7 +27,7 @@ class AuthMiddleware
             return new ErrorResponse(
                 statusCode: 401,
                 content: 'Missing Authorization header',
-                code: 'ERR_NO_AUTH_HEADER'
+                code: ErrorCode::NO_AUTH_HEADER->value
             );
         }
 
@@ -35,7 +37,7 @@ class AuthMiddleware
             return new ErrorResponse(
                 statusCode: 401,
                 content: 'Invalid token',
-                code: 'ERR_INVALID_TOKEN'
+                code: ErrorCode::INVALID_TOKEN->value
             );
         }
 
