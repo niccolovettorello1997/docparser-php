@@ -24,4 +24,4 @@ jobs:
         run: npm install -g @redocly/cli
 
       - name: Validate OpenAPI spec
-        run: redocly lint openapi.yaml
+        run: redocly lint public/docs/openapi.yaml

@@ -42,7 +42,7 @@ $response = new ErrorResponse(
 // Handle docs
 if ($path === '/api/v1/openapi.yaml' && $method === 'GET') {
     header(header: 'Content-Type: application/yaml');
-    readfile(filename: __DIR__ . '/../openapi.yaml');
+    readfile(filename: __DIR__ . '/docs/openapi.yaml');
     exit;
 }
 

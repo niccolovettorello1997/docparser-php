@@ -43,6 +43,12 @@ Ursprünglich als einfacher webbasierter HTML-Validator entwickelt, bietet **Doc
 
 ---
 
+## **API-Dokumentation**
+
+Die API-Dokumentation ist [hier](https://niccolovettorello1997.github.io/docparser-php/) verfügbar.
+
+---
+
 ## **Inhaltsverzeichnis**
 
 - [Funktionen](#funktionen)

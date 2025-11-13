@@ -42,6 +42,12 @@ Originally built as a simple web-based HTML validator, **DocParser-PHP** now exp
 
 ---
 
+## **API documentation**
+
+The API documentation is available [here](https://niccolovettorello1997.github.io/docparser-php/).
+
+---
+
 ## **Table of Contents**
 
 - [Features](#features)
