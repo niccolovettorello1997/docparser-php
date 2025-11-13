@@ -15,7 +15,7 @@ class DoctypeValidator extends AbstractValidator
 
     /**
      * Validates the presence and correctness of the DOCTYPE declaration in an HTML document.
-     * 
+     *
      * @param string                  $content
      * @param ElementValidationResult $elementValidationResult
      *

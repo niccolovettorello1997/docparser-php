@@ -12,7 +12,7 @@ class HtmlParser implements ParserInterface
 {
     /**
      * Get html element content and attributes.
-     * 
+     *
      * @param string $content
      *
      * @return array<int,string|array<string,string>>

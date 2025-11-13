@@ -1,9 +1,12 @@
 <?php
 
-declare(strict_types= 1);
+declare(strict_types=1);
 
 namespace Niccolo\DocparserPhp\Model\Utils\Parser\Enum;
 
+/**
+ * @codeCoverageIgnore
+ */
 enum InputType: string
 {
     case HTML = 'html';
@@ -11,7 +14,7 @@ enum InputType: string
 
     /**
      * Get file extension for the language.
-     * 
+     *
      * @param InputType $type
      *
      * @return string

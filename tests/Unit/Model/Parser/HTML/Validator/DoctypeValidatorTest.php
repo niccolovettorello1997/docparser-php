@@ -17,9 +17,9 @@ class DoctypeValidatorTest extends TestCase
         $html = '<!DOCTYPE html><html lang="en"><head><title>Test</title></head><body></body></html>';
         $sharedContext = new SharedContext(context: $html);
         $validator = new DoctypeValidator(sharedContext: $sharedContext);
-        
+
         $result = $validator->validate();
-        
+
         $this->assertTrue($result->isValid());
         $this->assertEmpty($result->getErrors());
         $this->assertEmpty($result->getWarnings());

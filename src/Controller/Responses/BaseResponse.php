@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Controller\Utils;
+namespace Niccolo\DocparserPhp\Controller\Responses;
 
-class Response
+class BaseResponse
 {
     public function __construct(
-        private readonly int $statusCode,
-        private readonly string $content,
+        private readonly int $statusCode = 200,
+        private readonly string $content = 'ok',
     ) {
     }
 

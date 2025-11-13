@@ -1,3 +1,4 @@
+/* ========== BASE STYLE ========== */
 body {
     font-family: Arial, sans-serif;
     background: #f9fafb;
@@ -28,6 +29,15 @@ h1 {
     text-align: center;
 }
 
+/* ========== FORM ========== */
+form {
+    background: #fff;
+    padding: 1.5rem;
+    border-radius: 6px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+}
+
 label {
     display: block;
     margin: 15px 0 5px;
@@ -41,6 +51,7 @@ textarea {
     font-family: monospace;
     border: 1px solid #ccc;
     border-radius: 4px;
+    background: #fafafa;
 }
 
 input[type="file"],
@@ -54,6 +65,7 @@ select {
     margin-top: 20px;
     display: flex;
     gap: 10px;
+    justify-content: center;
 }
 
 .btn {
@@ -73,39 +85,35 @@ select {
     opacity: 0.9;
 }
 
+/* ========== RESULTS ========== */
 .results {
     margin-top: 30px;
 }
 
-.results h2 {
-    margin-bottom: 15px;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 5px;
-}
-
-.result-block {
-    padding: 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: #fdfdfd;
-    margin-bottom: 15px;
-}
-
-form {
-    background: #fff;
-    padding: 1.5rem;
-    border-radius: 6px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin-bottom: 2rem;
-}
-
 .box {
-    padding: 1rem;
+    padding: 1rem 1.5rem;
     margin-bottom: 1rem;
     border-radius: 5px;
     border: 1px solid transparent;
+    font-family: monospace;
+    font-size: 0.9rem;
+    overflow-x: auto;
+    background: #fdfdfd;
 }
 
+/* Improve readability */
+.box ul {
+    list-style: none;
+    padding-left: 1.25rem;
+    margin-left: 0.5rem;
+    border-left: 1px dashed #ccc;
+}
+
+.box li {
+    margin: 0.25rem 0;
+}
+
+/* ========== BOX COLOR STATES ========== */
 .box-error {
     background: #ffe6e6;
     border-color: #ff4d4d;
@@ -128,4 +136,16 @@ form {
     background: #f0f0f0;
     border-color: #ccc;
     color: #333;
+}
+
+/* ========== OPTIONAL: better scrollbar ========== */
+.box::-webkit-scrollbar {
+    height: 8px;
+}
+.box::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 4px;
+}
+.box::-webkit-scrollbar-thumb:hover {
+    background: #999;
 }

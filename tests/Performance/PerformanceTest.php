@@ -64,10 +64,10 @@ class PerformanceTest extends TestCase
         $this->assertNotNull($parsingResult);
 
         $this->assertTrue($validationResult->isValid());
-	$this->assertGreaterThan(
-	    0,
-	    count(value: $parsingResult->getChildren())
-	);
+        $this->assertGreaterThan(
+            0,
+            count(value: $parsingResult->getChildren())
+        );
 
         // Check execution time
         $this->assertLessThan(

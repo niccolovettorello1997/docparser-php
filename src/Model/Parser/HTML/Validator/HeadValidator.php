@@ -16,7 +16,7 @@ class HeadValidator extends AbstractValidator
 
     /**
      * Checks if the tag is unique.
-     * 
+     *
      * @param array<int,array<int,string>> $matchesHead
      * @param ElementValidationResult      $elementValidationResult
      *
@@ -35,7 +35,7 @@ class HeadValidator extends AbstractValidator
 
     /**
      * Checks if the content before the head element and after the html element contains only whitespaces.
-     * 
+     *
      * @param string                  $content
      * @param ElementValidationResult $elementValidationResult
      *
@@ -60,7 +60,7 @@ class HeadValidator extends AbstractValidator
 
     /**
      * Checks if the head element has a closing tag.
-     * 
+     *
      * @param string|null             $content
      * @param ElementValidationResult $elementValidationResult
      *
@@ -86,7 +86,7 @@ class HeadValidator extends AbstractValidator
 
     /**
      * Checks if the head element contains nested elements.
-     * 
+     *
      * @param array<int,array<int,string>> $matchesHead
      * @param ElementValidationResult      $elementValidationResult
      *
@@ -125,10 +125,10 @@ class HeadValidator extends AbstractValidator
 
     /**
      * Checks if the head element is present.
-     * 
+     *
      * @param array<int,array<int,string>> $matchesHead
      * @param ElementValidationResult      $elementValidationResult
-     * 
+     *
      * @return void
      */
     private function isPresent(array $matchesHead, ElementValidationResult $elementValidationResult): void

@@ -15,7 +15,7 @@ class HeadingValidator extends AbstractValidator
 
     /**
      * Return the list of invalid content tags for heading elements.
-     * 
+     *
      * @return string[]
      */
     private function getInvalidContentTags(): array
@@ -66,13 +66,14 @@ class HeadingValidator extends AbstractValidator
 
     /**
      * Returns true if opening and closing tags are balanced, false otherwise.
-     * 
+     *
      * @param string                  $content
      * @param ElementValidationResult $elementValidationResult
      *
      * @return void
      */
-    private function areHeadingTagsBalanced(string $content, ElementValidationResult $elementValidationResult): void {
+    private function areHeadingTagsBalanced(string $content, ElementValidationResult $elementValidationResult): void
+    {
         // Find all tags <hN> or </hN>
         preg_match_all(
             pattern: '/<\/?h[1-6]\b[^>]*>/i',
@@ -86,13 +87,15 @@ class HeadingValidator extends AbstractValidator
             if (preg_match(                 // Opening tag
                 pattern: '/^<h([1-6])\b/i',
                 subject: $tag,
-                matches: $m)
+                matches: $m
+            )
             ) {
                 $stack[] = (int)$m[1];
             } elseif (preg_match(           // Closing tag
                 pattern: '/^<\/h([1-6])>/i',
                 subject: $tag,
-                matches: $m)
+                matches: $m
+            )
             ) {
                 // Closing without opening
                 if (empty($stack)) {
@@ -128,7 +131,7 @@ class HeadingValidator extends AbstractValidator
 
     /**
      * Checks if all heading elements have valid content.
-     * 
+     *
      * @param string                  $content
      * @param ElementValidationResult $elementValidationResult
      *

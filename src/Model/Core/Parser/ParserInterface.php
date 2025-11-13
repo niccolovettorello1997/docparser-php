@@ -10,7 +10,7 @@ interface ParserInterface
 {
     /**
      * Parse the corresponding element.
-     * 
+     *
      * @param string $content
      *
      * @return ?Node

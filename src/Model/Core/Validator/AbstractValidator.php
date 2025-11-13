@@ -16,7 +16,7 @@ abstract class AbstractValidator
 
     /**
      * Validates the HTML content.
-     * 
+     *
      * @return ElementValidationResult
      */
     abstract public function validate(): ElementValidationResult;

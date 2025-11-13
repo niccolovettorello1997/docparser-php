@@ -20,11 +20,16 @@
 
 # DocParser-PHP
 
-Ein einfacher **HTML-Parser und -Validator**, geschrieben in PHP 8, entworfen als Lernprojekt zur Demonstration von **objektorientiertem PHP, Unit-Testing und modularer Architektur**. Dieses Projekt stellt eine praktische Übung dar, die nach dem Studium des Buches *PHP 8 und MySQL: das umfassende Handbuch* von Wenz und Hauser geschrieben wurde. Es zeigt bewährte Programmierpraktiken, strukturiertes Parsen, Validierung und Ausgabe-Rendering in HTML- und JSON-Formaten.
+Ein leichtgewichtiger **Dokumentenparser und Validierungs-Microservice**, geschrieben in **PHP 8.3**, entwickelt, um **Clean Architecture**, **Dependency Injection**, **REST API Design** und **automatisiertes Testen** zu demonstrieren.
+
+Ursprünglich als einfacher webbasierter HTML-Validator entwickelt, bietet **DocParser-PHP** nun sowohl:
+
+* eine benutzerfreundliche **Weboberfläche (Web UI)** als auch
+* eine **REST-API** (`/api/v1/*`) für automatisierten oder programmatischen Zugriff.
 
 ---
 
-## **Visuelle Demo**
+## **Visuelle Demo (Web UI)**
 
 <p align="center">
     <a href="https://docparser-php.onrender.com/"><img src="./assets/img/docparser_php.gif" alt="DocParser-PHP demo" width="800" /></a>
@@ -43,35 +48,41 @@ Ein einfacher **HTML-Parser und -Validator**, geschrieben in PHP 8, entworfen al
 - [Funktionen](#funktionen)
 - [Architekturübersicht](#architekturübersicht)
 - [Technologie-Stack](#technologie-stack)
-- [Gezeigte Fähigkeiten](#gezeigte-fähigkeiten)
-- [Warum dieses Projekt wichtig ist](#warum-dieses-projekt-wichtig-ist)
+- [Nachgewiesene Fähigkeiten](#nachgewiesene-fähigkeiten)
 - [Installation](#installation)
+- [Umgebungskonfiguration](#umgebungskonfiguration)
 - [Verwendung](#verwendung)
-- [Eingabe/Ausgabe Beispiel](#ea-beispiel)
+  - [Web UI](#web-ui)
+  - [REST API](#rest-api)
 - [Projektstruktur](#projektstruktur)
 - [Validierungs- und Parsing-Logik](#validierungs--und-parsing-logik)
 - [Tests & Qualitätssicherung](#tests--qualitätssicherung)
-- [CI/CD mit Github Actions](#cicd-mit-github-actions)
-- [Beitragen](#beitragen)
+- [CI/CD mit GitHub Actions](#cicd-mit-github-actions)
+- [Mitwirken](#mitwirken)
+- [F.A.Q.](#faq)
 - [Lizenz](#lizenz)
 
 ---
 
 ## **Funktionen**
 
-- Validierung der HTML-Struktur mit strengen Regeln:
-  - Einzigartige und korrekt verschachtelte `<html>`, `<head>`, `<body>`, `<title>` und Überschriften
-  - Prüfung auf leere Elemente und ungültige Zeichen
-  - Warnsystem für optionale Attribute
-- Parsen von HTML in eine strukturierte, DOM-ähnliche Baumstruktur
-- Die aktuelle Implementierung konzentriert sich auf Validierung und modulares Design; vollständige HTML-Unterstützung kann dank der Architektur problemlos erreicht werden
-- Ausgabe der Ergebnisse in:
-  - Menschlich lesbares HTML
-  - Strukturiertes JSON für weitere Verarbeitung
-- Modulare Architektur zur Unterstützung zusätzlicher Dokumenttypen (*Stub-Code* für Markdown als Beispiel)
-- Vollständig mit PHPUnit getestet
-- Dockerisiert für einfache Einrichtung
-- Konfigurierbare Validatoren und Parser über YAML
+* Saubere Microservice-Architektur (Web UI + REST API)
+* HTML-Validierung mit strengen und erweiterbaren Regeln:
+
+  * Korrekte Verschachtelung und Einzigartigkeit von `<html>`, `<head>`, `<body>`, `<title>`, etc.
+  * Prüfung auf ungültige oder leere Tags
+  * Optionale Attribut-Warnungen
+* Parsen von HTML in eine strukturierte, DOM-ähnliche Baumstruktur
+* Platzhalter für Markdown-Parsing, um die Erweiterbarkeit des Codes zu demonstrieren
+* Ausgabe in:
+
+  * Menschlich lesbares HTML
+  * Strukturiertes JSON
+* Konfigurierbar über `.env` und YAML-Dateien
+* Dockerisiert für konsistente Umgebungen
+* Über 98 % PHPUnit-Testabdeckung (Unit + Integration)
+* Optionale Authentifizierungsmiddleware über API-Token (derzeit Platzhalter)
+* CI-fähig mit Codecov-Integration
 
 ---
 
@@ -79,108 +90,78 @@ Ein einfacher **HTML-Parser und -Validator**, geschrieben in PHP 8, entworfen al
 
 ```mermaid
 flowchart TD
-    %% Entry point / UI
-    A["index.php UI"] --> B["ParserController"]
+    %% Einstiegspunkt UI
+    A["index.php UI"] --> E["bootstrap.php"]
+    E --> O["Container"]
+    O --> B["ParserController"]
 
-    %% Validation
-    B --> C["ValidatorComponentFactory"]
-    C --> D["ValidatorComponent"]
+    %% Einstiegspunkt API
+    C["api.php API"] --> E
+    O --> N["AuthMiddleware"]
+    O --> D["ApiController"]
 
-    %% Validators
-    D --> E["HtmlValidator"]
-    D --> F["MarkdownValidator"]
-
-    %% ElementValidationResult
-    E --> G["ElementValidationResult"]
-    F --> G
-
-    %% Validation fails
-    G --> A
-
-    %% Validation ok
-    G --> B
-
-    %% Parsing
-    B --> H["ParserComponentFactory"]
-    H --> I["ParserComponent"]
-
-    %% Parsers
-    I --> J["HtmlParser"]
-    I --> K["MarkdownParser"]
-
-    %% Node
-    J --> L["Node"]
-    K --> L
+    %% Services
+    B --> F["ValidatorService"]
+    B --> G["ParserService"]
+    D --> F
+    D --> G
 
     %% View
-    L --> M["HtmlParserView"]
-    L --> N["JsonParserView"]
+    F --> H["HtmlParserView"]
+    F --> I["JsonParserView"]
+    G --> H
+    G --> I
 
-    %% Back to UI
-    M --> A
-    N --> A
+    %% Ergebnisse
+    H --> L["Ergebnis als HTML"]
+    I --> M["Ergebnis als JSON"]
 
-    %% Optional: File download
-    N --> O["Download JSON"]
-
-    %% ---------------------------
-    %% Style definitions
-    classDef ui fill:#ffe599,stroke:#333,stroke-width:2px
+    classDef entrypoint fill:#ffe599,stroke:#333,stroke-width:2px
     classDef controller fill:#a2c4c9,stroke:#333,stroke-width:2px
-    classDef factory fill:#c27ba0,stroke:#333,stroke-width:2px
-    classDef validator fill:#b6d7a8,stroke:#333,stroke-width:2px
-    classDef model fill:#f6b26b,stroke:#333,stroke-width:2px
-    classDef parser fill:#9fc5e8,stroke:#333,stroke-width:2px
+    classDef container fill:#a2c479,stroke:#333,stroke-width:2px
+    classDef bootstrap fill:#c27ba0,stroke:#333,stroke-width:2px
+    classDef auth fill:#c27b90,stroke:#333,stroke-width:2px
+    classDef service fill:#b6d7a8,stroke:#333,stroke-width:2px
     classDef view fill:#d9d2e9,stroke:#333,stroke-width:2px
-    classDef download fill:#ead1dc,stroke:#333,stroke-width:2px
+    classDef result fill:#ead1dc,stroke:#333,stroke-width:2px
 
-    %% ---------------------------
-    %% Assign classes
-    class A ui
-    class B controller
-    class C,H factory
-    class D,E,F validator
-    class G,L model
-    class I,J,K parser
-    class M,N view
-    class O download
+    class A,C entrypoint
+    class B,D controller
+    class O container
+    class E bootstrap
+    class N auth
+    class F,G service
+    class H,I view
+    class L,M result
 ```
 
 ---
 
 ## **Technologie-Stack**
 
-- **PHP 8.3** (OOP, striktes Typing)  
-- **Composer** für Abhängigkeitsmanagement  
-- **Docker & Docker Compose** für die Umgebung  
-- **PHPUnit** für Unit-Tests  
-- HTML5-Standards
+* **PHP 8.3** mit striktem Typing
+* **Composer** für Abhängigkeitsverwaltung
+* **Docker & Docker Compose**
+* **Eigener Dependency Injection Container**
+* **AuthMiddleware** für API-Authentifizierung (Platzhalter)
+* **Guzzle** für Integrationstests
+* **PHPUnit** für Tests + Codecov für Coverage
+* **Apache** Webserver
+* **Render** für Deployment
 
 ---
 
-## **Gezeigte Fähigkeiten**
-- Stark typisiertes PHP 8.3 mit Schnittstellen und abstrakten Klassen
-- Factory + Strategy-Muster für Erweiterbarkeit
-- Dependency Injection Prinzipien
-- Unit-Tests, Integrationstests, Performance-Tests und Regressionstests mit PHPUnit
-- Composer für Abhängigkeitsverwaltung
-- CI/CD mit GitHub Actions
-- Dockerisierte Umgebung für Portabilität
-- Erweiterbares Design für neue Parser/Validatoren
+## **Nachgewiesene Fähigkeiten**
 
----
-
-## **Warum dieses Projekt wichtig ist**
-
-Dieses Projekt zeigt meine Fähigkeit:
-
-- **Modulare, erweiterbare Software in PHP zu entwerfen**
-
-- **Validierungs- und Parsing-Pipelines für reale Anwendungsfälle zu implementieren**
-
-- **Testgetriebene Entwicklung anzuwenden (Abdeckung >90%)**
-
-- **Eine Anwendung mit Docker für Portabilität bereitzustellen**
+* RESTful Microservice-Architektur in PHP
+* Saubere Trennung zwischen UI- und API-Schichten
+* Dependency Injection und automatische Serviceauflösung
+* Benutzerdefiniertes Routing mit dem eingebauten PHP-Server
+* Middleware-basierte Authentifizierung
+* Unit- und Integrationstests
+* CI/CD-Pipelines mit GitHub Actions
+* Docker-basierter Entwicklungsworkflow
+* Konfigurationsgesteuertes Verhalten über `.env`
 
 ---
 
@@ -199,316 +180,310 @@ cd docparser-php
 docker compose up -d
 ```
 
-3. In den Web-Container wechseln:
+3. In den Container wechseln:
 
 ```bash
 docker exec -it docparser-php-web-1 bash
 ```
 
-4. PHP-Abhängigkeiten installieren:
+4. Abhängigkeiten installieren:
 
 ```bash
 composer install
 ```
 
-5. Zugriff auf die App im Browser:
+---
+
+## **Umgebungskonfiguration**
+
+Beispieldatei kopieren und nach Bedarf bearbeiten:
+
+```bash
+cp envs/.env.dev .env
+```
+
+Beispiel `.env`:
 
 ```
-http://localhost:8080
+AUTH_REQUIRED=0
+APP_VERSION="0.0.1"
 ```
+
+| Variable        | Beschreibung                                 |
+| --------------- | -------------------------------------------- |
+| `AUTH_REQUIRED` | Aktiviert Token-Authentifizierung (1 oder 0) |
+| `APP_VERSION`   | Aktuelle Anwendungsversion                   |
+
+`.env` wird automatisch von `bootstrap.php` geladen.
 
 ---
 
 ## **Verwendung**
 
-1. HTML-Inhalt direkt in das Textfeld eingeben **oder** eine HTML-Datei hochladen.
-2. Datentyp auswählen (derzeit nur `HTML` und *Stub-Code* für `Markdown` unterstützt).
-3. Auf **Parse** klicken.
-4. Ergebnisse werden angezeigt:
+### Web UI
 
-   * Validierungsfehler und Warnungen
-   * Geparste HTML-Ansicht
-   * Optionale herunterladbare JSON-Datei
+1. Öffne [http://localhost:8080](http://localhost:8080)
+2. HTML-Inhalt einfügen oder hochladen
+3. Validierungsergebnisse und geparsten Baum ansehen
+4. Optional die JSON-Ausgabe herunterladen
 
 ---
 
-## E/A Beispiel
+### REST API
 
-**HTML Eingabe**
-```html
-<!DOCTYPE html>
-<html lang="de">
-  <head><title>Test</title></head>
-  <body>
-    <h1>Hello</h1>
-    <p>World</p>
-  </body>
-</html>
-```
+Der Service bietet REST-Endpunkte unter `/api/v1`.
 
-**JSON Ausgabe für HTML**
+Um die vollständige Dokumentation zu sehen, öffne in deinem Browser [http://localhost:8080/api/v1/docs](http://localhost:8080/api/v1/docs)
+
+#### **GET** `/api/v1/health`
+
+Healthcheck-Endpunkt.
+
 ```json
 {
+  "status": "ok",
+  "version": "0.0.1"
+}
+```
+
+#### **POST** `/api/v1/parse/file`
+
+Parst und validiert den Inhalt einer hochgeladenen Datei.
+
+**Beispielanfrage:**
+
+```bash
+curl -X POST http://localhost:8080/api/v1/parse/file -F "document=@/path/to/your/file.html" -F "type=html"
+```
+
+**Beispielantwort:**
+
+```json
+{
+  "status": "ok",
+  "requestId": "req-f77ecced103d7f6d",
+  "validation": {
+    "Valid": "yes",
+    "Errors": [],
+    "Warnings": []
+  },
+  "parsed": {
     "Name": "root",
     "Children": [
-        {
-            "Name": "doctype",
+      {
+        "Name": "doctype",
+        "Children": [
+          {
+            "Name": "html",
+            "Attributes": {
+              "lang": "en"
+            },
             "Children": [
-                {
-                    "Name": "html",
-                    "Attributes": {
-                        "lang": "de"
-                    },
+              {
+                "Name": "head",
+                "Children": [
+                  {
+                    "Name": "title",
+                    "Content": "Example Document"
+                  }
+                ]
+              },
+              {
+                "Name": "body",
+                "Children": [
+                  {
+                    "Name": "paragraphs",
                     "Children": [
-                        {
-                            "Name": "head",
-                            "Children": [
-                                {
-                                    "Name": "title",
-                                    "Content": "Test"
-                                }
-                            ]
-                        },
-                        {
-                            "Name": "body",
-                            "Children": [
-                                {
-                                    "Name": "paragraphs",
-                                    "Children": [
-                                        {
-                                            "Name": "p",
-                                            "Content": "World"
-                                        }
-                                    ]
-                                },
-                                {
-                                    "Name": "headings",
-                                    "Children": [
-                                        {
-                                            "Name": "h1",
-                                            "Content": "Hello"
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
+                      {
+                        "Name": "p",
+                        "Content": "This is the first section of the page."
+                      },
+                      {
+                        "Name": "p",
+                        "Content": "This is the second section. Notice that headings, paragraphs, and links are all valid here."
+                      },
+                      {
+                        "Name": "p",
+                        "Content": "&amp;copy; 2025 Example Company"
+                      }
                     ]
-                }
+                  },
+                  {
+                    "Name": "headings",
+                    "Children": [
+                      {
+                        "Name": "h1",
+                        "Content": "Welcome to My Page"
+                      },
+                      {
+                        "Name": "h2",
+                        "Content": "Section 1"
+                      },
+                      {
+                        "Name": "h2",
+                        "Content": "Section 2"
+                      }
+                    ]
+                  }
+                ]
+              }
             ]
-        }
+          }
+        ]
+      }
     ]
+  },
+  "meta": {
+    "durationMs": 18,
+    "sizeBytes": 901,
+    "version": "0.0.1"
+  }
 }
 ```
 
-**Markdown Eingabe (*stub*)**
-```md
-# Example title
+#### **POST** `/api/v1/parse/json`
+
+Parst und validiert den Inhalt einer JSON-Anfrage.
+Der Inhalt muss *URL-codiert* sein.
+
+**Beispielanfrage:**
+
+```bash
+curl -d '{"type":"html", "content":"%3C%21DOCTYPE%20html%3E%0A%3Chtml%20lang%3D%22en%22%3E%0A%3Chead%3E%0A%20%20%3Cmeta%20charset%3D%22UTF-8%22%3E%0A%20%20%3Cmeta%20name%3D%22viewport%22%20content%3D%22width%3Ddevice-width%2C%20initial-scale%3D1.0%22%3E%0A%20%20%3Ctitle%3EExample%20Document%3C%2Ftitle%3E%0A%20%20%3Cmeta%20name%3D%22description%22%20content%3D%22A%20simple%20example%20of%20a%20well-structured%20HTML5%20document.%22%3E%0A%3C%2Fhead%3E%0A%3Cbody%3E%0A%20%20%3Cheader%3E%0A%20%20%20%20%3Ch1%3EWelcome%20to%20My%20Page%3C%2Fh1%3E%0A%20%20%20%20%3Cnav%3E%0A%20%20%20%20%20%20%3Cul%3E%0A%20%20%20%20%20%20%20%20%3Cli%3E%3Ca%20href%3D%22http%3A%2F%2Fwww.example1.com%22%3Eexample%201%3C%2Fa%3E%3C%2Fli%3E%0A%20%20%20%20%20%20%20%20%3Cli%3E%3Ca%20href%3D%22http%3A%2F%2Fwww.example2.com%22%3Eexample%202%3C%2Fa%3E%3C%2Fli%3E%0A%20%20%20%20%20%20%3C%2Ful%3E%0A%20%20%20%20%3C%2Fnav%3E%0A%20%20%3C%2Fheader%3E%0A%0A%20%20%3Cmain%3E%0A%20%20%20%20%3Csection%20id%3D%22section1%22%3E%0A%20%20%20%20%20%20%3Ch2%3ESection%201%3C%2Fh2%3E%0A%20%20%20%20%20%20%3Cp%3EThis%20is%20the%20first%20section%20of%20the%20page.%3C%2Fp%3E%0A%20%20%20%20%3C%2Fsection%3E%0A%0A%20%20%20%20%3Csection%20id%3D%22section2%22%3E%0A%20%20%20%20%20%20%3Ch2%3ESection%202%3C%2Fh2%3E%0A%20%20%20%20%20%20%3Cp%3EThis%20is%20the%20second%20section.%20Notice%20that%20headings%2C%20paragraphs%2C%20and%20links%20are%20all%20valid%20here.%3C%2Fp%3E%0A%20%20%20%20%3C%2Fsection%3E%0A%20%20%3C%2Fmain%3E%0A%0A%20%20%3Cfooter%3E%0A%20%20%20%20%3Cp%3E%26copy%3B%202025%20Example%20Company%3C%2Fp%3E%0A%20%20%3C%2Ffooter%3E%0A%3C%2Fbody%3E%0A%3C%2Fhtml%3E"}' -H "Content-Type: application/json" -X POST http://localhost:8080/api/v1/parse/json
 ```
 
-**JSON Ausgabe für Markdown**
-```json
-{
-    "Name": "root",
-    "Children": [
-        {
-            "Name": "markdown",
-            "Content": "# Example title"
-        }
-    ]
-}
-```
+**Beispielantwort:**
+
+*(identisch zum Originalbeispiel)*
 
 ---
 
 ## **Projektstruktur**
 
 ```
-src/          # Core PHP Quellcode (Validatoren, Parser, Fabriken)
-tests/        # PHPUnit Tests für Validatoren, Parser und Views
-views/        # HTML-Views für Validierungsergebnisse
-public/       # Einstiegspunkt für die Web-Oberfläche
-docker/       # Docker-Konfiguration
-config/       # Einstellungen für Parser und Validator
-fixtures/     # Projekt-Fixtures
-assets/       # Projekt-Assets
+src/               # Quellcode (Controller, Middleware, Validatoren, Parser)
+public/            # Einstiegspunkte (UI und API)
+ ├── index.php     # Web UI
+ ├── api.php       # REST API
+bootstrap.php      # Initialisiert DI-Container und Umgebung
+tests/             # Unit- und Integrationstests
+ ├── Unit/         # Unit-Tests (98 % Abdeckung)
+ ├── Integration/  # Guzzle-basierte API-Tests
+ ├── Config/       # Konfigurationstests
+ ├── Performance/  # Performance-Tests
+config/            # Parser- und Validator-Konfiguration
+assets/            # Bilder und statische Dateien
+docker/            # Docker-Konfiguration
 ```
 
 ---
 
 ## **Validierungs- und Parsing-Logik**
 
+Validierung und Parsing werden zwischen der UI- und der API-Schicht gemeinsam genutzt:
+
 1. **Validierung**
 
-   * Überprüfungen beinhalten:
-
-     * Einzigartiger `doctype`, `html`, `head`, `body`, `title`
-     * Ausgeglichene Überschriften (`<h1>`-`<h6>`)
-     * Keine verschachtelten `<p>`-Tags oder ungültiger Inhalt
-     * Warnungen für optionale Attribute (z. B. `lang` auf `<html>`)
+   * Stellt strukturelle Korrektheit sicher (doctype, head, body, title)
+   * Erkennt leere oder ungültige Elemente
+   * Unterscheidet zwischen Fehlern und Warnungen
 
 2. **Parsing**
 
-   * Konvertiert HTML in eine DOM-ähnliche Baumstruktur
-   * Jeder Elementtyp wird von dedizierten Parser-Klassen behandelt
-   * Rekursives Parsen vom `doctype`-Root
-   * Ausgaben können in HTML oder JSON gerendert werden
+   * Erstellt einen rekursiven, DOM-ähnlichen Knotenbaum
+   * Unterstützt mehrere Dokumenttypen (`HTML`, `Markdown`)
+   * Ausgabe als HTML oder JSON möglich
 
 ---
 
 ## **Tests & Qualitätssicherung**
 
-Dieses Projekt verfügt über eine umfangreiche PHPUnit-Testabdeckung, um Zuverlässigkeit und Wartbarkeit sicherzustellen:
+### Unit-Tests
 
-* Unit-Tests für Validatoren (fehlende Tags, Duplikate, ungültiger oder leerer Inhalt).
+* Decken Validatoren, Parser und View-Komponenten ab
+* Ausführen mit `vendor/bin/phpunit`
 
-* Integrationstests (Validator + Parser + Views).
+### Integrationstests
 
-* YAML-Konfigurationstests (dynamische Validator- und Parserkonfiguration).
+Verwenden **Guzzle**, um Live-Endpunkte zu testen:
 
-* Edge-Case-HTML-Tests (nicht standardisierte Strukturen, Leerzeichen, Kommentare).
-
-* Performance-Tests mit großen Eingaben (10.000+ Tags).
-
-Fehler und Warnungen werden klar getrennt: Fehler blockieren das Parsing, während Warnungen es fortsetzen lassen.
-
-Tests ausführen:
-
-```bash
-docker exec -it docparser-php-web-1 bash
-vendor/bin/phpunit
+```php
+$response = $client->get('/api/v1/health');
+$this->assertEquals(200, $response->getStatusCode());
 ```
+
+Ausführen mit `vendor/bin/phpunit`
+
+Die Gesamtabdeckung wird automatisch von der CI-Pipeline an **Codecov** übermittelt.
 
 ---
 
-## **Code-Stil & Formatierung**
+## **CI/CD mit GitHub Actions**
 
-Dieses Projekt verwendet **PHP-CS-Fixer**, um einheitliche Coding-Standards durchzusetzen (PSR-12, kurze Array-Syntax, strikte Parameter usw.).  
-Führe es lokal aus:
+### 1. Tests & Coverage (`tests.yml`)
 
-```bash
-vendor/bin/php-cs-fixer fix
-```
+Führt PHPUnit mit Coverage aus, lädt Ergebnisse zu Codecov hoch.
 
-In der CI-Pipeline wird `php-cs-fixer` im `dry-run-Modus` ausgeführt, um die Formatierung zu validieren.
+### 2. Statische Analyse (`phpstan.yaml`)
 
----
+Führt strikte Typprüfungen durch.
 
-## CI/CD mit GitHub Actions
+### 3. Code-Stil (`php_cs_fixer.yaml`)
 
-Dieses Projekt verwendet **GitHub Actions**, um Tests, Codequalitätsprüfungen, Docker-Builds und Deployments zu automatisieren. Der Workflow ist in mehrere Jobs unterteilt, die jeweils einen spezifischen Zweck haben.
+Sichert die Einhaltung des PSR-12-Codestils.
 
-### 1. Tests & Coverage
+### 4. Docker-Build (`docker_build.yaml`)
 
-**Datei:** `tests.yaml`
+Erstellt das Docker-Image mit `docker compose`.
 
-**Zweck:** Führen von PHPUnit-Tests und Erzeugen der Testabdeckung.
+### 5. Release & Deployment (`release_deploy.yaml`)
 
-**Was es macht:**
-- Installiert PHP 8.3 mit Xdebug
-- Installiert Projektabhängigkeiten
-- Führt PHPUnit aus und erzeugt Coverage-Berichte
-- Lädt die Coverage zu Codecov hoch
+Löst ein Render-Deployment über die API aus.
 
-**Lokal ausführen:**
+### 6. Openapi (`openapi.yaml`)
 
-```bash
-vendor/bin/phpunit
-```
-
-### 2. PHPStan
-
-**Datei:** `phpstan.yaml`
-
-**Zweck:** Statische Codeanalyse mit PHPStan durchführen.
-
-**Was es macht:**
-
-* Installiert PHP 8.3
-* Installiert Projektabhängigkeiten
-* Führt PHPStan aus, um Typfehler und andere statische Probleme zu prüfen
-* Standardmäßig ist die Strenge von PHPStan auf `max` gesetzt
-
-**Lokal ausführen:**
-
-```bash
-vendor/bin/phpstan analyse
-```
-
-### 3. PHP CS Fixer
-
-**Datei:** `php_cs_fixer.yaml`
-
-**Zweck:** Überprüft Codeformatierung und Coding-Style.
-
-**Was es macht:**
-
-* Installiert PHP 8.3
-* Installiert Projektabhängigkeiten
-
-**Lokal ausführen:**
-
-```bash
-vendor/bin/php-cs-fixer fix
-```
-
-### 4. Docker Build
-
-**Datei:** `docker_build.yaml`
-
-**Zweck:** Baut das Docker-Image des Projekts.
-
-**Was es macht:**
-
-* Richtet Docker Buildx ein
-* Baut das Docker-Image mit `docker compose build`
-* Schiebt das Image **nicht** zu einem Registry
-
-**Lokal ausführen:**
-
-```bash
-docker compose build
-```
-
-### 5. Release & Deploy
-
-**Datei:** `release_deploy.yaml`
-
-**Zweck:** Deployment auf Render auslösen.
-
-**Trigger:** Manuell (`workflow_dispatch`)
-
-**Was es macht:**
-
-* Sendet eine POST-Anfrage an die Render-API, um den neuesten Code zu deployen
-* Verwendet die Secrets `RENDER_API_KEY` und `RENDER_SERVICE_ID` zur Authentifizierung
-* Kann nur von Benutzern mit Zugriff auf das Repository ausgelöst werden
-
-**Lokal ausführen:**
-
-```bash
-curl -X POST "https://api.render.com/v1/services/<RENDER_SERVICE_ID>/deploys" \
-     -H "Authorization: Bearer <RENDER_API_KEY>" \
-     -H "Content-Type: application/json" \
-     -d '{}'
-```
+Validiert die `openapi.yaml`-Dokumentationsdatei.
 
 ---
 
-## **Beitragen**
+## **Mitwirken**
 
-Beiträge sind willkommen! Sie können:
+Beiträge sind willkommen!
+Du kannst:
 
-* Unterstützung für weitere HTML-Tags hinzufügen
-* Validierungsregeln verbessern
-* Unterstützung für andere Dokumenttypen (Markdown, XML) hinzufügen
-* UI/JSON-Ausgabe erweitern
+* Validierungsregeln erweitern
+* Neue Dokumenttypen hinzufügen
+* REST-API-Antworten verbessern
+* Neue CI-Workflows oder Metriken hinzufügen (z. B. geplanter `/metrics`-Endpunkt)
 
-Bitte öffnen Sie einen Pull-Request oder Issue zur Diskussion.
+Bitte öffne einen Pull Request oder ein Issue zur Diskussion.
+
+---
+
+## **F.A.Q.**
+
+1. **XDebug funktioniert auf meinem Linux-System nicht – warum?**
+
+Unter Linux löst Docker `host.docker.internal` nicht automatisch zur Host-Maschine auf.
+Du musst die XDebug-Konfiguration von:
+
+```
+xdebug.client_host=host.docker.internal
+```
+
+ändern zu:
+
+```
+xdebug.client_host=172.17.0.1
+```
+
+Der schnellste Weg, dies zu beheben, besteht darin, deine `Dockerfile` entsprechend zu aktualisieren und den Container neu zu bauen.
+Auf einigen Linux-Systemen musst du eventuell `ip addr show docker0` ausführen, um die tatsächliche Bridge-IP zu überprüfen (normalerweise `172.17.0.1`).
 
 ---
 
 ## **Lizenz**
 
-MIT-License
+MIT-Lizenz © 2025 Niccolò Vettorello
 
 ---

@@ -8,7 +8,7 @@ interface RenderableInterface
 {
     /**
      * Render the object.
-     * 
+     *
      * @return string
      */
     public function render(): string;

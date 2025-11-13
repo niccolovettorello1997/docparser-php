@@ -12,7 +12,7 @@ class HeadParser implements ParserInterface
 {
     /**
      * Parse head content and attributes.
-     * 
+     *
      * @param string $content
      *
      * @return array<int,string|array<string,string>>

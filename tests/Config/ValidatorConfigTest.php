@@ -24,7 +24,7 @@ class ValidatorConfigTest extends TestCase
 
     public function test_validator_classes_exist_and_are_valid(): void
     {
-	/** @var array<string,array<int,string>> $config */
+        /** @var array<string,array<int,string>> $config */
         $config = Yaml::parseFile(filename: $this->configPath);
 
         foreach ($config['validators'] as $validatorClass) {
@@ -35,7 +35,7 @@ class ValidatorConfigTest extends TestCase
 
     public function test_validator_order_is_respected(): void
     {
-	/** @var array<string,array<int,string>> $config */
+        /** @var array<string,array<int,string>> $config */
         $config = Yaml::parseFile(filename: $this->configPath);
 
         $expected = [

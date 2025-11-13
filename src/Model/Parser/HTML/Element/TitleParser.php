@@ -12,7 +12,7 @@ class TitleParser implements ParserInterface
 {
     /**
      * Parse title content.
-     * 
+     *
      * @param string $content
      *
      * @return string

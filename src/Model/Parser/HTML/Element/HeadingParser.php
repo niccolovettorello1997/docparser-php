@@ -12,7 +12,7 @@ class HeadingParser implements ParserInterface
 {
     /**
      * Parse headings content and attributes.
-     * 
+     *
      * @param string $content
      *
      * @return array<Node>

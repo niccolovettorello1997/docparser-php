@@ -12,7 +12,7 @@ class BodyParser implements ParserInterface
 {
     /**
      * Parse body content and attributes.
-     * 
+     *
      * @param string $content
      *
      * @return array<int,string|array<string,string>>

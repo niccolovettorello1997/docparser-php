@@ -5,24 +5,32 @@ declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use Niccolo\DocparserPhp\Controller\ParserController;
+use Niccolo\DocparserPhp\Core\Container;
+use Niccolo\DocparserPhp\View\RenderableInterface;
 
-$controller = new ParserController();
-$views = [];
+/** @var Container $container */
+$container = require __DIR__ . '/../bootstrap/container.php';
+
+/** @var ParserController $controller */
+$controller = $container->get(ParserController::class);
+
+$view = null;
+$postData = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $views = $controller->handleRequest(data: $_POST);
+    /** @var array<string, string> $postData */
+    $postData = $_POST;
+
+    $view = $controller->handleRequest(data: $postData);
 
     if ($_POST['renderingType'] === 'json') {
-        $jsonResult = $controller->getJsonResult(views: $views);
+        header(header: 'Content-Type: application/json; charset=utf-8');
+        header(header: 'Content-Disposition: attachment; filename="parsed.json"');
 
-        header('Content-Type: application/json; charset=utf-8');
+        http_response_code(response_code: 200);
 
-        if ($jsonResult->getStatusCode() === 200) {
-            header('Content-Disposition: attachment; filename="parsed.json"');
-        }
+        echo $view->render();
 
-        http_response_code($jsonResult->getStatusCode());
-        echo $jsonResult->getContent();
         exit;
     }
 }
@@ -43,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <form method="post" action="" enctype="multipart/form-data" class="parser-form">
             <label for="context">Content</label>
-            <textarea name="context" id="context" placeholder="Paste here your code..."><?= htmlspecialchars(string: $_POST['context'] ?? '') ?></textarea>
+            <textarea name="context" id="context" placeholder="Paste here your code..."><?= htmlspecialchars(string: (is_array($postData)) ? $postData['context'] : $postData) ?></textarea>
 
             <label for="file">Upload a file</label>
             <input type="file" name="file" id="file" />
@@ -61,24 +69,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
 
         <div class="results">
-        <?php if (!empty($views)): ?>
-            <?php foreach ($views as $view): ?>
-                <?php
-                $rendered = $view->render();
-                $class = 'box-generic';
+        <?php if (null !== $view): ?>
+            <?php
+            /** @var RenderableInterface $view */
+            /** @var string $rendered */
+            $rendered = $view->render();
+            $class = 'box-generic';
 
-                if (stripos(haystack: $rendered, needle: 'error') !== false) {
-                    $class = 'box-error';
-                } elseif (stripos(haystack: $rendered, needle: 'warning') !== false) {
-                    $class = 'box-warning';
-                } elseif (stripos(haystack: $rendered, needle: 'valid') !== false) {
-                    $class = 'box-success';
-                }
-                ?>
-                <div class="box <?= $class ?>">
-                    <?= $rendered ?>
-                </div>
-            <?php endforeach; ?>
+            if (stripos(haystack: $rendered, needle: '<li>Errors: <ul><li>') !== false) {
+                $class = 'box-error';
+            } elseif (stripos(haystack: $rendered, needle: '<li>Warnings: <ul><li>') !== false) {
+                $class = 'box-warning';
+            } elseif (stripos(haystack: $rendered, needle: 'Valid: yes') !== false) {
+                $class = 'box-success';
+            }
+?>
+            <div class="box <?= $class ?>">
+                <?= $rendered ?>
+            </div>
         <?php endif; ?>
     </div>
     </div>

@@ -12,7 +12,7 @@ class ParagraphParser implements ParserInterface
 {
     /**
      * Parse paragraphs content and attributes.
-     * 
+     *
      * @param string $content
      *
      * @return array<Node>
