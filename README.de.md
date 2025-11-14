@@ -66,6 +66,7 @@ Die API-Dokumentation ist [hier](https://niccolovettorello1997.github.io/docpars
 - [CI/CD mit GitHub Actions](#cicd-mit-github-actions)
 - [Mitwirken](#mitwirken)
 - [F.A.Q.](#faq)
+- [Referenz](#referenz)
 - [Lizenz](#lizenz)
 
 ---
@@ -485,6 +486,12 @@ xdebug.client_host=172.17.0.1
 
 Der schnellste Weg, dies zu beheben, besteht darin, deine `Dockerfile` entsprechend zu aktualisieren und den Container neu zu bauen.
 Auf einigen Linux-Systemen musst du eventuell `ip addr show docker0` ausführen, um die tatsächliche Bridge-IP zu überprüfen (normalerweise `172.17.0.1`).
+
+---
+
+## **Referenz**
+
+- "PHP 8 und MySQL: Das umfassende Handbuch“ von Wenz und Hauser
 
 ---
 
