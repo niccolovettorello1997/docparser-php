@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\Model\Utils\Parser\Enum;
+namespace DocparserPhp\Tests\Unit\Model\Utils\Parser\Enum;
 
-use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\RenderingType;
+use DocparserPhp\Model\Utils\Parser\Enum\RenderingType;
 use PHPUnit\Framework\TestCase;
 
 class RenderingTypeEnumTest extends TestCase

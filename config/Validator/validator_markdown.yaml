@@ -1,2 +1,2 @@
 validators:
-  - Niccolo\DocparserPhp\Model\Parser\Markdown\Validator\MarkdownValidator
+  - DocparserPhp\Model\Parser\Markdown\Validator\MarkdownValidator

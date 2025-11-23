@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Service\Utils;
+namespace DocparserPhp\Service\Utils;
 
-use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponent;
-use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
+use DocparserPhp\Model\Core\Validator\ValidatorComponent;
+use DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
 use Symfony\Component\Yaml\Exception\ParseException;
 
 class ValidatorComponentFactoryWrapper

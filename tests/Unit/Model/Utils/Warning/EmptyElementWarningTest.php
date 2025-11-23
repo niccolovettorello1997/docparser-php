@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\Model\Utils\Warning;
+namespace DocparserPhp\Tests\Unit\Model\Utils\Warning;
 
-use Niccolo\DocparserPhp\Model\Utils\Warning\AbstractWarning;
-use Niccolo\DocparserPhp\Model\Utils\Warning\EmptyElementWarning;
+use DocparserPhp\Model\Utils\Warning\AbstractWarning;
+use DocparserPhp\Model\Utils\Warning\EmptyElementWarning;
 use PHPUnit\Framework\TestCase;
 
 class EmptyElementWarningTest extends TestCase

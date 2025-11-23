@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Performance;
+namespace DocparserPhp\Tests\Performance;
 
-use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponentFactory;
-use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
+use DocparserPhp\Model\Core\Parser\ParserComponentFactory;
+use DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
 use PHPUnit\Framework\TestCase;
 
 class PerformanceTest extends TestCase

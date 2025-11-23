@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Integration;
+namespace DocparserPhp\Tests\Integration;
 
-use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\InputType;
-use Niccolo\DocparserPhp\Service\ParserService;
-use Niccolo\DocparserPhp\Service\Utils\Query;
-use Niccolo\DocparserPhp\Service\ValidatorService;
-use Niccolo\DocparserPhp\View\HtmlParserView;
+use DocparserPhp\Model\Utils\Parser\Enum\InputType;
+use DocparserPhp\Service\ParserService;
+use DocparserPhp\Service\Utils\Query;
+use DocparserPhp\Service\ValidatorService;
+use DocparserPhp\View\HtmlParserView;
 use PHPUnit\Framework\TestCase;
 
 class UIIntegrationTest extends TestCase

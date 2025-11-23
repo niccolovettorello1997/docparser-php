@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Model\Parser\HTML\Validator;
+namespace DocparserPhp\Model\Parser\HTML\Validator;
 
-use Niccolo\DocparserPhp\Model\Core\Validator\AbstractValidator;
-use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
-use Niccolo\DocparserPhp\Model\Utils\Error\MissingElementError;
-use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
+use DocparserPhp\Model\Core\Validator\AbstractValidator;
+use DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use DocparserPhp\Model\Utils\Error\MissingElementError;
+use DocparserPhp\Model\Utils\Error\StructuralError;
 
 class DoctypeValidator extends AbstractValidator
 {

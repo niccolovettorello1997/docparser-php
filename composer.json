@@ -1,6 +1,6 @@
 {
     "name": "niccolo/docparser-php",
-    "description": "Parser for HTML and PDF documents written in PHP",
+    "description": "Example parser, written in PHP",
     "type": "project",
     "require-dev": {
         "phpunit/phpunit": "^12.3",
@@ -10,12 +10,12 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Niccolo\\DocparserPhp\\": "src/"
+            "DocparserPhp\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Niccolo\\DocparserPhp\\Tests\\": "tests/"
+            "DocparserPhp\\Tests\\": "tests/"
         }
     },
     "authors": [

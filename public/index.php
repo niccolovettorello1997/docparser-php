@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Niccolo\DocparserPhp\Controller\ParserController;
-use Niccolo\DocparserPhp\Core\Container;
-use Niccolo\DocparserPhp\View\RenderableInterface;
+use DocparserPhp\Controller\ParserController;
+use DocparserPhp\Core\Container;
+use DocparserPhp\View\RenderableInterface;
 
 /** @var Container $container */
 $container = require __DIR__ . '/../bootstrap/container.php';

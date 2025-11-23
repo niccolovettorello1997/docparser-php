@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Model\Core\Parser;
+namespace DocparserPhp\Model\Core\Parser;
 
-use Niccolo\DocparserPhp\Model\Core\Parser\ParserAdapter;
-use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
+use DocparserPhp\Model\Core\Parser\ParserAdapter;
+use DocparserPhp\Model\Utils\Parser\SharedContext;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 

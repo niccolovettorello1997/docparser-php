@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\Core;
+namespace DocparserPhp\Tests\Unit\Core;
 
-use Niccolo\DocparserPhp\Config\Config;
-use Niccolo\DocparserPhp\Controller\ApiController;
-use Niccolo\DocparserPhp\Core\Container;
-use Niccolo\DocparserPhp\Model\Utils\Error\AbstractError;
+use DocparserPhp\Config\Config;
+use DocparserPhp\Controller\ApiController;
+use DocparserPhp\Core\Container;
+use DocparserPhp\Model\Utils\Error\AbstractError;
 use PHPUnit\Framework\TestCase;
 
 class ContainerTest extends TestCase
@@ -30,7 +30,7 @@ class ContainerTest extends TestCase
         $container = new Container();
 
         /** @var class-string<object> $id */
-        $id = "Niccolo\DocparserPhp\Core\InexistentClass";
+        $id = "DocparserPhp\Core\InexistentClass";
 
         $container->get(id: $id);
     }
@@ -38,7 +38,7 @@ class ContainerTest extends TestCase
     public function test_container_not_instantiable_class(): void
     {
         $this->expectException(\Exception::class);
-        $this->expectExceptionMessage("Class Niccolo\\DocparserPhp\\Model\\Utils\\Error\\AbstractError is not instantiable");
+        $this->expectExceptionMessage("Class DocparserPhp\\Model\\Utils\\Error\\AbstractError is not instantiable");
 
         $container = new Container();
 

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\Model\Parser\HTML\Parser;
+namespace DocparserPhp\Tests\Unit\Model\Parser\HTML\Parser;
 
-use Niccolo\DocparserPhp\Model\Parser\HTML\Element\DoctypeParser;
-use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\HtmlElementType;
+use DocparserPhp\Model\Parser\HTML\Element\DoctypeParser;
+use DocparserPhp\Model\Utils\Parser\Enum\HtmlElementType;
 use PHPUnit\Framework\TestCase;
 
 class DoctypeParserTest extends TestCase

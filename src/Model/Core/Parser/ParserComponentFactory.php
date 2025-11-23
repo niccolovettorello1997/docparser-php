@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Model\Core\Parser;
+namespace DocparserPhp\Model\Core\Parser;
 
 use Symfony\Component\Yaml\Exception\ParseException;
 

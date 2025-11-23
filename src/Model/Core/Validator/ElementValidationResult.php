@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Model\Core\Validator;
+namespace DocparserPhp\Model\Core\Validator;
 
-use Niccolo\DocparserPhp\Model\Utils\Error\AbstractError;
-use Niccolo\DocparserPhp\Model\Utils\Warning\AbstractWarning;
+use DocparserPhp\Model\Utils\Error\AbstractError;
+use DocparserPhp\Model\Utils\Warning\AbstractWarning;
 
 class ElementValidationResult
 {

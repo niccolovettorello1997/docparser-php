@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Config;
+namespace DocparserPhp\Tests\Config;
 
-use Niccolo\DocparserPhp\Config\Config;
+use DocparserPhp\Config\Config;
 use PHPUnit\Framework\TestCase;
 
 class ConfigTest extends TestCase

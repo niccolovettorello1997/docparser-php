@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\View;
+namespace DocparserPhp\Tests\Unit\View;
 
-use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponent;
-use Niccolo\DocparserPhp\View\HtmlParserView;
+use DocparserPhp\Model\Core\Parser\ParserComponent;
+use DocparserPhp\View\HtmlParserView;
 use PHPUnit\Framework\TestCase;
 
 class HtmlParserViewTest extends TestCase

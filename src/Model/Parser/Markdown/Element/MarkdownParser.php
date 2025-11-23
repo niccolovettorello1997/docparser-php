@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Model\Parser\Markdown\Element;
+namespace DocparserPhp\Model\Parser\Markdown\Element;
 
-use Niccolo\DocparserPhp\Model\Core\Parser\Node;
-use Niccolo\DocparserPhp\Model\Core\Parser\ParserInterface;
+use DocparserPhp\Model\Core\Parser\Node;
+use DocparserPhp\Model\Core\Parser\ParserInterface;
 
 class MarkdownParser implements ParserInterface
 {

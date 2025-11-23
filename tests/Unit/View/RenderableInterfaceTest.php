@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\View;
+namespace DocparserPhp\Tests\Unit\View;
 
-use Niccolo\DocparserPhp\View\JsonParserView;
-use Niccolo\DocparserPhp\View\RenderableInterface;
+use DocparserPhp\View\JsonParserView;
+use DocparserPhp\View\RenderableInterface;
 use PHPUnit\Framework\TestCase;
 
 class RenderableInterfaceTest extends TestCase

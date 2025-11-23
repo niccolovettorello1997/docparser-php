@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Config;
+namespace DocparserPhp\Config;
 
 class Config
 {

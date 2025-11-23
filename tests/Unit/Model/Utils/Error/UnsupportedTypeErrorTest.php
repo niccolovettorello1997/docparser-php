@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\Model\Utils\Error;
+namespace DocparserPhp\Tests\Unit\Model\Utils\Error;
 
-use Niccolo\DocparserPhp\Model\Utils\Error\AbstractError;
-use Niccolo\DocparserPhp\Model\Utils\Error\UnsupportedTypeError;
+use DocparserPhp\Model\Utils\Error\AbstractError;
+use DocparserPhp\Model\Utils\Error\UnsupportedTypeError;
 use PHPUnit\Framework\TestCase;
 
 class UnsupportedTypeErrorTest extends TestCase

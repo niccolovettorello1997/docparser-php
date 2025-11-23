@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Model\Parser\HTML\Validator;
+namespace DocparserPhp\Model\Parser\HTML\Validator;
 
-use Niccolo\DocparserPhp\Model\Core\Validator\AbstractValidator;
-use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
-use Niccolo\DocparserPhp\Model\Utils\Error\InternalError;
-use Niccolo\DocparserPhp\Model\Utils\Error\MalformedElementError;
-use Niccolo\DocparserPhp\Model\Utils\Error\MissingElementError;
-use Niccolo\DocparserPhp\Model\Utils\Error\NotUniqueElementError;
-use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
-use Niccolo\DocparserPhp\Model\Utils\Warning\RecommendedAttributeWarning;
+use DocparserPhp\Model\Core\Validator\AbstractValidator;
+use DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use DocparserPhp\Model\Utils\Error\InternalError;
+use DocparserPhp\Model\Utils\Error\MalformedElementError;
+use DocparserPhp\Model\Utils\Error\MissingElementError;
+use DocparserPhp\Model\Utils\Error\NotUniqueElementError;
+use DocparserPhp\Model\Utils\Error\StructuralError;
+use DocparserPhp\Model\Utils\Warning\RecommendedAttributeWarning;
 
 class HtmlValidator extends AbstractValidator
 {

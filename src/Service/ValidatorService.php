@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Service;
+namespace DocparserPhp\Service;
 
-use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
-use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponent;
-use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
-use Niccolo\DocparserPhp\Service\Utils\Query;
-use Niccolo\DocparserPhp\Service\Utils\ValidatorComponentFactoryWrapper;
+use DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use DocparserPhp\Model\Core\Validator\ValidatorComponent;
+use DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
+use DocparserPhp\Service\Utils\Query;
+use DocparserPhp\Service\Utils\ValidatorComponentFactoryWrapper;
 use Symfony\Component\Yaml\Exception\ParseException;
 
 class ValidatorService

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-use Niccolo\DocparserPhp\Config\Config;
-use Niccolo\DocparserPhp\Controller\ApiController;
-use Niccolo\DocparserPhp\Controller\Responses\BaseResponse;
-use Niccolo\DocparserPhp\Controller\Responses\ErrorResponse;
-use Niccolo\DocparserPhp\Core\Container;
-use Niccolo\DocparserPhp\Middleware\AuthMiddleware;
-use Niccolo\DocparserPhp\Model\Utils\Error\Enum\ErrorCode;
+use DocparserPhp\Config\Config;
+use DocparserPhp\Controller\ApiController;
+use DocparserPhp\Controller\Responses\BaseResponse;
+use DocparserPhp\Controller\Responses\ErrorResponse;
+use DocparserPhp\Core\Container;
+use DocparserPhp\Middleware\AuthMiddleware;
+use DocparserPhp\Model\Utils\Error\Enum\ErrorCode;
 
 /** @var array<string, string> $serverVar */
 $serverVar = $_SERVER;

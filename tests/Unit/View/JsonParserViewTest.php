@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\View;
+namespace DocparserPhp\Tests\Unit\View;
 
-use Niccolo\DocparserPhp\Model\Core\Parser\Node;
-use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
-use Niccolo\DocparserPhp\View\JsonParserView;
+use DocparserPhp\Model\Core\Parser\Node;
+use DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use DocparserPhp\View\JsonParserView;
 use PHPUnit\Framework\TestCase;
 
 class JsonParserViewTest extends TestCase

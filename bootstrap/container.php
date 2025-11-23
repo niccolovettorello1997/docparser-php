@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-use Niccolo\DocparserPhp\Core\Container;
-use Niccolo\DocparserPhp\Service\ParserService;
-use Niccolo\DocparserPhp\Middleware\AuthMiddleware;
-use Niccolo\DocparserPhp\Config\Config;
+use DocparserPhp\Core\Container;
+use DocparserPhp\Service\ParserService;
+use DocparserPhp\Middleware\AuthMiddleware;
+use DocparserPhp\Config\Config;
 use Dotenv\Dotenv;
 
 require_once __DIR__ . '/../vendor/autoload.php';

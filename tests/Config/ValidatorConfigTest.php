@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Config;
+namespace DocparserPhp\Tests\Config;
 
-use Niccolo\DocparserPhp\Model\Core\Validator\AbstractValidator;
-use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponent;
-use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\BodyValidator;
-use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\DoctypeValidator;
-use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\HeadingValidator;
-use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\HeadValidator;
-use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\HtmlValidator;
-use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\ParagraphValidator;
-use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\TitleValidator;
+use DocparserPhp\Model\Core\Validator\AbstractValidator;
+use DocparserPhp\Model\Core\Validator\ValidatorComponent;
+use DocparserPhp\Model\Parser\HTML\Validator\BodyValidator;
+use DocparserPhp\Model\Parser\HTML\Validator\DoctypeValidator;
+use DocparserPhp\Model\Parser\HTML\Validator\HeadingValidator;
+use DocparserPhp\Model\Parser\HTML\Validator\HeadValidator;
+use DocparserPhp\Model\Parser\HTML\Validator\HtmlValidator;
+use DocparserPhp\Model\Parser\HTML\Validator\ParagraphValidator;
+use DocparserPhp\Model\Parser\HTML\Validator\TitleValidator;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Yaml\Exception\ParseException;
@@ -82,7 +82,7 @@ class ValidatorConfigTest extends TestCase
     public function test_invalid_validator_config(): void
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage("Class not found: Niccolo\DocparserPhp\Model\Parser\HTML\Validator\InexistentValidator");
+        $this->expectExceptionMessage("Class not found: DocparserPhp\Model\Parser\HTML\Validator\InexistentValidator");
 
         $configPath = __DIR__ . '/../../fixtures/tests/invalid_validator_configuration.yaml';
 

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Service\Utils;
+namespace DocparserPhp\Service\Utils;
 
-use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponent;
-use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponentFactory;
+use DocparserPhp\Model\Core\Parser\ParserComponent;
+use DocparserPhp\Model\Core\Parser\ParserComponentFactory;
 use Symfony\Component\Yaml\Exception\ParseException;
 
 class ParserComponentFactoryWrapper

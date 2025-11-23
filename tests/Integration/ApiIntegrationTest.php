@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Integration;
+namespace DocparserPhp\Tests\Integration;
 
 use GuzzleHttp\Client;
-use Niccolo\DocparserPhp\Model\Utils\Error\Enum\ErrorCode;
+use DocparserPhp\Model\Utils\Error\Enum\ErrorCode;
 use PHPUnit\Framework\TestCase;
 
 class ApiIntegrationTest extends TestCase
@@ -25,7 +25,7 @@ class ApiIntegrationTest extends TestCase
         );
 
         $output = [];
-        exec($command, $output);
+        exec(command: $command, output: $output);
 
         if (isset($output[0])) {
             self::$serverPid = (int) $output[0];

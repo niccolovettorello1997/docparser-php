@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Model\Core\Validator;
+namespace DocparserPhp\Model\Core\Validator;
 
-use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
-use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
+use DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use DocparserPhp\Model\Utils\Parser\SharedContext;
 
 abstract class AbstractValidator
 {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\Model\Utils\Parser\Enum;
+namespace DocparserPhp\Tests\Unit\Model\Utils\Parser\Enum;
 
-use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\InputType;
+use DocparserPhp\Model\Utils\Parser\Enum\InputType;
 use PHPUnit\Framework\TestCase;
 
 class InputTypeEnumTest extends TestCase

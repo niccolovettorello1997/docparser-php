@@ -1,8 +1,8 @@
 validators:
-  - Niccolo\DocparserPhp\Model\Parser\HTML\Validator\DoctypeValidator
-  - Niccolo\DocparserPhp\Model\Parser\HTML\Validator\HtmlValidator
-  - Niccolo\DocparserPhp\Model\Parser\HTML\Validator\HeadValidator
-  - Niccolo\DocparserPhp\Model\Parser\HTML\Validator\BodyValidator
-  - Niccolo\DocparserPhp\Model\Parser\HTML\Validator\TitleValidator
-  - Niccolo\DocparserPhp\Model\Parser\HTML\Validator\HeadingValidator
-  - Niccolo\DocparserPhp\Model\Parser\HTML\Validator\ParagraphValidator
+  - DocparserPhp\Model\Parser\HTML\Validator\DoctypeValidator
+  - DocparserPhp\Model\Parser\HTML\Validator\HtmlValidator
+  - DocparserPhp\Model\Parser\HTML\Validator\HeadValidator
+  - DocparserPhp\Model\Parser\HTML\Validator\BodyValidator
+  - DocparserPhp\Model\Parser\HTML\Validator\TitleValidator
+  - DocparserPhp\Model\Parser\HTML\Validator\HeadingValidator
+  - DocparserPhp\Model\Parser\HTML\Validator\ParagraphValidator

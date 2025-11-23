@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\Controller;
+namespace DocparserPhp\Tests\Unit\Controller;
 
-use Niccolo\DocparserPhp\Controller\ApiController;
-use Niccolo\DocparserPhp\Controller\Responses\ErrorResponse;
-use Niccolo\DocparserPhp\Controller\Responses\ParseResponse;
-use Niccolo\DocparserPhp\Model\Utils\Error\Enum\ErrorCode;
-use Niccolo\DocparserPhp\Service\ParserService;
-use Niccolo\DocparserPhp\Service\ValidatorService;
+use DocparserPhp\Controller\ApiController;
+use DocparserPhp\Controller\Responses\ErrorResponse;
+use DocparserPhp\Controller\Responses\ParseResponse;
+use DocparserPhp\Model\Utils\Error\Enum\ErrorCode;
+use DocparserPhp\Service\ParserService;
+use DocparserPhp\Service\ValidatorService;
 use PHPUnit\Framework\TestCase;
 
 class TestInputStreamWrapper

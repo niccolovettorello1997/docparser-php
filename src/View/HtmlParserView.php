@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\View;
+namespace DocparserPhp\View;
 
-use Niccolo\DocparserPhp\Model\Core\Parser\Node;
-use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
-use Niccolo\DocparserPhp\Model\Utils\Error\InternalError;
-use Niccolo\DocparserPhp\View\RenderableInterface;
+use DocparserPhp\Model\Core\Parser\Node;
+use DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use DocparserPhp\Model\Utils\Error\InternalError;
+use DocparserPhp\View\RenderableInterface;
 
 class HtmlParserView implements RenderableInterface
 {

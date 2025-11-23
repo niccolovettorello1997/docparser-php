@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\Controller\Responses;
+namespace DocparserPhp\Tests\Unit\Controller\Responses;
 
-use Niccolo\DocparserPhp\Controller\Responses\BaseResponse;
+use DocparserPhp\Controller\Responses\BaseResponse;
 use PHPUnit\Framework\TestCase;
 
 class BaseResponseTest extends TestCase

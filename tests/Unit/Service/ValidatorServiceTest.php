@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\Service;
+namespace DocparserPhp\Tests\Unit\Service;
 
-use Niccolo\DocparserPhp\Service\Utils\Query;
-use Niccolo\DocparserPhp\Service\Utils\ValidatorComponentFactoryWrapper;
-use Niccolo\DocparserPhp\Service\ValidatorService;
+use DocparserPhp\Service\Utils\Query;
+use DocparserPhp\Service\Utils\ValidatorComponentFactoryWrapper;
+use DocparserPhp\Service\ValidatorService;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Exception\ParseException;
 

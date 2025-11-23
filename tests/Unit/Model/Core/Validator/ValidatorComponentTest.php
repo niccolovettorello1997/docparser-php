@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\Model\Core\Validator;
+namespace DocparserPhp\Tests\Unit\Model\Core\Validator;
 
-use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponent;
-use Niccolo\DocparserPhp\Model\Utils\Error\AbstractError;
-use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
-use Niccolo\DocparserPhp\Model\Utils\Error\MissingElementError;
-use Niccolo\DocparserPhp\Model\Utils\Error\NotUniqueElementError;
-use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
-use Niccolo\DocparserPhp\Model\Utils\Warning\AbstractWarning;
-use Niccolo\DocparserPhp\Model\Utils\Warning\EmptyElementWarning;
-use Niccolo\DocparserPhp\Model\Utils\Warning\RecommendedAttributeWarning;
+use DocparserPhp\Model\Core\Validator\ValidatorComponent;
+use DocparserPhp\Model\Utils\Error\AbstractError;
+use DocparserPhp\Model\Utils\Error\InvalidContentError;
+use DocparserPhp\Model\Utils\Error\MissingElementError;
+use DocparserPhp\Model\Utils\Error\NotUniqueElementError;
+use DocparserPhp\Model\Utils\Error\StructuralError;
+use DocparserPhp\Model\Utils\Warning\AbstractWarning;
+use DocparserPhp\Model\Utils\Warning\EmptyElementWarning;
+use DocparserPhp\Model\Utils\Warning\RecommendedAttributeWarning;
 use PHPUnit\Framework\TestCase;
 
 class ValidatorComponentTest extends TestCase

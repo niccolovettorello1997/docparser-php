@@ -2,21 +2,21 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Controller;
+namespace DocparserPhp\Controller;
 
-use Niccolo\DocparserPhp\Controller\Responses\Response;
-use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponentFactory;
-use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
-use Niccolo\DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
-use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
-use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\InputType;
-use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\RenderingType;
-use Niccolo\DocparserPhp\Service\ParserService;
-use Niccolo\DocparserPhp\Service\Utils\Query;
-use Niccolo\DocparserPhp\Service\ValidatorService;
-use Niccolo\DocparserPhp\View\HtmlParserView;
-use Niccolo\DocparserPhp\View\JsonParserView;
-use Niccolo\DocparserPhp\View\RenderableInterface;
+use DocparserPhp\Controller\Responses\Response;
+use DocparserPhp\Model\Core\Parser\ParserComponentFactory;
+use DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use DocparserPhp\Model\Core\Validator\ValidatorComponentFactory;
+use DocparserPhp\Model\Utils\Error\InvalidContentError;
+use DocparserPhp\Model\Utils\Parser\Enum\InputType;
+use DocparserPhp\Model\Utils\Parser\Enum\RenderingType;
+use DocparserPhp\Service\ParserService;
+use DocparserPhp\Service\Utils\Query;
+use DocparserPhp\Service\ValidatorService;
+use DocparserPhp\View\HtmlParserView;
+use DocparserPhp\View\JsonParserView;
+use DocparserPhp\View\RenderableInterface;
 
 class ParserController
 {

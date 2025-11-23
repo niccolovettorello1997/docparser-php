@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Config;
+namespace DocparserPhp\Tests\Config;
 
-use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponent;
-use Niccolo\DocparserPhp\Model\Core\Parser\ParserInterface;
+use DocparserPhp\Model\Core\Parser\ParserComponent;
+use DocparserPhp\Model\Core\Parser\ParserInterface;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use Symfony\Component\Yaml\Exception\ParseException;
@@ -54,7 +54,7 @@ class ParserConfigTest extends TestCase
     public function test_invalid_parser_config(): void
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage("Class not found: Niccolo\DocparserPhp\Model\Parser\HTML\Element\InexistentParser");
+        $this->expectExceptionMessage("Class not found: DocparserPhp\Model\Parser\HTML\Element\InexistentParser");
 
         $configPath = __DIR__ . '/../../fixtures/tests/invalid_parser_configuration.yaml';
 

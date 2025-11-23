@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\Model\Core\Parser;
+namespace DocparserPhp\Tests\Unit\Model\Core\Parser;
 
-use Niccolo\DocparserPhp\Model\Core\Parser\Node;
+use DocparserPhp\Model\Core\Parser\Node;
 use PHPUnit\Framework\TestCase;
 
 class NodeTest extends TestCase

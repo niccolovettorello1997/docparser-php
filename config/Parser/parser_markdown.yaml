@@ -1,2 +1,2 @@
 rootElements:
-  - Niccolo\DocparserPhp\Model\Parser\Markdown\Element\MarkdownParser
+  - DocparserPhp\Model\Parser\Markdown\Element\MarkdownParser

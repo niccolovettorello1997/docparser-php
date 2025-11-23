@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Service\Utils;
+namespace DocparserPhp\Service\Utils;
 
-use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\InputType;
-use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\RenderingType;
+use DocparserPhp\Model\Utils\Parser\Enum\InputType;
+use DocparserPhp\Model\Utils\Parser\Enum\RenderingType;
 
 class Query
 {

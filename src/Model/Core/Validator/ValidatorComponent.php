@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Model\Core\Validator;
+namespace DocparserPhp\Model\Core\Validator;
 
-use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
+use DocparserPhp\Model\Utils\Parser\SharedContext;
 use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 

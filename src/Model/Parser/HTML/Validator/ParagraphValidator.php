@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Model\Parser\HTML\Validator;
+namespace DocparserPhp\Model\Parser\HTML\Validator;
 
-use Niccolo\DocparserPhp\Model\Core\Validator\AbstractValidator;
-use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
-use Niccolo\DocparserPhp\Model\Utils\Error\InvalidContentError;
-use Niccolo\DocparserPhp\Model\Utils\Error\MalformedElementError;
-use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
-use Niccolo\DocparserPhp\Model\Utils\Warning\EmptyElementWarning;
+use DocparserPhp\Model\Core\Validator\AbstractValidator;
+use DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use DocparserPhp\Model\Utils\Error\InvalidContentError;
+use DocparserPhp\Model\Utils\Error\MalformedElementError;
+use DocparserPhp\Model\Utils\Error\StructuralError;
+use DocparserPhp\Model\Utils\Warning\EmptyElementWarning;
 
 class ParagraphValidator extends AbstractValidator
 {

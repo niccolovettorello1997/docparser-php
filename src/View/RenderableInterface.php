@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\View;
+namespace DocparserPhp\View;
 
 interface RenderableInterface
 {

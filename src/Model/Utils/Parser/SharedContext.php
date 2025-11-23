@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Model\Utils\Parser;
+namespace DocparserPhp\Model\Utils\Parser;
 
 class SharedContext
 {

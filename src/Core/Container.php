@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Core;
+namespace DocparserPhp\Core;
 
 use ReflectionClass;
 use ReflectionException;

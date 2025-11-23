@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\Middleware;
+namespace DocparserPhp\Tests\Unit\Middleware;
 
-use Niccolo\DocparserPhp\Config\Config;
-use Niccolo\DocparserPhp\Middleware\AuthMiddleware;
+use DocparserPhp\Config\Config;
+use DocparserPhp\Middleware\AuthMiddleware;
 use PHPUnit\Framework\TestCase;
 
 class AuthMiddlewareTest extends TestCase

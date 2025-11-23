@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Model\Utils\Warning;
+namespace DocparserPhp\Model\Utils\Warning;
 
 abstract class AbstractWarning
 {

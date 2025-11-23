@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\Controller;
+namespace DocparserPhp\Tests\Unit\Controller;
 
-use Niccolo\DocparserPhp\Controller\ParserController;
-use Niccolo\DocparserPhp\Model\Core\Parser\Node;
-use Niccolo\DocparserPhp\Service\ParserService;
-use Niccolo\DocparserPhp\Service\ValidatorService;
-use Niccolo\DocparserPhp\View\HtmlParserView;
-use Niccolo\DocparserPhp\View\JsonParserView;
+use DocparserPhp\Controller\ParserController;
+use DocparserPhp\Model\Core\Parser\Node;
+use DocparserPhp\Service\ParserService;
+use DocparserPhp\Service\ValidatorService;
+use DocparserPhp\View\HtmlParserView;
+use DocparserPhp\View\JsonParserView;
 use PHPUnit\Framework\TestCase;
 
 class ParserControllerTest extends TestCase

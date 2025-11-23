@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Model\Utils\Parser\Enum;
+namespace DocparserPhp\Model\Utils\Parser\Enum;
 
 /**
  * @codeCoverageIgnore

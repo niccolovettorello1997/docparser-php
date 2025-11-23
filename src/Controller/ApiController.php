@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Controller;
+namespace DocparserPhp\Controller;
 
-use Niccolo\DocparserPhp\Controller\Responses\BaseResponse;
-use Niccolo\DocparserPhp\Controller\Responses\ErrorResponse;
-use Niccolo\DocparserPhp\Controller\Responses\ParseResponse;
-use Niccolo\DocparserPhp\Model\Core\Validator\ElementValidationResult;
-use Niccolo\DocparserPhp\Model\Utils\Error\Enum\ErrorCode;
-use Niccolo\DocparserPhp\Model\Utils\Error\InternalError;
-use Niccolo\DocparserPhp\Model\Utils\Parser\Enum\InputType;
-use Niccolo\DocparserPhp\Service\ParserService;
-use Niccolo\DocparserPhp\Service\Utils\Query;
-use Niccolo\DocparserPhp\Service\ValidatorService;
+use DocparserPhp\Controller\Responses\BaseResponse;
+use DocparserPhp\Controller\Responses\ErrorResponse;
+use DocparserPhp\Controller\Responses\ParseResponse;
+use DocparserPhp\Model\Core\Validator\ElementValidationResult;
+use DocparserPhp\Model\Utils\Error\Enum\ErrorCode;
+use DocparserPhp\Model\Utils\Error\InternalError;
+use DocparserPhp\Model\Utils\Parser\Enum\InputType;
+use DocparserPhp\Service\ParserService;
+use DocparserPhp\Service\Utils\Query;
+use DocparserPhp\Service\ValidatorService;
 
 class ApiController
 {

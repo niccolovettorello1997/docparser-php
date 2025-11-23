@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Tests\Unit\Model\Parser\HTML\Validator;
+namespace DocparserPhp\Tests\Unit\Model\Parser\HTML\Validator;
 
-use Niccolo\DocparserPhp\Model\Parser\HTML\Validator\DoctypeValidator;
-use Niccolo\DocparserPhp\Model\Utils\Error\MissingElementError;
-use Niccolo\DocparserPhp\Model\Utils\Error\StructuralError;
-use Niccolo\DocparserPhp\Model\Utils\Parser\SharedContext;
+use DocparserPhp\Model\Parser\HTML\Validator\DoctypeValidator;
+use DocparserPhp\Model\Utils\Error\MissingElementError;
+use DocparserPhp\Model\Utils\Error\StructuralError;
+use DocparserPhp\Model\Utils\Parser\SharedContext;
 use PHPUnit\Framework\TestCase;
 
 class DoctypeValidatorTest extends TestCase

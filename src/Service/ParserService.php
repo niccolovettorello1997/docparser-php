@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Service;
+namespace DocparserPhp\Service;
 
-use Niccolo\DocparserPhp\Config\Config;
-use Niccolo\DocparserPhp\Model\Core\Parser\Node;
-use Niccolo\DocparserPhp\Model\Core\Parser\ParserComponentFactory;
-use Niccolo\DocparserPhp\Service\Utils\ParserComponentFactoryWrapper;
-use Niccolo\DocparserPhp\Service\Utils\Query;
+use DocparserPhp\Config\Config;
+use DocparserPhp\Model\Core\Parser\Node;
+use DocparserPhp\Model\Core\Parser\ParserComponentFactory;
+use DocparserPhp\Service\Utils\ParserComponentFactoryWrapper;
+use DocparserPhp\Service\Utils\Query;
 use Symfony\Component\Yaml\Exception\ParseException;
 
 class ParserService

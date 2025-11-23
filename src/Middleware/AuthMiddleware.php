@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Niccolo\DocparserPhp\Middleware;
+namespace DocparserPhp\Middleware;
 
-use Niccolo\DocparserPhp\Config\Config;
-use Niccolo\DocparserPhp\Controller\Responses\BaseResponse;
-use Niccolo\DocparserPhp\Controller\Responses\ErrorResponse;
-use Niccolo\DocparserPhp\Model\Utils\Error\Enum\ErrorCode;
+use DocparserPhp\Config\Config;
+use DocparserPhp\Controller\Responses\BaseResponse;
+use DocparserPhp\Controller\Responses\ErrorResponse;
+use DocparserPhp\Model\Utils\Error\Enum\ErrorCode;
 
 class AuthMiddleware
 {
