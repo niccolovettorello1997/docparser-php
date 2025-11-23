@@ -7,7 +7,9 @@
 **Base URL (production):** `https://docparser-php.onrender.com/api/v1`
 
 DocParser-PHP is a lightweight **document parsing and validation microservice** written in **PHP 8.3**.
-It provides a RESTful API for programmatic validation and parsing of HTML documents.
+It provides a RESTful API for programmatic validation and parsing of documents.
+
+At the moment, a partial validation and parsing logic is implemented for the *HTML language*, and there is a stub logic for *Markdown*.
 
 ---
 
@@ -15,10 +17,10 @@ It provides a RESTful API for programmatic validation and parsing of HTML docume
 
 ### Content Types
 
-| Type | Description |
-|------|--------------|
-| `application/json` | For JSON payloads (e.g. `/parse/json`) |
-| `multipart/form-data` | For file uploads (e.g. `/parse/file`) |
+| Type                  | Description                            |
+|-----------------------|----------------------------------------|
+| `application/json`    | For JSON payloads (e.g. `/parse/json`) |
+| `multipart/form-data` | For file uploads (e.g. `/parse/file`)  |
 
 ---
 
@@ -65,7 +67,7 @@ curl http://localhost:8080/api/v1/health
 Triggers the download of the raw YAML openapi file.
 
 | Property            | Description |
-|-----------          |-------------|
+|---------------------|-------------|
 | **Response Format** | YAML        |
 
 **Example Request**
@@ -81,6 +83,8 @@ curl http://localhost:8080/api/v1/openapi.yaml
 #### `POST /parse/file`
 
 Parses and validates the content of an uploaded file.
+
+*Authentication is only a stub for the moment.*
 
 | Property          | Description                                      |
 | ----------------- | ------------------------------------------------ |
@@ -168,8 +172,11 @@ curl -X POST http://localhost:8080/api/v1/parse/file \
 
 Parses and validates the content of a document sent as a JSON payload.
 
+*Authentication is only a stub for the moment.*
+
 | Property          | Description                                               |
 | ----------------- | --------------------------------------------------------- |
+| **Auth Required** | Optional                                                  |
 | **Content-Type**  | `application/json`                                        |
 | **Fields**        | `type` (`html` or `markdown`), `content` (encoded string) |
 
@@ -215,6 +222,8 @@ curl -X POST http://localhost:8080/api/v1/parse/json \
 
 All non-2xx responses follow this structure:
 
+*Example:*
+
 ```json
 {
   "status": "error",
@@ -236,8 +245,8 @@ All non-2xx responses follow this structure:
 *Error codes* include:
 
 - `ERR_NOT_FOUND`: the requested resource was not found
-- `ERR_NO_AUTH_HEADER`: authentication header not present (for the moment the authentication process is just a stub)
-- `ERR_INVALID_TOKEN`: authentication token is invalid
+- `ERR_NO_AUTH_HEADER`: authentication header not present (unused for the moment)
+- `ERR_INVALID_TOKEN`: authentication token is invalid (unused for the moment)
 - `ERR_MISSING_REQUIRED_FIELD`: required field is missing
 - `ERR_UNSUPPORTED_TYPE`: requested to parse an unsupported type of language
 - `ERR_NO_FILE_UPLOADED`: no file was uploaded
@@ -255,9 +264,9 @@ Future versions will follow [semantic versioning](https://semver.org/) and may i
 
 ## **5. Changelog**
 
-| Version   | Changes                                                                              |
-| --------- | ------------------------------------------------------------------------------------ |
-| **0.0.1** | Initial public release. Added `/health`, `/parse/file`, and `/parse/json` endpoints. |
+| Version   | Changes                                                                                       |
+| --------- | --------------------------------------------------------------------------------------------- |
+| **0.0.1** | Initial public release. Added `/health`, `/docs`, `/parse/file`, and `/parse/json` endpoints. |
 
 ---
 
@@ -266,7 +275,6 @@ Future versions will follow [semantic versioning](https://semver.org/) and may i
 | Endpoint       | Description                                              | Status    |
 | -------------- | -------------------------------------------------------- | --------- |
 | `GET /metrics` | Prometheus-style metrics for uptime and request counters | Planned   |
-| `GET /docs`    | Auto-generated API documentation page (OpenAPI spec)     | Planned   |
 
 ---
 
