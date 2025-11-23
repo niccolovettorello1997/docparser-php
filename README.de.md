@@ -26,6 +26,8 @@ Ursprünglich als einfacher webbasierter HTML-Validator entwickelt, bietet **Doc
 * eine benutzerfreundliche **Weboberfläche (Web UI)** als auch
 * eine **REST-API** (`/api/v1/*`) für automatisierten oder programmatischen Zugriff.
 
+Diese Software ist als begleitendes Praxisprojekt gedacht, das während des Studiums des Buches *„PHP 8 und MySQL: das umfassende Handbuch“* von Wenz und Hauser erstellt wurde. Daher ist die Validierungs- und Parsing-Logik für die *HTML*-Sprache nur teilweise implementiert. *Markdown*-Unterstützung wurde lediglich als Platzhalter hinzugefügt, um die Erweiterbarkeit der Software zu demonstrieren.
+
 ---
 
 ## **Visuelle Demo (Web UI)**
@@ -65,6 +67,7 @@ Die API-Dokumentation ist [hier](https://niccolovettorello1997.github.io/docpars
 - [CI/CD mit GitHub Actions](#cicd-mit-github-actions)
 - [Mitwirken](#mitwirken)
 - [F.A.Q.](#faq)
+- [Risiken & Einschränkungen](#risiken--einschränkungen)
 - [Referenz](#referenz)
 - [Lizenz](#lizenz)
 
@@ -73,7 +76,7 @@ Die API-Dokumentation ist [hier](https://niccolovettorello1997.github.io/docpars
 ## **Funktionen**
 
 * Saubere Microservice-Architektur (Web UI + REST API)
-* HTML-Validierung mit strengen und erweiterbaren Regeln:
+* Grundlegende HTML-Validierung mit strengen und erweiterbaren Regeln:
 
   * Korrekte Verschachtelung und Einzigartigkeit von `<html>`, `<head>`, `<body>`, `<title>`, etc.
   * Prüfung auf ungültige oder leere Tags
@@ -95,50 +98,61 @@ Die API-Dokumentation ist [hier](https://niccolovettorello1997.github.io/docpars
 ## **Architekturübersicht**
 
 ```mermaid
-flowchart TD
-    %% Einstiegspunkt UI
-    A["index.php UI"] --> E["bootstrap.php"]
-    E --> O["Container"]
-    O --> B["ParserController"]
+graph TD
 
-    %% Einstiegspunkt API
-    C["api.php API"] --> E
-    O --> N["AuthMiddleware"]
-    O --> D["ApiController"]
+    %% Input
+    subgraph Input
+        FormUI[Form HTML]
+        APIJson[API JSON <br> /api/v1/parse/json]
+        APIFile[API Upload File <br> /api/v1/parse/file]
+    end
 
-    %% Services
-    B --> F["ValidatorService"]
-    B --> G["ParserService"]
-    D --> F
-    D --> G
+    %% Controller
+    subgraph Controller Layer
+        Controller[Controller]
+    end
+
+    %% Core services
+    subgraph Core
+        ValidationService[Validation Service]
+        ValidationResult[Validation Result]
+        ParsingService[Parsing Service]
+        ParseTree[Parse Tree]
+    end
 
     %% View
-    F --> H["HtmlParserView"]
-    F --> I["JsonParserView"]
-    G --> H
-    G --> I
+    subgraph View
+        OutputRenderer[Output Renderer <br> JSON/HTML]
+    end
 
-    %% Ergebnisse
-    H --> L["Ergebnis als HTML"]
-    I --> M["Ergebnis als JSON"]
+    %% Main flow
+    FormUI -->|content + language type| Controller
+    APIJson -->|content + language type| Controller
+    APIFile -->|content + language type| Controller
 
-    classDef entrypoint fill:#ffe599,stroke:#333,stroke-width:2px
-    classDef controller fill:#a2c4c9,stroke:#333,stroke-width:2px
-    classDef container fill:#a2c479,stroke:#333,stroke-width:2px
-    classDef bootstrap fill:#c27ba0,stroke:#333,stroke-width:2px
-    classDef auth fill:#c27b90,stroke:#333,stroke-width:2px
-    classDef service fill:#b6d7a8,stroke:#333,stroke-width:2px
-    classDef view fill:#d9d2e9,stroke:#333,stroke-width:2px
-    classDef result fill:#ead1dc,stroke:#333,stroke-width:2px
+    Controller --> ValidationService
 
-    class A,C entrypoint
-    class B,D controller
-    class O container
-    class E bootstrap
-    class N auth
-    class F,G service
-    class H,I view
-    class L,M result
+    ValidationService -->|validate| ValidationResult
+    ValidationResult -->|is valid| ParsingService
+    ParsingService -->|parse| ParseTree
+
+    %% Conditional output
+    ValidationResult -->|is invalid|OutputRenderer
+    ParseTree --> OutputRenderer
+
+    %% Final output
+    OutputRenderer --> Output[Http response / HTML page]
+
+    %% Styles
+    classDef input fill:#f9f,stroke:#333,stroke-width:1px;
+    classDef controller fill:#acb,stroke:#333,stroke-width:1px;
+    classDef core fill:#9cf,stroke:#333,stroke-width:1px;
+    classDef view fill:#fc9,stroke:#333,stroke-width:1px;
+
+    class FormUI,APIJson,APIFile input;
+    class Controller controller;
+    class ValidationService,ValidationResult,ParsingService,ParseTree core;
+    class OutputRenderer view;
 ```
 
 ---
@@ -273,72 +287,7 @@ curl -X POST http://localhost:8080/api/v1/parse/file -F "document=@/path/to/your
     "Errors": [],
     "Warnings": []
   },
-  "parsed": {
-    "Name": "root",
-    "Children": [
-      {
-        "Name": "doctype",
-        "Children": [
-          {
-            "Name": "html",
-            "Attributes": {
-              "lang": "en"
-            },
-            "Children": [
-              {
-                "Name": "head",
-                "Children": [
-                  {
-                    "Name": "title",
-                    "Content": "Example Document"
-                  }
-                ]
-              },
-              {
-                "Name": "body",
-                "Children": [
-                  {
-                    "Name": "paragraphs",
-                    "Children": [
-                      {
-                        "Name": "p",
-                        "Content": "This is the first section of the page."
-                      },
-                      {
-                        "Name": "p",
-                        "Content": "This is the second section. Notice that headings, paragraphs, and links are all valid here."
-                      },
-                      {
-                        "Name": "p",
-                        "Content": "&amp;copy; 2025 Example Company"
-                      }
-                    ]
-                  },
-                  {
-                    "Name": "headings",
-                    "Children": [
-                      {
-                        "Name": "h1",
-                        "Content": "Welcome to My Page"
-                      },
-                      {
-                        "Name": "h2",
-                        "Content": "Section 1"
-                      },
-                      {
-                        "Name": "h2",
-                        "Content": "Section 2"
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          }
-        ]
-      }
-    ]
-  },
+  "parsed": "...",
   "meta": {
     "durationMs": 18,
     "sizeBytes": 901,
@@ -360,7 +309,7 @@ curl -d '{"type":"html", "content":"%3C%21DOCTYPE%20html%3E%0A%3Chtml%20lang%3D%
 
 **Beispielantwort:**
 
-*(identisch zum Originalbeispiel)*
+*Siehe die API-Dokumentation für ein ausführliches Antwortbeispiel.*
 
 ---
 
@@ -397,7 +346,7 @@ Validierung und Parsing werden zwischen der UI- und der API-Schicht gemeinsam ge
 2. **Parsing**
 
    * Erstellt einen rekursiven, DOM-ähnlichen Knotenbaum
-   * Unterstützt mehrere Dokumenttypen (`HTML`, `Markdown`)
+   * Kann mehrere Dokumenttypen unterstützten
    * Ausgabe als HTML oder JSON möglich
 
 ---
@@ -458,6 +407,7 @@ Beiträge sind willkommen!
 Du kannst:
 
 * Validierungsregeln erweitern
+* Tests verbessern und erweitern
 * Neue Dokumenttypen hinzufügen
 * REST-API-Antworten verbessern
 * Neue CI-Workflows oder Metriken hinzufügen (z. B. geplanter `/metrics`-Endpunkt)
@@ -485,6 +435,19 @@ xdebug.client_host=172.17.0.1
 
 Der schnellste Weg, dies zu beheben, besteht darin, deine `Dockerfile` entsprechend zu aktualisieren und den Container neu zu bauen.
 Auf einigen Linux-Systemen musst du eventuell `ip addr show docker0` ausführen, um die tatsächliche Bridge-IP zu überprüfen (normalerweise `172.17.0.1`).
+
+---
+
+## Risiken & Einschränkungen
+
+DocParser-PHP ist als **Proof-of-Concept** und Lernprojekt konzipiert. Während die Architektur Modularität, Dependency Injection und einen robusten Testansatz demonstriert, ist sie **nicht für den produktiven Einsatz gehärtet**. Aktuelle Einschränkungen umfassen:
+
+* Keine Rate-Limiting-Mechanismen oder erweiterte Fehlerbehandlung für Szenarien mit hoher Last.
+* Authentifizierung ist derzeit nur ein Platzhalter; sicherer API-Zugriff ist nicht implementiert.
+* Eingabevalidierung und HTML-Sanitization sind minimal; das Parsen von untrusted Content kann XSS- oder andere Injection-Risiken bergen.
+* Die Performance bei extrem großen oder stark verschachtelten Dokumenten wurde nicht getestet.
+
+Diese Punkte sind bewusst als Bereiche für zukünftige Verbesserungen offen gelassen. Das Projekt dient in erster Linie dazu, Architektur, Testpraktiken und saubere PHP-Designprinzipien zu demonstrieren.
 
 ---
 
