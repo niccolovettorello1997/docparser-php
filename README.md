@@ -8,7 +8,6 @@
   </a>
   <img src="https://github.com/niccolovettorello1997/docparser-php/actions/workflows/tests.yml/badge.svg" alt="Tests">
   <img src="https://img.shields.io/badge/PHP-8.3-777BB4?logo=php" alt="PHP 8.3">
-  <img src="https://img.shields.io/github/license/niccolovettorello1997/docparser-php" alt="License">
   <img src="https://github.com/niccolovettorello1997/docparser-php/actions/workflows/phpstan.yaml/badge.svg" alt="PHPStan">
   <img src="https://github.com/niccolovettorello1997/docparser-php/actions/workflows/docker_build.yaml/badge.svg" alt="Docker Build">
   <a href="https://docparser-php.onrender.com" target="_blank">
